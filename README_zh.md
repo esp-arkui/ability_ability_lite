@@ -68,7 +68,7 @@
 
 ## 使用说明<a name="section1954314201620"></a>
 
--   元能力运行管理服务为AbilityMs，服务运行于foudation进程中；
+-   元能力运行管理服务为AbilityMs，服务运行于foundation进程中；
 -   AbilityMs注册到sa\_manager中，sa\_manager运行于foundation进程中，sa\_manager为AbilityMs创建线程运行环境。具体创建AbilityMs服务的方式以及使用该服务的方式，可参考[系统服务框架子系统](zh-cn_topic_0000001051589563.md)；
 -   系统启动后，AbilityMs会随系统启动而启动；
 
