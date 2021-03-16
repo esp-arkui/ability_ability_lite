@@ -482,7 +482,6 @@ int32 AbilityMgrFeature::RestartApp(const char *bundleName)
 
 int32 AbilityMgrFeature::AppDeathNotify(const IpcContext* context, void *ipcMsg, IpcIo *data, void *arg)
 {
-    FreeBuffer(nullptr, ipcMsg);
     AppInfo *appInfo = reinterpret_cast<AppInfo *>(arg);
     if (appInfo == nullptr) {
         return EC_INVALID;
