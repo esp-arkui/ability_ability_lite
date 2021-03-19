@@ -48,11 +48,18 @@ PageAbilityRecord *AbilityStackManager::GeneratePageAbility(const AbilityInfo &t
         if (targetMission == nullptr) {
             targetMission = new AbilityMissionRecord(stack, target.bundleName);
             stack->PushTopMissionRecord(*targetMission);
+            targetAbility = new PageAbilityRecord(target, want);
+            targetMission->PushPageAbility(*targetAbility);
         } else {
+            PageAbilityRecord *targetTopAbility = const_cast<PageAbilityRecord *>(targetMission->GetTopPageAbility());
+            if (targetTopAbility != nullptr && targetTopAbility->IsSamePageAbility(want)) {
+                targetAbility = targetTopAbility;
+            } else {
+                targetAbility = new PageAbilityRecord(target, want);
+                targetMission->PushPageAbility(*targetAbility);
+            }
             stack->MoveMissionRecordToTop(*targetMission);
         }
-        targetAbility = new PageAbilityRecord(target, want);
-        targetMission->PushPageAbility(*targetAbility);
     }
 
     // default jumps to default, then return to default
