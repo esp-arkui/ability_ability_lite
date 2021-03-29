@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Huawei Device Co., Ltd.
+# Copyright (c) 2021 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -13,7 +13,7 @@
 import("//build/lite/config/component/lite_component.gni")
 import("//build/lite/config/subsystem/aafwk/config.gni")
 
-src_path = "//foundation/aafwk/frameworks/ability_lite/example/entry/src/main/cpp"
+src_path = "${aafwk_lite_path}/frameworks/ability_lite/example/entry/src/main/cpp"
 
 lite_library("hiability") {
     target_type = "shared_library"
@@ -37,22 +37,22 @@ lite_library("hiability") {
 
     include_dirs = [
         ".",
-        "//foundation/aafwk/frameworks/ability_lite/example/entry/src/main/cpp",
-        "//foundation/aafwk/interfaces/innerkits/abilitymgr_lite",
-        "//foundation/aafwk/interfaces/kits/ability_lite",
-        "//foundation/aafwk/interfaces/kits/want_lite",
-        "//foundation/appexecfwk/interfaces/kits/bundle_lite",
-        "//foundation/appexecfwk/utils/bundle_lite",
-        "//foundation/communication/interfaces/kits/ipc_lite",
-        "//foundation/graphic/lite/interfaces/kits/config",
-        "//foundation/graphic/lite/interfaces/kits/ui",
-        "//foundation/graphic/lite/interfaces/kits/utils",
+        "${aafwk_lite_path}/frameworks/ability_lite/example/entry/src/main/cpp",
+        "${aafwk_lite_path}/interfaces/innerkits/abilitymgr_lite",
+        "${aafwk_lite_path}/interfaces/kits/ability_lite",
+        "${aafwk_lite_path}/interfaces/kits/want_lite",
+        "${appexefwk_lite_path}/interfaces/kits/bundle_lite",
+        "${appexefwk_lite_path}/utils/bundle_lite",
+        "//foundation/communication/ipc_lite/interfaces/kits",
+        "//foundation/graphic/utils/interfaces/innerkits",
+        "//foundation/graphic/ui/interfaces/kits",
+        "//foundation/graphic/utils/interfaces/kits/gfx_utils",
         "//kernel/liteos_a/kernel/common",
         "//kernel/liteos_a/kernel/include",
     ]
 
     deps = [
-        "//foundation/aafwk/frameworks/ability_lite:aafwk_abilitykit_lite",
+        "${aafwk_lite_path}/frameworks/ability_lite:aafwk_abilitykit_lite",
     ]
 
     defines = [
@@ -61,7 +61,7 @@ lite_library("hiability") {
 
     if (enable_ohos_appexecfwk_feature_ability == true) {
         deps += [
-            "//foundation/graphic/lite/frameworks/ui:ui",
+            "//foundation/graphic/ui:lite_ui",
         ]
         defines += [
             "ENABLE_WINDOW=1",
