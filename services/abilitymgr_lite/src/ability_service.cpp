@@ -397,19 +397,21 @@ void AbilityService::OnBackgroundDone(uint16_t token)
 void AbilityService::OnDestroyDone(uint16_t token)
 {
     HILOG_INFO(HILOG_MODULE_AAFWK, "OnDestroyDone [%u]", token);
-    SetAbilityState(token, SCHEDULE_STOP);
     // 桌面不会destroy
     if (token == LAUNCHER_TOKEN) {
+        SetAbilityState(token, SCHEDULE_STOP);
         return;
     }
     auto topRecord = abilityStack_.GetTopAbility();
     if ((topRecord == nullptr) || (topRecord->GetToken() != token)) {
+        SetAbilityState(token, SCHEDULE_STOP);
         DeleteRecordInfo(token);
         return;
     }
     APP_EVENT(MT_ACE_APP_STOP);
     abilityStack_.PopAbility();
     DeleteRecordInfo(token);
+    SetAbilityState(token, SCHEDULE_STOP);
 
     // 无其他JS需要启动的场景，直接激活桌面
     if (pendingToken_ == 0) {
