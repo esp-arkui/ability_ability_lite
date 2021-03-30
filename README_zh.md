@@ -71,7 +71,7 @@
 -   AbilityMs注册到sa\_manager中，sa\_manager运行于foundation进程中，sa\_manager为AbilityMs创建线程运行环境。具体创建AbilityMs服务的方式以及使用该服务的方式，可参考系统服务框架子系统；
 -   系统启动后，AbilityMs会随系统启动而启动；
 
--   包安装完成后，通过如下命令（以hispark\_taurus为例，aa工具在系统构建后放置在out/hispark\_taurus/ipcamera\_hispark\_taurus/dev\_tools/bin下），运行Demo启动相应Ability：
+-   包安装完成后，通过如下命令（以ipcamera\_hi3516dv300为例，aa工具在系统构建后放置在out/ipcamera\_hi3516dv300/dev\_tools/bin下），运行Demo启动相应Ability：
 
 ```
 ./bin/aa start -p com.xxxxxx.hiability -n MainAbility
