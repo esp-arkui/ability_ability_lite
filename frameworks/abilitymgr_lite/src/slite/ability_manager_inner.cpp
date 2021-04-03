@@ -27,4 +27,14 @@ int SchedulerLifecycleDone(uint64_t token, int state)
 {
     return OHOS::AbilityMsClient::GetInstance().SchedulerLifecycleDone(token, state);
 }
+
+int ForceStopBundle(uint64_t token)
+{
+    return OHOS::AbilityMsClient::GetInstance().ForceStopBundle(token);
+}
+
+ElementName *GetTopAbility()
+{
+    return OHOS::AbilityMsClient::GetInstance().GetTopAbility();
+}
 }

@@ -70,6 +70,8 @@ struct AmsSliteInterface {
     int32 (*StartAbility)(const Want *want);
     int32 (*TerminateAbility)(uint64_t token);
     int32 (*SchedulerLifecycleDone)(uint64_t token, int state);
+    int32 (*ForceStopBundle)(uint64_t token);
+    ElementName *(*GetTopAbility)();
 };
 #ifdef __cplusplus
 #if __cplusplus

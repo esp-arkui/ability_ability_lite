@@ -42,8 +42,6 @@ constexpr int32_t SIZE_COEFFICIENT = 12;
 constexpr int32_t TASK_STACK_SIZE = 0x400 * SIZE_COEFFICIENT;
 constexpr int32_t APP_TASK_PRI = 25;
 SliteAbility *g_NativeAbility = nullptr;
-AbilityMgrService *g_AbilityService = nullptr;
-AbilityMgrSliteFeature *g_AbilityFeature = nullptr;
 
 AbilityService::AbilityService()
 {
@@ -83,22 +81,22 @@ int32_t AbilityService::StartAbility(const Want *want)
         return PARAM_NULL_ERROR;
     }
 
-    // TODO Èç¹ûÒÑ¾­ÔÚÇ°Ì¨£¬ÔòÖ±½Ó·µ»Ø
+    // TODO ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½Ç°Ì¨ï¿½ï¿½ï¿½ï¿½Ö±ï¿½Ó·ï¿½ï¿½ï¿½
     AbilitySvcInfo *info =
         static_cast<OHOS::AbilitySvcInfo *>(AdapterMalloc(sizeof(AbilitySvcInfo)));
     if (info == nullptr) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability Service AbilitySvcInfo is null");
         return PARAM_NULL_ERROR;
     }
-    // TODO ³õÊ¼»¯info
+    // TODO ï¿½ï¿½Ê¼ï¿½ï¿½info
 
-    //  ×é×°infoÐÅÏ¢
-    //  Èç¹ûÊÇ×ÀÃæ
+    //  ï¿½ï¿½×°infoï¿½ï¿½Ï¢
+    //  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     if (strcmp(bundleName, LAUNCHER_BUNDLE_NAME) == 0) {
         info->bundleName = Utils::Strdup(bundleName);
         info->path = nullptr;
     } else {
-        // JSÓ¦ÓÃ
+        // JSÓ¦ï¿½ï¿½
         AbilityInfo abilityInfo = { nullptr, nullptr };
         QueryAbilityInfo(want, &abilityInfo);
         if ((abilityInfo.bundleName == nullptr) || (strlen(abilityInfo.bundleName) == 0) ||
@@ -152,27 +150,27 @@ int32_t AbilityService::StartAbility(AbilitySvcInfo *info)
         return PARAM_NULL_ERROR;
     }
     uint16_t topToken = topRecord->GetToken();
-    // Æô¶¯µÄÊÇ×ÀÃæ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     if (strcmp(info->bundleName, LAUNCHER_BUNDLE_NAME) == 0) {
         UpdataRecord(info);
-        // Top²»ÊÇ×ÀÃæ£¬¶øÊÇJSÓ¦ÓÃÇÒ²»ÔÚºóÌ¨
+        // Topï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ£¬ï¿½ï¿½ï¿½ï¿½JSÓ¦ï¿½ï¿½ï¿½Ò²ï¿½ï¿½Úºï¿½Ì¨
         if (topToken != LAUNCHER_TOKEN && topRecord->GetState() != SCHEDULE_BACKGROUND) {
             HILOG_INFO(HILOG_MODULE_AAFWK, "Change Js app to background.");
             (void) SchedulerLifecycleInner(topRecord, STATE_BACKGROUND);
         } else {
-            // TODO ÕâÀïÊÇ·ñ»¹Í¨ÖªLauncher  TOPÊÇ×ÀÃæ£¬»òÕßtop²»ÊÇ×ÀÃæ£¬jsÔÚºóÌ¨
+            // TODO ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½Í¨ÖªLauncher  TOPï¿½ï¿½ï¿½ï¿½ï¿½æ£¬ï¿½ï¿½ï¿½ï¿½topï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ£¬jsï¿½Úºï¿½Ì¨
             (void) SchedulerLifecycle(LAUNCHER_TOKEN, STATE_ACTIVE);
         }
         return ERR_OK;
     }
-    // TODO CheckÊÇ·ñÔÊÐíÆô¶¯
+    // TODO Checkï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     if (!CheckResponse(info->bundleName)) {
         return -1;
     }
 
-    // Æô¶¯jsÇÒTOPÊÇjsÓ¦ÓÃ£¬ÇÒÒÑ¾­´´½¨ÁËtask
+    // ï¿½ï¿½ï¿½ï¿½jsï¿½ï¿½TOPï¿½ï¿½jsÓ¦ï¿½Ã£ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½task
     if (topRecord->IsAttached() && topRecord->GetToken() != LAUNCHER_TOKEN) {
-        // ¸úÖ®Ç°ÆðµÄÊÇÍ¬Ò»¸öÓ¦ÓÃ tocheck
+        // ï¿½ï¿½Ö®Ç°ï¿½ï¿½ï¿½ï¿½ï¿½Í¬Ò»ï¿½ï¿½Ó¦ï¿½ï¿½ tocheck
         if (strcmp(info->bundleName, topRecord->GetAppName()) == 0) {
             if (topRecord->GetState() == SCHEDULE_BACKGROUND) {
                 HILOG_INFO(HILOG_MODULE_AAFWK, "StartAbility Resume app when background.");
@@ -181,7 +179,7 @@ int32_t AbilityService::StartAbility(AbilitySvcInfo *info)
             }
             HILOG_INFO(HILOG_MODULE_AAFWK, "Js app already started or starting.");
         } else {
-            // TODO ºÍÖ®Ç°µÄjsÓ¦ÓÃ²»ÊÇÒ»¸öÓ¦ÓÃ JS2JS³¡¾°£¬ÐèÒªÏÈ°ÑÖ®Ç°µÄJSÍË³ö
+            // TODO ï¿½ï¿½Ö®Ç°ï¿½ï¿½jsÓ¦ï¿½Ã²ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ó¦ï¿½ï¿½ JS2JSï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½È°ï¿½Ö®Ç°ï¿½ï¿½JSï¿½Ë³ï¿½
             return ERR_OK;
         }
     }
@@ -199,9 +197,9 @@ int32_t AbilityService::TerminateAbility(uint16_t token)
         return PARAM_NULL_ERROR;
     }
     uint16_t topToken = topRecord->GetToken();
-    // TODO CHECK terminate ×ÀÃæ,ÊÇ·ñÓÐ¸Ã³¡¾°£¿
+    // TODO CHECK terminate ï¿½ï¿½ï¿½ï¿½,ï¿½Ç·ï¿½ï¿½Ð¸Ã³ï¿½ï¿½ï¿½ï¿½ï¿½
     if (token == LAUNCHER_TOKEN) {
-        // Èç¹ûµ±Ç°jsÔÚºóÌ¨, Ôò×ÀÃæÍËºóÌ¨£¬js×ßµ½Ç°Ì¨
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ç°jsï¿½Úºï¿½Ì¨, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëºï¿½Ì¨ï¿½ï¿½jsï¿½ßµï¿½Ç°Ì¨
         if (topToken != token && topRecord->GetState() == SCHEDULE_BACKGROUND) {
             HILOG_INFO(HILOG_MODULE_AAFWK, "Resume Js app [%u]", topToken);
             return SchedulerLifecycle(LAUNCHER_TOKEN, STATE_BACKGROUND);
@@ -209,15 +207,56 @@ int32_t AbilityService::TerminateAbility(uint16_t token)
         return ERR_OK;
     }
 
-    // TODO CHECKÊÇ·ñÓÐ¸Ã³¡¾°
+    // TODO CHECKï¿½Ç·ï¿½ï¿½Ð¸Ã³ï¿½ï¿½ï¿½
     if (token != topToken) {
         APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_STOP_UNKNOWN_ABILITY_TOKEN);
         DeleteRecordInfo(token);
         return -1;
     }
     topRecord->SetTerminated(true);
-    // TerminateAbility TOPµÄjs
+    // TerminateAbility TOPï¿½ï¿½js
     return SchedulerLifecycleInner(topRecord, STATE_BACKGROUND);
+}
+
+int32_t AbilityService::ForceStopBundle(uint16_t token)
+{
+    HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStopBundle [%u]", token);
+    if (token == LAUNCHER_TOKEN) {
+        HILOG_INFO(HILOG_MODULE_AAFWK, "Launcher does not support force stop.");
+        return ERR_OK;
+    }
+
+    // free js mem and delete the record 
+    AbilityRecord *record = abilityList_.Get(token);
+    if (ForceStopBundleInner(token) != ERR_OK) {
+        return PARAM_CHECK_ERROR;
+    }
+
+    // active the launcher
+    AbilityRecord *launcherRecord = abilityList_.Get(LAUNCHER_TOKEN);
+    if (launcherRecord == nullptr) {
+        return PARAM_NULL_ERROR;
+    }
+    if (launcherRecord->GetState() != SCHEDULE_ACTIVE) {
+        return SchedulerLifecycleInner(LAUNCHER_TOKEN, STATE_ACTIVE);
+    }
+    return ERR_OK;
+}
+
+int32_t AbilityService::ForceStopBundleInner(uint16_t token)
+{
+    // free js mem and delete the record 
+    AbilityRecord *record = abilityList_.Get(token);
+    if (record == nullptr) {
+        return PARAM_NULL_ERROR;
+    }
+    auto jsAppHost = const_cast<JsAppHost *>(record->GetJsAppHost());
+    if (jsAppHost != nullptr) {
+        // free js mem
+        jsAppHost->ForceDestroy();
+    }
+    DeleteRecordInfo(token);
+    return ERR_OK;
 }
 
 int32_t AbilityService::PreCheckStartAbility(
@@ -229,11 +268,11 @@ int32_t AbilityService::PreCheckStartAbility(
     }
     auto curRecord = abilityList_.Get(bundleName);
     if (curRecord != nullptr) {
-        // µ±Ç°ÒÑ¾­ÊÇÇ°Ì¨£¬²»´¦Àí
+        // ï¿½ï¿½Ç°ï¿½Ñ¾ï¿½ï¿½ï¿½Ç°Ì¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (curRecord->GetState() == SCHEDULE_ACTIVE) {
             HILOG_ERROR(HILOG_MODULE_AAFWK, "PreCheckStartAbility cur state active.");
         } else if (curRecord->GetState() == SCHEDULE_BACKGROUND) {
-            // Æô¶¯µÄjsÔÚºóÌ¨£¬ÔòÏÈ½«×ÀÃæ×ßµ½ºóÌ¨
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½jsï¿½Úºï¿½Ì¨ï¿½ï¿½ï¿½ï¿½ï¿½È½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßµï¿½ï¿½ï¿½Ì¨
             SchedulerLifecycle(LAUNCHER_TOKEN, STATE_BACKGROUND);
         }
         return ERR_OK;
@@ -245,7 +284,7 @@ int32_t AbilityService::PreCheckStartAbility(
     record->SetAppData(data, dataLength);
     record->SetState(SCHEDULE_STOP);
     abilityList_.Add(record);
-    // ´´½¨APP TASK
+    // ï¿½ï¿½ï¿½ï¿½APP TASK
     if (CreateAppTask(record) != ERR_OK) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "CheckResponse CreateAppTask fail");
         abilityList_.Erase(record->GetToken());
@@ -294,7 +333,7 @@ int32_t AbilityService::CreateAppTask(AbilityRecord *record)
 
     // LoadPermissions(record->GetAppName(), appTaskId)
     record->SetState(SCHEDULE_INACTIVE);
-    // TODO ÕâÀïÔÚSchedulerLifecycleÖ®ºó
+    // TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SchedulerLifecycleÖ®ï¿½ï¿½
     abilityStack_.PushAbility(record);
     APP_EVENT(MT_ACE_APP_START);
     if (SchedulerLifecycle(LAUNCHER_TOKEN, STATE_BACKGROUND) != 0) {
@@ -349,7 +388,7 @@ void AbilityService::OnActiveDone(uint16_t token)
         return;
     }
     if (token == LAUNCHER_TOKEN) {
-        // Èç¹ûÊÇ×ÀÃæ¼¤»î£¬µ«JSµÄ×´Ì¬²»ÎªºóÌ¨£¬ÔòÍË³öJS
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ¼¤ï¿½î£¬ï¿½ï¿½JSï¿½ï¿½×´Ì¬ï¿½ï¿½Îªï¿½ï¿½Ì¨ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½JS
         if (topRecord->GetToken() != LAUNCHER_TOKEN) {
             if (topRecord->GetState() != SCHEDULE_BACKGROUND) {
                 APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_START_LAUNCHER_EXIT_FAILED);
@@ -362,7 +401,7 @@ void AbilityService::OnActiveDone(uint16_t token)
         }
         return;
     }
-    // Èç¹ûÆô¶¯µÄÊÇjs
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½js
     if (topRecord->GetToken() == token) {
         APP_EVENT(MT_ACE_APP_ACTIVE);
     }
@@ -376,7 +415,7 @@ void AbilityService::OnBackgroundDone(uint16_t token)
     if (topRecord == nullptr) {
         return;
     }
-    // JS×ßµ½ºóÌ¨£¬¼¤»îLAUNCHER
+    // JSï¿½ßµï¿½ï¿½ï¿½Ì¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½LAUNCHER
     if (token != LAUNCHER_TOKEN) {
         if (topRecord->GetToken() == token) {
             APP_EVENT(MT_ACE_APP_BACKGROUND);
@@ -385,11 +424,11 @@ void AbilityService::OnBackgroundDone(uint16_t token)
         }
         return;
     }
-    // launcher×ßµ½ºóÌ¨³¡¾°
+    // launcherï¿½ßµï¿½ï¿½ï¿½Ì¨ï¿½ï¿½ï¿½ï¿½
     if (topRecord->GetToken() != LAUNCHER_TOKEN) {
         (void) SchedulerLifecycleInner(topRecord, STATE_ACTIVE);
     } else {
-        // TODO CHECKÕâ¸ö³¡¾°»¹ÓÐÃ»ÓÐ
+        // TODO CHECKï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½
         HILOG_WARN(HILOG_MODULE_AAFWK, "Js app exit, but has no js app.");
     }
 }
@@ -397,7 +436,7 @@ void AbilityService::OnBackgroundDone(uint16_t token)
 void AbilityService::OnDestroyDone(uint16_t token)
 {
     HILOG_INFO(HILOG_MODULE_AAFWK, "OnDestroyDone [%u]", token);
-    // ×ÀÃæ²»»ádestroy
+    // ï¿½ï¿½ï¿½æ²»ï¿½ï¿½destroy
     if (token == LAUNCHER_TOKEN) {
         SetAbilityState(token, SCHEDULE_STOP);
         return;
@@ -413,13 +452,13 @@ void AbilityService::OnDestroyDone(uint16_t token)
     DeleteRecordInfo(token);
     SetAbilityState(token, SCHEDULE_STOP);
 
-    // ÎÞÆäËûJSÐèÒªÆô¶¯µÄ³¡¾°£¬Ö±½Ó¼¤»î×ÀÃæ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½JSï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½Ó¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     if (pendingToken_ == 0) {
         (void) SchedulerLifecycle(LAUNCHER_TOKEN, STATE_ACTIVE);
         return;
     }
 
-    // JS2JS³¡¾°
+    // JS2JSï¿½ï¿½ï¿½ï¿½
     auto record = abilityList_.Get(pendingToken_);
     if (CreateAppTask(record) != ERR_OK) {
         abilityList_.Erase(pendingToken_);
@@ -452,16 +491,16 @@ int32_t AbilityService::SchedulerLifecycleInner(const AbilityRecord *record, int
     if (record == nullptr) {
         return PARAM_NULL_ERROR;
     }
-    // Í¨Öª¶ÔÓ¦µÄability£¬×ßÏàÓ¦µÄÉúÃüÖÜÆÚ
-    if (record->GetToken() != LAUNCHER_TOKEN) {  // jsÓ¦ÓÃ
+    // Í¨Öªï¿½ï¿½Ó¦ï¿½ï¿½abilityï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    if (record->GetToken() != LAUNCHER_TOKEN) {  // jsÓ¦ï¿½ï¿½
         (void) SendMsgToJsAbility(state, record);
         return ERR_OK;
     }
-    // native Ó¦ÓÃ£¬»ñÈ¡nativeµÄability£¬µ÷ÓÃÏàÓ¦µÄÉúÃüÖÜÆÚ
+    // native Ó¦ï¿½Ã£ï¿½ï¿½ï¿½È¡nativeï¿½ï¿½abilityï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     if (g_NativeAbility == nullptr) {
         return PARAM_NULL_ERROR;
     }
-    // ÉêÇëwantÄÚ´æ£¬ÔÚ·þÎñ¶ËÓÃÍêÊÍ·Å
+    // ï¿½ï¿½ï¿½ï¿½wantï¿½Ú´æ£¬ï¿½Ú·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½
     Want *info = static_cast<Want *>(AdapterMalloc(sizeof(Want)));
     if (info == nullptr) {
         return MEMORY_MALLOC_ERROR;
@@ -512,7 +551,7 @@ int32_t AbilityService::SchedulerLifecycleDone(uint64_t token, int32_t state)
             OnBackgroundDone(token);
             break;
         }
-        case STATE_UNINITIALIZED: {  // TODO DESTROYÈçºÎÌåÏÖ
+        case STATE_UNINITIALIZED: {
             OnDestroyDone(token);
             break;
         }
@@ -549,10 +588,32 @@ bool AbilityService::SendMsgToJsAbility(int32_t state, const AbilityRecord *reco
     return ret == osOK;
 }
 
+ElementName *AbilityService::GetTopAbility()
+{
+    auto topRecord = const_cast<AbilityRecord *>(abilityStack_.GetTopAbility());
+    AbilityRecord *launcherRecord = abilityList_.Get(LAUNCHER_TOKEN);
+    if (topRecord == nullptr || launcherRecord == nullptr) {
+        return nullptr;
+    }
+    ElementName *element = reinterpret_cast<ElementName *>(AdapterMalloc(sizeof(ElementName)));
+    if (element == nullptr || memset_s(element, sizeof(ElementName), 0, sizeof(ElementName)) != EOK) {
+        AdapterFree(element);
+        return nullptr;
+    }
+    if (topRecord->GetToken() == LAUNCHER_TOKEN || launcherRecord->GetState() == SCHEDULE_ACTIVE) {
+        SetElementBundleName(element, LAUNCHER_BUNDLE_NAME);
+        return element;
+    }
+
+    // case js active or background when launcher not active
+    if (topRecord->GetState() == SCHEDULE_ACTIVE || topRecord->GetState() == SCHEDULE_BACKGROUND) {
+        SetElementBundleName(element, topRecord->GetAppName());
+    }
+    return element;
+}
+
 void AbilityService::setNativeAbility(const SliteAbility *ability)
 {
-    g_AbilityFeature = AbilityMgrSliteFeature::GetInstance();
-    g_AbilityService = AbilityMgrService::GetInstance();
     g_NativeAbility = const_cast<SliteAbility *>(ability);
 }
 } // namespace OHOS

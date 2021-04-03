@@ -40,6 +40,10 @@ public:
 
     int SchedulerLifecycleDone(uint64_t token, int state) const;
 
+    int ForceStopBundle(uint64_t token) const;
+
+    ElementName *GetTopAbility() const;
+
 private:
     AbilityMsClient() = default;
 

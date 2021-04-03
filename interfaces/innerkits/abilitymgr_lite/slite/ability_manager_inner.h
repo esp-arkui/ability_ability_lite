@@ -26,9 +26,37 @@ extern "C" {
 
 typedef int (*StartCheckFunc)(const char *bundleName);
 
+/**
+ * @brief Register the check function for the ability starting.
+ *
+ * @param startChecktCallback Indicates the check function for the ability starting.
+ * @return Returns <b>0</b> if this function is successfully called; returns another value otherwise.
+ */
 int RegAbilityCallback(StartCheckFunc startChecktCallback);
 
+/**
+ * @brief Schedule the lifecycle of the ability.
+ *
+ * @param token Indicates the token of the ability.
+ * @param state Indicates the state of the lifecycle.
+ * @return Returns <b>0</b> if this function is successfully called; returns another value otherwise.
+ */
 int SchedulerLifecycleDone(uint64_t token, int state);
+
+/**
+ * @brief Forcestop an ability based on the specified token information.
+ *
+ * @param token Indicates the token of the ability.
+ * @return Returns <b>0</b> if this function is successfully called; returns another value otherwise.
+ */
+int ForceStopBundle(uint64_t token);
+
+/**
+ * @brief Get the element name of the top ability.
+ *
+ * @return Returns the element name of the top ability.
+ */
+ElementName *GetTopAbility();
 #ifdef __cplusplus
 #if __cplusplus
 }

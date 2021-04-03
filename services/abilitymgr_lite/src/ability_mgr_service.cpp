@@ -86,8 +86,10 @@ BOOL AbilityMgrService::ServiceMessageHandle(Service *service, Request *request)
         int token = request->msgValue & 0xFF;
         int state = (request->msgValue >> BYTE_OFFSET) & 0xFF;
         ret = AbilityService::GetInstance().SchedulerLifecycleDone(token, state);
-    } else if  (request->msgId == TERMINATE_ABILITY) {
+    } else if (request->msgId == TERMINATE_ABILITY) {
         ret = AbilityService::GetInstance().TerminateAbility(request->msgValue);
+    } else if (request->msgId == TERMINATE_APP) {
+        ret = AbilityService::GetInstance().ForceStopBundle(request->msgValue);
     }
     return ret == ERR_OK;
 #else
