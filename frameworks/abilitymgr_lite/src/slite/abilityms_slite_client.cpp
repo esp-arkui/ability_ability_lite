@@ -131,7 +131,7 @@ int AbilityMsClient::ForceStopBundle(uint64_t token) const
 ElementName *AbilityMsClient::GetTopAbility() const
 {
     if (!Initialize()) {
-        return -1;
+        return nullptr;
     }
     return amsProxy_->GetTopAbility();
 }
