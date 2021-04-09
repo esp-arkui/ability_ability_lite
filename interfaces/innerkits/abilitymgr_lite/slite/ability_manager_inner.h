@@ -18,6 +18,8 @@
 
 #include "stdint.h"
 
+#include "element_name.h"
+
 #ifdef __cplusplus
 #if __cplusplus
 extern "C" {
