@@ -81,7 +81,7 @@ The ability management framework is provided by OpenHarmony for you to develop O
 -   After the HAP installation is complete, you can use the aa tool to run the demo for starting the specified ability through the following command. \(Taking  **hispark\_taurus**  as an example, you can obtain the aa tool from the  **out/hispark\_taurus/ipcamera\_hispark\_taurus/dev\_tools/bin**  directory after the version building.\)
 
 ```
-./bin/aa start -p com.xxxxxx.hiability -n MainAbility
+./bin/aa start -p com.xxxxxx.hiability -n MainAbility 
 ```
 
 ## Repositories Involved<a name="section93061357133720"></a>
