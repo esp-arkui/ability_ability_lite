@@ -81,22 +81,19 @@ int32_t AbilityService::StartAbility(const Want *want)
         return PARAM_NULL_ERROR;
     }
 
-    // TODO ����Ѿ���ǰ̨����ֱ�ӷ���
     AbilitySvcInfo *info =
         static_cast<OHOS::AbilitySvcInfo *>(AdapterMalloc(sizeof(AbilitySvcInfo)));
     if (info == nullptr) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability Service AbilitySvcInfo is null");
         return PARAM_NULL_ERROR;
     }
-    // TODO ��ʼ��info
 
-    //  ��װinfo��Ϣ
-    //  ���������
     if (strcmp(bundleName, LAUNCHER_BUNDLE_NAME) == 0) {
+        // Launcher
         info->bundleName = Utils::Strdup(bundleName);
         info->path = nullptr;
     } else {
-        // JSӦ��
+        // JS APP
         AbilityInfo abilityInfo = { nullptr, nullptr };
         QueryAbilityInfo(want, &abilityInfo);
         if ((abilityInfo.bundleName == nullptr) || (strlen(abilityInfo.bundleName) == 0) ||
@@ -150,27 +147,25 @@ int32_t AbilityService::StartAbility(AbilitySvcInfo *info)
         return PARAM_NULL_ERROR;
     }
     uint16_t topToken = topRecord->GetToken();
-    // ������������
+    //  start launcher
     if (strcmp(info->bundleName, LAUNCHER_BUNDLE_NAME) == 0) {
         UpdataRecord(info);
-        // Top�������棬����JSӦ���Ҳ��ں�̨
         if (topToken != LAUNCHER_TOKEN && topRecord->GetState() != SCHEDULE_BACKGROUND) {
             HILOG_INFO(HILOG_MODULE_AAFWK, "Change Js app to background.");
             (void) SchedulerLifecycleInner(topRecord, STATE_BACKGROUND);
         } else {
-            // TODO �����Ƿ�֪ͨLauncher  TOP�����棬����top�������棬js�ں�̨
             (void) SchedulerLifecycle(LAUNCHER_TOKEN, STATE_ACTIVE);
         }
         return ERR_OK;
     }
-    // TODO Check�Ƿ���������
+
     if (!CheckResponse(info->bundleName)) {
-        return -1;
+        return PARAM_CHECK_ERROR;
     }
 
-    // ����js��TOP��jsӦ�ã����Ѿ�������task
+    // start js app
     if (topRecord->IsAttached() && topRecord->GetToken() != LAUNCHER_TOKEN) {
-        // ��֮ǰ�����ͬһ��Ӧ�� tocheck
+        // start app is top
         if (strcmp(info->bundleName, topRecord->GetAppName()) == 0) {
             if (topRecord->GetState() == SCHEDULE_BACKGROUND) {
                 HILOG_INFO(HILOG_MODULE_AAFWK, "StartAbility Resume app when background.");
@@ -268,11 +263,9 @@ int32_t AbilityService::PreCheckStartAbility(
     }
     auto curRecord = abilityList_.Get(bundleName);
     if (curRecord != nullptr) {
-        // ��ǰ�Ѿ���ǰ̨��������
         if (curRecord->GetState() == SCHEDULE_ACTIVE) {
-            HILOG_ERROR(HILOG_MODULE_AAFWK, "PreCheckStartAbility cur state active.");
+            HILOG_ERROR(HILOG_MODULE_AAFWK, "PreCheckStartAbility current state active.");
         } else if (curRecord->GetState() == SCHEDULE_BACKGROUND) {
-            // ������js�ں�̨�����Ƚ������ߵ���̨
             SchedulerLifecycle(LAUNCHER_TOKEN, STATE_BACKGROUND);
         }
         return ERR_OK;
@@ -284,7 +277,6 @@ int32_t AbilityService::PreCheckStartAbility(
     record->SetAppData(data, dataLength);
     record->SetState(SCHEDULE_STOP);
     abilityList_.Add(record);
-    // ����APP TASK
     if (CreateAppTask(record) != ERR_OK) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "CheckResponse CreateAppTask fail");
         abilityList_.Erase(record->GetToken());
@@ -333,7 +325,6 @@ int32_t AbilityService::CreateAppTask(AbilityRecord *record)
 
     // LoadPermissions(record->GetAppName(), appTaskId)
     record->SetState(SCHEDULE_INACTIVE);
-    // TODO ������SchedulerLifecycle֮��
     abilityStack_.PushAbility(record);
     APP_EVENT(MT_ACE_APP_START);
     if (SchedulerLifecycle(LAUNCHER_TOKEN, STATE_BACKGROUND) != 0) {
@@ -387,8 +378,9 @@ void AbilityService::OnActiveDone(uint16_t token)
     if (topRecord == nullptr) {
         return;
     }
+
+    // the launcher active
     if (token == LAUNCHER_TOKEN) {
-        // ��������漤���JS��״̬��Ϊ��̨�����˳�JS
         if (topRecord->GetToken() != LAUNCHER_TOKEN) {
             if (topRecord->GetState() != SCHEDULE_BACKGROUND) {
                 APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_START_LAUNCHER_EXIT_FAILED);
@@ -401,7 +393,7 @@ void AbilityService::OnActiveDone(uint16_t token)
         }
         return;
     }
-    // �����������js
+    // the js app active
     if (topRecord->GetToken() == token) {
         APP_EVENT(MT_ACE_APP_ACTIVE);
     }
@@ -415,7 +407,7 @@ void AbilityService::OnBackgroundDone(uint16_t token)
     if (topRecord == nullptr) {
         return;
     }
-    // JS�ߵ���̨������LAUNCHER
+    // the js background
     if (token != LAUNCHER_TOKEN) {
         if (topRecord->GetToken() == token) {
             APP_EVENT(MT_ACE_APP_BACKGROUND);
@@ -424,19 +416,18 @@ void AbilityService::OnBackgroundDone(uint16_t token)
         }
         return;
     }
-    // launcher�ߵ���̨����
+    // the launcher background
     if (topRecord->GetToken() != LAUNCHER_TOKEN) {
         (void) SchedulerLifecycleInner(topRecord, STATE_ACTIVE);
-    } else {
-        // TODO CHECK�����������û��
-        HILOG_WARN(HILOG_MODULE_AAFWK, "Js app exit, but has no js app.");
+        return;
     }
+    HILOG_WARN(HILOG_MODULE_AAFWK, "Js app exit, but has no js app.");
 }
 
 void AbilityService::OnDestroyDone(uint16_t token)
 {
     HILOG_INFO(HILOG_MODULE_AAFWK, "OnDestroyDone [%u]", token);
-    // ���治��destroy
+    // the launcher destroy
     if (token == LAUNCHER_TOKEN) {
         SetAbilityState(token, SCHEDULE_STOP);
         return;
@@ -452,13 +443,13 @@ void AbilityService::OnDestroyDone(uint16_t token)
     DeleteRecordInfo(token);
     SetAbilityState(token, SCHEDULE_STOP);
 
-    // ������JS��Ҫ�����ĳ�����ֱ�Ӽ�������
+    // no pending token
     if (pendingToken_ == 0) {
         (void) SchedulerLifecycle(LAUNCHER_TOKEN, STATE_ACTIVE);
         return;
     }
 
-    // JS2JS����
+    // start pending token
     auto record = abilityList_.Get(pendingToken_);
     if (CreateAppTask(record) != ERR_OK) {
         abilityList_.Erase(pendingToken_);
@@ -491,12 +482,12 @@ int32_t AbilityService::SchedulerLifecycleInner(const AbilityRecord *record, int
     if (record == nullptr) {
         return PARAM_NULL_ERROR;
     }
-    // ֪ͨ��Ӧ��ability������Ӧ����������
+    // dispatch js life cycle
     if (record->GetToken() != LAUNCHER_TOKEN) {  // jsӦ��
         (void) SendMsgToJsAbility(state, record);
         return ERR_OK;
     }
-    // native Ӧ�ã���ȡnative��ability��������Ӧ����������
+    // dispatch native life cycle
     if (g_NativeAbility == nullptr) {
         return PARAM_NULL_ERROR;
     }
@@ -623,5 +614,10 @@ int InstallNativeAbility(const AbilityInfo *abilityInfo, const OHOS::SliteAbilit
 {
     OHOS::AbilityService::GetInstance().setNativeAbility(ability);
     return ERR_OK;
+}
+
+ElementName *GetTopAbility()
+{
+    return OHOS::AbilityService::GetInstance().GetTopAbility();
 }
 }

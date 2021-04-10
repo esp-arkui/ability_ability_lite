@@ -32,9 +32,4 @@ int ForceStopBundle(uint64_t token)
 {
     return OHOS::AbilityMsClient::GetInstance().ForceStopBundle(token);
 }
-
-ElementName *GetTopAbility()
-{
-    return OHOS::AbilityMsClient::GetInstance().GetTopAbility();
-}
 }
