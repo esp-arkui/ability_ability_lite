@@ -45,7 +45,9 @@ public:
     ~AbilityService() override;
     int32_t StartAbility(const Want *want);
     int32_t TerminateAbility(uint16_t token);
+    int32_t ForceStopBundle(uint16_t token);
     int32_t SchedulerLifecycleDone(uint64_t token, int32_t state);
+    ElementName *GetTopAbility();
     void setNativeAbility(const SliteAbility *ability);
     void StartLauncher();
     void CleanWant();
@@ -68,6 +70,7 @@ private:
     bool SendMsgToJsAbility(int32_t msgId, const AbilityRecord *record);
     void SetAbilityState(uint64_t token, int32_t state);
     void UpdataRecord(AbilitySvcInfo *info);
+    int32_t ForceStopBundleInner(uint16_t token);
 
     uint16_t pendingToken_ { 0 };
     AbilityList abilityList_ {};

@@ -32,6 +32,12 @@ extern "C" {
  */
 int StartAbility(const Want *want);
 
+/**
+ * @brief Terminate an ability based on the specified token information.
+ *
+ * @param token Indicates the token of the ability.
+ * @return Returns <b>0</b> if this function is successfully called; returns another value otherwise.
+ */
 int TerminateAbility(uint64_t token);
 #ifdef __cplusplus
 #if __cplusplus

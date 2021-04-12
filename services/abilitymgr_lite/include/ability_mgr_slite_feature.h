@@ -29,6 +29,8 @@ public:
     static int32 StartAbility(const Want *want);
     static int32 TerminateAbility(uint64_t token);
     static int32 SchedulerLifecycleDone(uint64_t token, int state);
+    static int32 ForceStopBundle(uint64_t token);
+    static ElementName *GetTopAbility();
 
     static AbilityMgrSliteFeature *GetInstance()
     {
