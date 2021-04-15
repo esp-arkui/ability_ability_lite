@@ -112,4 +112,27 @@ int AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int state) const
     };
     return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
 }
+
+int AbilityMsClient::ForceStopBundle(uint64_t token) const
+{
+    AbilityMgrService *service = AbilityMgrService::GetInstance();
+    if (service == nullptr) {
+        return PARAM_CHECK_ERROR;
+    }
+    Request request = {
+        .msgId = TERMINATE_APP,
+        .data = nullptr,
+        .len = 0,
+        .msgValue = static_cast<uint32_t>(token & 0xFFFF),
+    };
+    return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
+}
+
+ElementName *AbilityMsClient::GetTopAbility() const
+{
+    if (!Initialize()) {
+        return nullptr;
+    }
+    return amsProxy_->GetTopAbility();
+}
 } //  namespace OHOS

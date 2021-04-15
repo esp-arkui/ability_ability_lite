@@ -33,6 +33,8 @@ AbilityMgrSliteFeatureImpl g_amsSliteImpl = {
     .StartAbility = AbilityMgrSliteFeature::StartAbility,
     .TerminateAbility = AbilityMgrSliteFeature::TerminateAbility,
     .SchedulerLifecycleDone = AbilityMgrSliteFeature::SchedulerLifecycleDone,
+    .ForceStopBundle = AbilityMgrSliteFeature::ForceStopBundle,
+    .GetTopAbility = AbilityMgrSliteFeature::GetTopAbility,
     DEFAULT_IUNKNOWN_ENTRY_END
 };
 
@@ -104,5 +106,16 @@ int32_t AbilityMgrSliteFeature::TerminateAbility(uint64_t token)
 int32_t AbilityMgrSliteFeature::SchedulerLifecycleDone(uint64_t token, int state)
 {
     return AbilityService::GetInstance().SchedulerLifecycleDone(token, state);
+}
+
+int32_t AbilityMgrSliteFeature::ForceStopBundle(uint64_t token)
+{
+    uint16_t slitToken = token & 0xFFFF;
+    return AbilityService::GetInstance().ForceStopBundle(slitToken);
+}
+
+ElementName *AbilityMgrSliteFeature::GetTopAbility()
+{
+    return AbilityService::GetInstance().GetTopAbility();
 }
 } // namespace OHOS
