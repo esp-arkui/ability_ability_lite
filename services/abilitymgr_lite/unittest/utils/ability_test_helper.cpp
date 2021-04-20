@@ -213,7 +213,7 @@ namespace OHOS {
             ((end = g_resultString.find(SLICE_STATE, begin)) != std::string::npos)) {
             auto record = std::make_shared<SliceRecord>();
             record->name = g_resultString.substr(begin + strlen(SLICE_STACK), end);
-            record->state = static_cast<State>)g_resultSrtring[end + strlen(SLICE_STATE)] - '0');
+            record->state = static_cast<State>(g_resultSrtring[end + strlen(SLICE_STATE)] - '0');
             sliceList.push_back(record);
         }
 
