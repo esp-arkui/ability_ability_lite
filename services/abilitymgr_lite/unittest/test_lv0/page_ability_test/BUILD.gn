@@ -21,8 +21,7 @@ unittest("ability_test_pageAbilityTest_lv0") {
     ldflags = ["-lstdc++"]
 
     sources = [
-        "../../utils/ability_test_helper.cpp",
-        "../utils/ability_test_helper.cpp"
+        "../utils/ability_test_helper.cpp",
         "page_ability_test.cpp",
     ]
 
