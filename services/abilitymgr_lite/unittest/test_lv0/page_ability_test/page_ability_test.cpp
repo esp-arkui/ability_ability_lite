@@ -15,7 +15,7 @@
 
 #include "gtest/gtest.h"
 
-#include "utils/ability_test_helper.h"
+#include "../../utils/ability_test_helper.h"
 
 using namespace testing::ext;
 
