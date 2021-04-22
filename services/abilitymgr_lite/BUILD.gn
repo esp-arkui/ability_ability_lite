@@ -119,5 +119,6 @@ lite_component("aafwk_services_lite") {
   features = [
     ":abilityms",
     "tools:aa",
+    "unittest:ability_test",
   ]
 }
