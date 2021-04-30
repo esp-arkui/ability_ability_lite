@@ -146,7 +146,7 @@ namespace OHOS {
             printf("[ERROR] [AbilityTestHelper] Install hap failed!\n");
             exit(-1);
         }
-        g_result = false;
+        g_result = true;
         SemWait();
         return g_result;
     }
@@ -157,17 +157,16 @@ namespace OHOS {
             .installLocation = 1,
             .keepData = false
         };
-        Uninstall(bundleName.c_str(), &installParam, UninstallCallback);
-        g_result = false;
+        bool ret = Uninstall(bundleName.c_str(), &installParam, UninstallCallback);
         SemWait();
-        return g_result;
+        return ret;
     }
 
     bool AbilityTestHelper::TestStartAbility(const Want &want)
     {
         SetWantSvcIdentity(const_cast<Want *>(&want), identity_);
-        StartAbility(&want);
-        g_result = false;
+        int32_t ret = StartAbility(&want);
+        g_result = (ERR_OK == ret);
         SemWait();
         sleep(1);
         return g_result;
