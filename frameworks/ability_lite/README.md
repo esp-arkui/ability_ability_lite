@@ -10,7 +10,7 @@ The cpp file is the implementation of AbilityKit class.
 - manage slices of the ability in an application
 - create the application main thread and display the window
 
-## Directions
+## Directories
 
 ```
 
