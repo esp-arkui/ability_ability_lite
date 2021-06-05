@@ -37,8 +37,8 @@ AbilityEventHandler::~AbilityEventHandler()
 
 void AbilityEventHandler::Run()
 {
+    (void) pthread_mutex_lock(&queueMutex_);
     while (!quit_) {
-        (void) pthread_mutex_lock(&queueMutex_);
         if (taskQueue_.empty()) {
             (void) pthread_cond_wait(&pthreadCond_, &queueMutex_);
         }
@@ -46,16 +46,18 @@ void AbilityEventHandler::Run()
         taskQueue_.pop();
         (void) pthread_mutex_unlock(&queueMutex_);
         task();
+        (void) pthread_mutex_lock(&queueMutex_);
     }
+    (void) pthread_mutex_unlock(&queueMutex_);
 }
 
 void AbilityEventHandler::PostTask(const Task& task)
 {
     (void) pthread_mutex_lock(&queueMutex_);
     taskQueue_.push(task);
-    (void) pthread_mutex_unlock(&queueMutex_);
 
     (void) pthread_cond_signal(&pthreadCond_);
+    (void) pthread_mutex_unlock(&queueMutex_);
 }
 
 void AbilityEventHandler::PostQuit()
