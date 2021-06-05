@@ -25,6 +25,7 @@
 #include "want.h"
 
 namespace OHOS {
+const int32_t DEFAULT_IPC_SIZE = 200;
 class Scheduler {
 public:
     virtual ~Scheduler() = default;
