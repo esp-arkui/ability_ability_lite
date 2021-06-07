@@ -127,9 +127,10 @@ AbilityMsStatus AbilityThreadClient::AppInitTransaction(const BundleInfo &bundle
             IpcIoPushString(&req, bundleInfo.moduleInfos[i].moduleName);
         }
     }
+    IpcIo reply;
     uintptr_t ptr;
     if (Transact(nullptr, svcIdentity_, SCHEDULER_APP_INIT, &req,
-        nullptr, LITEIPC_FLAG_DEFAULT, &ptr) != LITEIPC_OK) {
+        &reply, LITEIPC_FLAG_DEFAULT, &ptr) != LITEIPC_OK) {
         return  AbilityMsStatus::AppTransanctStatus("app init ipc error");
     }
     FreeBuffer(nullptr, reinterpret_cast<void *>(ptr));
