@@ -233,7 +233,7 @@ int32_t AbilityService::ForceStopBundle(uint16_t token)
         return PARAM_NULL_ERROR;
     }
     if (launcherRecord->GetState() != SCHEDULE_ACTIVE) {
-        return SchedulerLifecycleInner(LAUNCHER_TOKEN, STATE_ACTIVE);
+        return SchedulerLifecycle(LAUNCHER_TOKEN, STATE_ACTIVE);
     }
     return ERR_OK;
 }
