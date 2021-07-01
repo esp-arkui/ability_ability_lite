@@ -14,6 +14,10 @@
  */
 
 #include "ability.h"
+#include "ability.h"
+#include "ability.h"
+
+#include "ability.h"
 
 #include <ability_kit_command.h>
 #include <ability_state.h>
