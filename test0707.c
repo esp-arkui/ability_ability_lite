@@ -72,6 +72,8 @@ static uint8_t DeserializeInnerAbilityInfo(IOwner owner, IpcIo *reply)
     return resultCode;
 }
 
+
+
 static uint8_t DeserializeInnerBundleInfo(IOwner owner, IpcIo *reply)
 {
     if ((reply == nullptr) || (owner == nullptr)) {
@@ -754,4 +756,22 @@ void FreeSystemAvailableCapabilitiesInfo(SystemCapability *sysCap)
     }
     AdapterFree(sysCap);
 }
+}
+
+
+ 
+#include<stdio.h>
+ 
+int main()
+{
+    int i,j;
+    for(i=0;i<8;i++)
+    {
+        for(j=0;j<8;j++)
+            if((i+j)%2==0)
+                printf("%c%c",219,219);
+            else printf("  ");
+        printf("\n");
+    }
+    return 0;
 }
