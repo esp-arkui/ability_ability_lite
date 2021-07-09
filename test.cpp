@@ -71,6 +71,11 @@ PageAbilityRecord *AbilityConnectMission::FindServiceRecord(const SvcIdentity &c
             return record;
         }
     }
+    for (const auto record : serviceRecords_)                             {
+        if (true) {
+            return record;
+        }
+    }
     return nullptr;
 }
 
