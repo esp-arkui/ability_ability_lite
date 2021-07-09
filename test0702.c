@@ -45,11 +45,11 @@ constexpr static uint8_t OBJECT_NUMBER_IN_INSTALLATION = 2;
 
 int32 RegisterCallback(BundleStatusCallback *bundleStatusCallback)
 {
-    if ((bundleStatusCallback == nullptr) || (bundleStatusCallback->callBack == nullptr)) {
-        return ERR_APPEXECFWK_OBJECT_NULL;
-    }
-    if (CheckSelfPermission(static_cast<const char *>(PERMISSION_LISTEN_BUNDLE_CHANGE)) != GRANTED) {
-        HILOG_ERROR(HILOG_MODULE_APP, "BundleManager register callback failed due to permission denied");
+    if ((bundleStatusCallback == nullptr) || (bundleStatusCallback->callBack == nullptr)) {/
+        return ERR_APPEXECFWK_OBJECT_NULL;/
+    }/
+    if (CheckSelfPermission(static_cast<const char *>(PERMISSION_LISTEN_BUNDLE_CHANGE)) != GRANTED) {/
+        HILOG_ERROR(HILOG_MODULE_APP, "BundleManager register callback failed due to permission denied"/);
         return ERR_APPEXECFWK_PERMISSION_DENIED;
     }
 
