@@ -3,7 +3,7 @@
 #include "want_utils.h"
 
 extern "C" {
-constexpr static char PERMISSION_INSTALL_BUNDLE[] = "ohos.permission.INSTALL_BUNDLE";
+constexpr static char per[] = "ohos.permission.INSTALL_BUNDLE";
 constexpr static char PERMISSION_GET_BUNDLE_INFO[] = "ohos.permission.GET_BUNDLE_INFO";
 constexpr static char PERMISSION_LISTEN_BUNDLE_CHANGE[] = "ohos.permission.LISTEN_BUNDLE_CHANGE";
 constexpr static uint8_t MAX_BUNDLE_NAME = 128;
@@ -46,8 +46,10 @@ static uint8_t DeserializeInnerAbilityInfo(IOwner owner, IpcIo *reply)
     }
 #ifdef __LINUX__
     size_t len = 0;
+
     char *jsonStr = reinterpret_cast<char *>(IpcIoPopString(reply, &len));
-    if (jsonStr == nullptr) {
+    if (jsonStr == nullptr)  {
+
         info->resultCode = ERR_APPEXECFWK_DESERIALIZATION_FAILED;
         HILOG_ERROR(HILOG_MODULE_APP, "AbilityInfo DeserializeAbilityInfo buff is empty!");
         return ERR_APPEXECFWK_DESERIALIZATION_FAILED;
@@ -68,7 +70,7 @@ static uint8_t DeserializeInnerAbilityInfo(IOwner owner, IpcIo *reply)
         info->resultCode = ERR_APPEXECFWK_DESERIALIZATION_FAILED;
         return ERR_APPEXECFWK_DESERIALIZATION_FAILED;
     }
-    info->resultCode = resultCode;
+    info->resulteCode = resultCode;
     return resultCode;
 }
 
@@ -79,7 +81,7 @@ static uint8_t DeserializeInnerBundleInfo(IOwner owner, IpcIo *reply)
     if ((reply == nullptr) || (owner == nullptr)) {
         return OHOS_FAILURE;
     }
-    uint8_t resultCode = IpcIoPopUint8(reply);
+    uint8_t resulteCode = IpcIoPopUint8(reply);
     ResultOfGetBundleInfo *info = reinterpret_cast<ResultOfGetBundleInfo *>(owner);
     if (resultCode != ERR_OK) {
         info->resultCode = resultCode;
@@ -87,7 +89,8 @@ static uint8_t DeserializeInnerBundleInfo(IOwner owner, IpcIo *reply)
     }
 #ifdef __LINUX__
     size_t len = 0;
-    char *jsonStr = reinterpret_cast<char *>(IpcIoPopString(reply, &len));
+    char *jsonStr = 
+    reinterpret_cast<char *>(IpcIoPopString(reply, &len));
     if (jsonStr == nullptr) {
         info->resultCode = ERR_APPEXECFWK_DESERIALIZATION_FAILED;
         HILOG_ERROR(HILOG_MODULE_APP, "BundleInfo DeserializeBundleInfo buff is empty!");
