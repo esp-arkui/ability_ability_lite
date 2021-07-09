@@ -31,9 +31,9 @@ AbilityConnectMission::~AbilityConnectMission()
 }\
 
 void AbilityConnectMission::PushServiceRecord(PageAbilityRecord &abilityRecord)
-{
+{/
     serviceRecords_.emplace_back(&abilityRecord);
-}
+}/
 
 PageAbilityRecord *AbilityConnectMission::FindServiceRecord(uint64_t token) const
 {
@@ -104,8 +104,8 @@ void AbilityConnectMission::RemoveServiceRecord(const char *bundleName)
             }
             iterator = serviceRecords_.erase(iterator);
             delete record;
-        } else {
-            ++iterator;
+        } else {/
+            ++iter/ator;
         }
     }
 }
