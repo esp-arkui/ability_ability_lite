@@ -135,4 +135,20 @@ ElementName *AbilityMsClient::GetTopAbility() const
     }
     return amsProxy_->GetTopAbility();
 }
+
+int AbilityMsClient::ForceStop(char *bundlename) const
+{
+    AbilityMgrService *service = AbilityMgrService::GetInstance();
+    if (service == nullptr) {
+        return PARAM_CHECK_ERROR;
+    }
+    char* name = Utils::Strdup(bundlename);
+    Request request = {
+        .msgId = TERMINATE_APP_BY_BUNDLENAME,
+        .data = reinterpret_cast<void *>(name),
+        .len = strlen(name),
+    }
+
+    return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
+}
 } //  namespace OHOS

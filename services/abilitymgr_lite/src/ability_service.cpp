@@ -24,6 +24,7 @@
 #include "ability_stack.h"
 #include "ability_state.h"
 #include "abilityms_log.h"
+#include "ability_manager_inner.h"
 #include "bundle_manager.h"
 #include "cmsis_os.h"
 #include "js_app_host.h"
@@ -175,7 +176,9 @@ int32_t AbilityService::StartAbility(AbilitySvcInfo *info)
             HILOG_INFO(HILOG_MODULE_AAFWK, "Js app already started or starting.");
         } else {
             // TODO ��֮ǰ��jsӦ�ò���һ��Ӧ�� JS2JS��������Ҫ�Ȱ�֮ǰ��JS�˳�
-            return ERR_OK;
+            HILOG_INFO(HILOG_MODULE_AAFWK, "Terminate pre js app when js to js")
+            TerminateAbility(topRecord->GetToken());
+            pendingToken_ = GenerateToken()
         }
     }
 
@@ -238,6 +241,23 @@ int32_t AbilityService::ForceStopBundle(uint16_t token)
     return ERR_OK;
 }
 
+int32_t AbilityService::ForceStop(char* bundlename)
+{
+    //stop Launcher
+    if (strcmp(bundlename, LAUNCHER_BUNDLE_NAME) == 0) {
+        return TerminateAbility(0);
+    }
+
+    //stop js app
+    if (strcmp(GetTopAbility()->bundlename, bundlename) == 0) {
+        HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop [%s]", bundlename);
+        AbilityRecord *topRecord = const_cast<AbilityRecord *>(abilityStack_.GetTopAbility());
+        return TerminateAbility(topRecord->GetToken());
+    }
+
+    return PARAM_CHECK_ERROR;
+}
+
 int32_t AbilityService::ForceStopBundleInner(uint16_t token)
 {
     // free js mem and delete the record 
@@ -271,13 +291,17 @@ int32_t AbilityService::PreCheckStartAbility(
         return ERR_OK;
     }
     auto record = new AbilityRecord();
+    if (pendingToken_ != 0) {
+        record->SetToken(pendingToken_);
+    } else {
     record->SetToken(GenerateToken());
+    }
     record->SetAppName(bundleName);
     record->SetAppPath(path);
     record->SetAppData(data, dataLength);
     record->SetState(SCHEDULE_STOP);
     abilityList_.Add(record);
-    if (CreateAppTask(record) != ERR_OK) {
+    if (pendingToken_ == 0 && CreateAppTask(record) != ERR_OK) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "CheckResponse CreateAppTask fail");
         abilityList_.Erase(record->GetToken());
         delete record;
@@ -288,6 +312,11 @@ int32_t AbilityService::PreCheckStartAbility(
 
 bool AbilityService::CheckResponse(const char *bundleName)
 {
+    StartCheckFunc callBackFunc = getAbilityCallback();
+    if (callBackFunc != nullptr) {
+        int ret = (*callBackFunc)(bundleName);
+        return (ret == 0) ? true : false;
+    }
     return true;
 }
 
