@@ -17,9 +17,12 @@
 
 #include "abilityms_slite_client.h"
 
+StartCheckFunc CALLBACKFUNC;
+
 extern "C" {
 int RegAbilityCallback(StartCheckFunc startChecktCallback)
 {
+    CALLBACKFUNC = startChecktCallback;
     return 0;
 }
 
@@ -31,5 +34,15 @@ int SchedulerLifecycleDone(uint64_t token, int state)
 int ForceStopBundle(uint64_t token)
 {
     return OHOS::AbilityMsClient::GetInstance().ForceStopBundle(token);
+}
+
+int ForceStop(char *bundlename)
+{
+    return OHOS::AbilityMsClient::GetInstance().ForceStop(bundlename);
+}
+
+StartCheckFunc getAbilityCallback()
+{
+    return CALLBACKFUNC
 }
 }

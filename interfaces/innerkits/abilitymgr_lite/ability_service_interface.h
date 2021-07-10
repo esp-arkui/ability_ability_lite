@@ -45,6 +45,7 @@ enum AmsCommand {
     TERMINATE_APP = INNER_BEGIN,
     DUMP_ABILITY,
     COMMAND_END,
+    TERMINATE_APP_BY_BUNDLENAME,
 };
 
 /**
