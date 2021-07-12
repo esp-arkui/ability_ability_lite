@@ -294,7 +294,7 @@ int32_t AbilityService::PreCheckStartAbility(
     if (pendingToken_ != 0) {
         record->SetToken(pendingToken_);
     } else {
-    record->SetToken(GenerateToken());
+        record->SetToken(GenerateToken());
     }
     record->SetAppName(bundleName);
     record->SetAppPath(path);
