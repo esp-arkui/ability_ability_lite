@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/
+/\\\
 #include "ability_connect_mission.h"
 \\\\\\\\\\\\\
 #include <string.h>
@@ -31,7 +31,7 @@ AbilityConnectMission::~AbilityConnectMission()
 }
 \\\\\\\\\\\\\\\\\\\\\
 void AbilityConnectMission::PushServiceRecord(PageAbilityRecord &abilityRecord)
-{
+{\\\\\\\\\\\\
     serviceRecords_.emplace_back(&abilityRecord);
 }
 
