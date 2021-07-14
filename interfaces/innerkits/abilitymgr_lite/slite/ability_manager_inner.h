@@ -59,6 +59,21 @@ int ForceStopBundle(uint64_t token);
  * @return Returns the element name of the top ability.
  */
 ElementName *GetTopAbility();
+
+/**
+ * @brief Forcestop an ability based on the specified bundlename information.
+ *
+ * @param bundlename Indicates the bundlename of the ability.
+ * @return Returns <b>0</b> if this function is successfully called; returns another value otherwise.
+ */
+int ForceStop(char *bundlename);
+
+/**
+ * @brief get ability callback function 
+ *
+ * @return Returns the ability callback function 
+ */
+StartCheckFunc getAbilityCallback();
 #ifdef __cplusplus
 #if __cplusplus
 }

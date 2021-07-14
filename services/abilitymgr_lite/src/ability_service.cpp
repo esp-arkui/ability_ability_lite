@@ -24,6 +24,7 @@
 #include "ability_stack.h"
 #include "ability_state.h"
 #include "abilityms_log.h"
+#include "ability_manager_inner.h"
 #include "bundle_manager.h"
 #include "cmsis_os.h"
 #include "js_app_host.h"
@@ -174,8 +175,10 @@ int32_t AbilityService::StartAbility(AbilitySvcInfo *info)
             }
             HILOG_INFO(HILOG_MODULE_AAFWK, "Js app already started or starting.");
         } else {
-            // TODO ��֮ǰ��jsӦ�ò���һ��Ӧ�� JS2JS��������Ҫ�Ȱ�֮ǰ��JS�˳�
-            return ERR_OK;
+            // js to js
+            HILOG_INFO(HILOG_MODULE_AAFWK, "Terminate pre js app when js to js")
+            TerminateAbility(topRecord->GetToken());
+            pendingToken_ = GenerateToken()
         }
     }
 
@@ -192,9 +195,9 @@ int32_t AbilityService::TerminateAbility(uint16_t token)
         return PARAM_NULL_ERROR;
     }
     uint16_t topToken = topRecord->GetToken();
-    // TODO CHECK terminate ����,�Ƿ��иó�����
+    // TODO CHECK terminate token
     if (token == LAUNCHER_TOKEN) {
-        // �����ǰjs�ں�̨, �������˺�̨��js�ߵ�ǰ̨
+        // if js is in background, the launcher goes back to background and js goes to active
         if (topToken != token && topRecord->GetState() == SCHEDULE_BACKGROUND) {
             HILOG_INFO(HILOG_MODULE_AAFWK, "Resume Js app [%u]", topToken);
             return SchedulerLifecycle(LAUNCHER_TOKEN, STATE_BACKGROUND);
@@ -202,14 +205,13 @@ int32_t AbilityService::TerminateAbility(uint16_t token)
         return ERR_OK;
     }
 
-    // TODO CHECK�Ƿ��иó���
     if (token != topToken) {
         APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_STOP_UNKNOWN_ABILITY_TOKEN);
         DeleteRecordInfo(token);
         return -1;
     }
     topRecord->SetTerminated(true);
-    // TerminateAbility TOP��js
+    // TerminateAbility top js
     return SchedulerLifecycleInner(topRecord, STATE_BACKGROUND);
 }
 
@@ -236,6 +238,23 @@ int32_t AbilityService::ForceStopBundle(uint16_t token)
         return SchedulerLifecycle(LAUNCHER_TOKEN, STATE_ACTIVE);
     }
     return ERR_OK;
+}
+
+int32_t AbilityService::ForceStop(char* bundlename)
+{
+    //stop Launcher
+    if (strcmp(bundlename, LAUNCHER_BUNDLE_NAME) == 0) {
+        return TerminateAbility(0);
+    }
+
+    //stop js app
+    if (strcmp(GetTopAbility()->bundlename, bundlename) == 0) {
+        HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop [%s]", bundlename);
+        AbilityRecord *topRecord = const_cast<AbilityRecord *>(abilityStack_.GetTopAbility());
+        return TerminateAbility(topRecord->GetToken());
+    }
+
+    return PARAM_CHECK_ERROR;
 }
 
 int32_t AbilityService::ForceStopBundleInner(uint16_t token)
@@ -271,13 +290,17 @@ int32_t AbilityService::PreCheckStartAbility(
         return ERR_OK;
     }
     auto record = new AbilityRecord();
-    record->SetToken(GenerateToken());
+    if (pendingToken_ != 0) {
+        record->SetToken(pendingToken_);
+    } else {
+        record->SetToken(GenerateToken());
+    }
     record->SetAppName(bundleName);
     record->SetAppPath(path);
     record->SetAppData(data, dataLength);
     record->SetState(SCHEDULE_STOP);
     abilityList_.Add(record);
-    if (CreateAppTask(record) != ERR_OK) {
+    if (pendingToken_ == 0 && CreateAppTask(record) != ERR_OK) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "CheckResponse CreateAppTask fail");
         abilityList_.Erase(record->GetToken());
         delete record;
@@ -288,6 +311,14 @@ int32_t AbilityService::PreCheckStartAbility(
 
 bool AbilityService::CheckResponse(const char *bundleName)
 {
+    StartCheckFunc callBackFunc = getAbilityCallback();
+    if (callBackFunc != nullptr) {
+        int ret = (*callBackFunc)(bundleName);
+        if (ret != ERR_OK) {
+            HILOG_ERROR(HILOG_MODULE_AAFWK, "calling ability callback failed bundlename is: [%s]", bundleName);
+            return false;
+        }
+    }
     return true;
 }
 
@@ -411,7 +442,6 @@ void AbilityService::OnBackgroundDone(uint16_t token)
     if (token != LAUNCHER_TOKEN) {
         if (topRecord->GetToken() == token) {
             APP_EVENT(MT_ACE_APP_BACKGROUND);
-            topRecord->SetTerminated(true);
             (void) SchedulerLifecycle(LAUNCHER_TOKEN, STATE_ACTIVE);
         }
         return;
@@ -483,7 +513,7 @@ int32_t AbilityService::SchedulerLifecycleInner(const AbilityRecord *record, int
         return PARAM_NULL_ERROR;
     }
     // dispatch js life cycle
-    if (record->GetToken() != LAUNCHER_TOKEN) {  // jsӦ��
+    if (record->GetToken() != LAUNCHER_TOKEN) {
         (void) SendMsgToJsAbility(state, record);
         return ERR_OK;
     }
@@ -491,7 +521,7 @@ int32_t AbilityService::SchedulerLifecycleInner(const AbilityRecord *record, int
     if (g_NativeAbility == nullptr) {
         return PARAM_NULL_ERROR;
     }
-    // ����want�ڴ棬�ڷ���������ͷ�
+    // malloc want memory and release after use
     Want *info = static_cast<Want *>(AdapterMalloc(sizeof(Want)));
     if (info == nullptr) {
         return MEMORY_MALLOC_ERROR;
