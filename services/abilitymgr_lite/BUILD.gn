@@ -83,8 +83,6 @@ lite_library("abilityms") {
     "//base/startup/appspawn_lite/services/include",
     "//base/security/permission/interfaces/kits/permission_lite",
     "//base/security/permission/services/permission_lite/pms/include",
-    "//kernel/liteos_a/kernel/include",
-    "//kernel/liteos_a/kernel/common",
     "//third_party/bounds_checking_function/include",
     "//utils/native/lite/include",
     "include",

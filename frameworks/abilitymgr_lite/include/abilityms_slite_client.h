@@ -42,6 +42,8 @@ public:
 
     int ForceStopBundle(uint64_t token) const;
 
+    int ForceStop(char *bundlename) const;
+
     ElementName *GetTopAbility() const;
 
 private:
