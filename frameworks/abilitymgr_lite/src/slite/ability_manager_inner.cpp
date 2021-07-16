@@ -17,7 +17,7 @@
 
 #include "abilityms_slite_client.h"
 
-StartCheckFunc CALLBACKFUNC;
+StartCheckFunc CALLBACKFUNC = nullptr;
 
 extern "C" {
 int RegAbilityCallback(StartCheckFunc startChecktCallback)
@@ -43,6 +43,6 @@ int ForceStop(char *bundlename)
 
 StartCheckFunc getAbilityCallback()
 {
-    return CALLBACKFUNC
+    return CALLBACKFUNC;
 }
 }

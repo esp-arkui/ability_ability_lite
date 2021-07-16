@@ -69,8 +69,6 @@ executable("aa") {
     "//foundation/communication/ipc_lite/interfaces/kits",
     "//foundation/distributedschedule/samgr_lite/interfaces/kits/registry",
     "//foundation/distributedschedule/samgr_lite/interfaces/kits/samgr",
-    "//kernel/liteos_a/kernel/include",
-    "//kernel/liteos_a/kernel/common",
     "//third_party/bounds_checking_function/include",
     "//third_party/cJSON",
     "//utils/native/lite/include",
