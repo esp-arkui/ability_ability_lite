@@ -47,8 +47,6 @@ lite_library("hiability") {
         "//foundation/graphic/utils/interfaces/innerkits",
         "//foundation/graphic/ui/interfaces/kits",
         "//foundation/graphic/utils/interfaces/kits/gfx_utils",
-        "//kernel/liteos_a/kernel/common",
-        "//kernel/liteos_a/kernel/include",
     ]
 
     deps = [

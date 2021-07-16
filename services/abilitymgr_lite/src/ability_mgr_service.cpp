@@ -91,7 +91,7 @@ BOOL AbilityMgrService::ServiceMessageHandle(Service *service, Request *request)
     } else if (request->msgId == TERMINATE_APP) {
         ret = AbilityService::GetInstance().ForceStopBundle(request->msgValue);
     } else if (request->msgId == TERMINATE_APP_BY_BUNDLENAME) {
-        char* bundleName = reinterpret_cast<char *>(request->data)
+        char* bundleName = reinterpret_cast<char *>(request->data);
         ret = AbilityService::GetInstance().ForceStop(bundleName);
     }
     return ret == ERR_OK;

@@ -178,7 +178,7 @@ int32_t AbilityService::StartAbility(AbilitySvcInfo *info)
             // js to js
             HILOG_INFO(HILOG_MODULE_AAFWK, "Terminate pre js app when js to js")
             TerminateAbility(topRecord->GetToken());
-            pendingToken_ = GenerateToken()
+            pendingToken_ = GenerateToken();
         }
     }
 
@@ -248,7 +248,7 @@ int32_t AbilityService::ForceStop(char* bundlename)
     }
 
     //stop js app
-    if (strcmp(GetTopAbility()->bundlename, bundlename) == 0) {
+    if (strcmp(abilityStack_.GetTopAbility()->GetAppName(), bundlename) == 0) {
         HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop [%s]", bundlename);
         AbilityRecord *topRecord = const_cast<AbilityRecord *>(abilityStack_.GetTopAbility());
         return TerminateAbility(topRecord->GetToken());
