@@ -34,8 +34,6 @@ source_set("want") {
     "${appexecfwk_lite_path}/frameworks/bundle_lite/include",
     "${appexecfwk_lite_path}/utils/bundle_lite",
     "//foundation/communication/ipc_lite/interfaces/kits",
-    "//kernel/liteos_a/kernel/include",
-    "//kernel/liteos_a/kernel/common",
   ]
 
   defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
