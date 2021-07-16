@@ -39,8 +39,6 @@ unittest("ability_test_pageAbilityTest_lv0") {
       "${appexecfwk_lite_path}/kits/appkit_lite/appkit_utils/include",
       "//foundation/distributedschedule/samgr_lite/interfaces/innerkits/samgr",
       "//foundation/distributedschedule/samgr_lite/interfaces/innerkits/registry",
-      "//kernel/liteos_a/kernel/include",
-      "//kernel/liteos_a/kernel/common",
       "//third_party/cJSON",
       "//utils/native/lite/include",
     ]
