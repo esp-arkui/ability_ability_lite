@@ -280,6 +280,4 @@ int32_t Ability::MsgHandleInner(const IpcContext* context, void *ipcMsg, IpcIo *
     } else {
         FreeBuffer(nullptr, ipcMsg);
     }
-    return LITEIPC_OK;
-}
-} // namespace OHOS
+    return LITEIPC_OK;}} // namespace OHOS
