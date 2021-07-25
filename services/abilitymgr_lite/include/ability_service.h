@@ -37,6 +37,13 @@ struct AbilitySvcInfo {
 
 class AbilityService : public NoCopyable {
 public:
+    typedef void (AbilityService::*LifecycleFunc)(uint16_t token);
+    struct LifecycleFuncStr
+    {
+        int32_t state;
+        LifecycleFunc func_ptr;
+    };
+
     static AbilityService& GetInstance()
     {
         static AbilityService instance;
@@ -72,10 +79,13 @@ private:
     void SetAbilityState(uint64_t token, int32_t state);
     void UpdataRecord(AbilitySvcInfo *info);
     int32_t ForceStopBundleInner(uint16_t token);
+    bool IsValidAbility(AbilityInfo *abilityInfo);
 
     uint16_t pendingToken_ { 0 };
     AbilityList abilityList_ {};
     AbilityStack abilityStack_ {};
+    SliteAbility *nativeAbility_ = nullptr;
+    static LifecycleFuncStr lifecycleFuncList_[STATE_BACKGROUND + 1];
 };
 } // namespace OHOS
 #endif  // OHOS_ABILITY_SERVICE_H
