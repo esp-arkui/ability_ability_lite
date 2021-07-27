@@ -25,6 +25,7 @@
 #include "securec.h"
 #include "unistd.h"
 #include "want_utils.h"
+#include "utils.h"
 
 namespace OHOS {
 bool AbilityMsClient::Initialize() const
@@ -147,7 +148,7 @@ int AbilityMsClient::ForceStop(char *bundlename) const
         .msgId = TERMINATE_APP_BY_BUNDLENAME,
         .data = reinterpret_cast<void *>(name),
         .len = strlen(name),
-    }
+    };
 
     return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
 }
