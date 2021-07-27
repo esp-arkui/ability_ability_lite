@@ -147,7 +147,7 @@ int32 AbilityMgrFeature::StartAbility(const Want *want)
     int32 retVal;
     const char *deviceId = want->element->deviceId;
     if (deviceId != nullptr && *deviceId != '\0') {
-        retVal = StartRemoteAbilityInner(&want, deviceId, -1);
+        retVal = StartRemoteAbilityInner(want, deviceId, -1);
     } else {
         retVal = StartAbilityInner(want, -1);
     }
