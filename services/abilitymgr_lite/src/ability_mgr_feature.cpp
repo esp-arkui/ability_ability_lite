@@ -144,25 +144,17 @@ int32 AbilityMgrFeature::StartAbilityInvoke(const void *origin, IpcIo *req)
 
 int32 AbilityMgrFeature::StartAbility(const Want *want)
 {
-    int32 retVal;
-    const char *deviceId = want->element->deviceId;
-    if (deviceId != nullptr && *deviceId != '\0') {
-        retVal = StartRemoteAbilityInner(want, deviceId, -1);
-    } else {
-        retVal = StartAbilityInner(want, -1);
-    }
-    return retVal;
+    return StartAbilityInner(want, -1);
 }
 
 int32 AbilityMgrFeature::StartRemoteAbilityInner(const Want *want, const char *deviceId, pid_t uid)
 {
-    int32 retVal;
     IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(DISTRIBUTED_SCHEDULE_SERVICE, DMSLITE_FEATURE);
     DmsProxy *dmsInterface = NULL;
     if (iUnknown == NULL) {
         return EC_INVALID;
     }
-    retVal = iUnknown->QueryInterface(iUnknown, DEFAULT_VERSION, (void**) &dmsInterface);
+    int32 retVal = iUnknown->QueryInterface(iUnknown, DEFAULT_VERSION, (void**) &dmsInterface);
     if (retVal != EC_SUCCESS) {
         return EC_INVALID;
     }
