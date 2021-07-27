@@ -18,10 +18,13 @@
 
 #include "ability_mgr_handler.h"
 #include "ability_service_interface.h"
+#include "dmsfwk_interface.h"
 #include "feature.h"
 #include "iproxy_client.h"
 #include "iunknown.h"
 #include "nocopyable.h"
+#define DISTRIBUTED_SCHEDULE_SERVICE "dtbschedsrv"
+#define DMSLITE_FEATURE "dmslite"
 
 namespace OHOS {
 typedef int32 (*InvokeFunc)(const void *origin, IpcIo *req);
@@ -46,6 +49,7 @@ public:
 private:
     AbilityMgrFeature();
     static int32 StartAbilityInner(const Want *want, pid_t callingUid);
+    static int32 StartRemoteAbilityInner(const Want *want, const char *deviceId, pid_t uid);
     static int32 ConnectAbilityInner(const Want *want, SvcIdentity *svc, uint64_t token, pid_t callingUid);
     static int32 StopAbilityInner(const Want *want, pid_t callingUid);
     static int32 StartAbilityInvoke(const void *origin, IpcIo *req);
