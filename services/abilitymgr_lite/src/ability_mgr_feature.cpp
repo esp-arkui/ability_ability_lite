@@ -129,7 +129,7 @@ void AbilityMgrFeature::OnRequestCallback(const void *data, int32_t ret)
     IpcIoInit(&io, ipcData, IPC_IO_DATA_MAX, 0);
     IpcIoPushInt32(&io, static_cast<int32_t>(ret));
     int32_t transRet = Transact(NULL, *svc_, START_ABILITY_CALLBACK, &io, &reply, LITEIPC_FLAG_ONEWAY, NULL);
-    if (ret != LITEIPC_OK) {
+    if (transRet != LITEIPC_OK) {
         HILOG_ERROR(HILOG_MODULE_APP, "AbilityManagerFeature InnerSelfTransact fialed %{public}d\n", ret);
     }
     #ifdef __LINUX__

@@ -95,10 +95,6 @@ Tlv *EncapTlv(uint8_t type, uint8_t length, void *value, uint8_t valueLen)
     // Tlv header can only has 2 bytes.
     uint8_t totalLen = valueLen + 2;
     entity = calloc(1, totalLen);
-    if (entity == nullptr) {
-        AdapterFree(entity);
-        return nullptr;
-    }
 
     if (memcpy_s((unsigned char *)entity, 1, &type, 1) != 0 || 
         memcpy_s((unsigned char *)entity + 1, 1, &length, 1) != 0 || 
@@ -148,7 +144,7 @@ bool UpdateWantData(Want *want, Tlv *tlv)
         }
         if (memcpy_s(newWantData, want->dataLength, want->data, want->dataLength) != 0 ||
             memcpy_s((unsigned char*)newWantData + want->dataLength, tlv->totalLen, tlv->entity, tlv->totalLen) != 0) {
-            AdapterFree(want->data);
+            AdapterFree(newWantData);
             return result;
         }
         AdapterFree(want->data);
