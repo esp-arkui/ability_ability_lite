@@ -187,6 +187,7 @@ bool SetIntParam(Want *want, const char *key, int8_t keyLen, int32_t value)
     }
     if (UpdateWantData(want, newTlv)) {
         AdapterFree(newTlv);
+        result = true;
     }
     return result;
 }
@@ -216,6 +217,7 @@ bool SetStrParam(Want *want, const char *key, int8_t keyLen, const char *value, 
     }
     if (UpdateWantData(want, newTlv)) {
         AdapterFree(newTlv);
+        result = true;
     }
     return result;
 }
