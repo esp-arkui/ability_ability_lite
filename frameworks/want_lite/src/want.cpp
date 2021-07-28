@@ -51,6 +51,9 @@ constexpr static char URI_SEPARATOR = ';';
 constexpr static int VALUE_NULL = 0;
 constexpr static int VALUE_OBJECT = 1;
 constexpr static int DATA_LENGTH = 2048;
+constexpr uint8_t INT_VALUE_TYPE = 6;
+constexpr uint8_t STRING_VALUE_TYPE = 13;
+constexpr uint8_t KEY_VALUE_PAIR_TYPE = 97;
 #endif
 
 void ClearWant(Want *want)
@@ -83,6 +86,142 @@ bool SetWantElement(Want *want, ElementName element)
     want->element->bundleName = OHOS::Utils::Strdup(element.bundleName);
     want->element->abilityName = OHOS::Utils::Strdup(element.abilityName);
     return true;
+}
+
+Tlv *EncapTlv(uint8_t type, uint8_t length, void *value, uint8_t valueLen)
+{
+    void *entity = nullptr;
+
+    // Tlv header can only has 2 bytes.
+    uint8_t totalLen = valueLen + 2;
+    entity = calloc(1, totalLen);
+    if (entity == nullptr) {
+        AdapterFree(entity);
+        return nullptr;
+    }
+
+    if (memcpy_s((unsigned char *)entity, 1, &type, 1) != 0 || 
+        memcpy_s((unsigned char *)entity + 1, 1, &length, 1) != 0 || 
+        memcpy_s((unsigned char *)entity + 2, valueLen, value, valueLen) != 0) {
+        AdapterFree(entity);
+        return nullptr;
+    }
+
+    Tlv *newTlv = new Tlv();
+    newTlv->type = type;
+    newTlv->entity = entity;
+    newTlv->totalLen = totalLen;
+    return newTlv;
+}
+
+void FreeTlvStruct(Tlv *tlv)
+{
+    AdapterFree(tlv->entity);
+    AdapterFree(tlv);
+}
+
+Tlv *CombineKeyValueTlv(Tlv *keyTlv, Tlv *valueTlv)
+{
+    uint8_t newTlvValueLen = keyTlv->totalLen + valueTlv->totalLen;
+    void *newTlvValue = calloc(1, newTlvValueLen);
+    if (newTlvValue == nullptr) {
+        return nullptr;
+    }
+    if (memcpy_s((unsigned char *)newTlvValue, keyTlv->totalLen, keyTlv->entity, keyTlv->totalLen) != 0 ||
+        memcpy_s((unsigned char *)newTlvValue + keyTlv->totalLen, valueTlv->totalLen, valueTlv->entity, valueTlv->totalLen) != 0) {
+        AdapterFree(newTlvValue);
+        return nullptr;
+    }
+
+    Tlv *newTlv = EncapTlv(KEY_VALUE_PAIR_TYPE, newTlvValueLen, newTlvValue, newTlvValueLen);
+    AdapterFree(newTlvValue);
+    return newTlv;
+}
+
+bool UpdateWantData(Want *want, Tlv *tlv)
+{
+    bool result = false;
+    if (want->data != nullptr) {
+        void *newWantData = calloc(1, tlv->totalLen + want->dataLength);
+        if (newWantData == nullptr) {
+            return result;
+        }
+        if (memcpy_s(newWantData, want->dataLength, want->data, want->dataLength) != 0 ||
+            memcpy_s((unsigned char*)newWantData + want->dataLength, tlv->totalLen, tlv->entity, tlv->totalLen) != 0) {
+            AdapterFree(want->data);
+            return result;
+        }
+        AdapterFree(want->data);
+        want->data = newWantData;
+        want->dataLength = tlv->totalLen + want->dataLength;
+        result = true;
+    } else {
+        want->data = tlv->entity;
+        want->dataLength = tlv->totalLen;
+        result = true;
+    }
+    return result;
+}
+
+bool SetIntParam(Want *want, const char *key, int8_t keyLen, int32_t value)
+{
+    bool result = false;
+    if (keyLen <= 0) {
+        return result;
+    }
+
+    Tlv *keyTlv = EncapTlv(STRING_VALUE_TYPE, keyLen, (void *)key, keyLen);
+    if (keyTlv == nullptr) {
+        return result;
+    }
+    unsigned char intBuffer[4] = {0};
+    for (int i = 0; i < 4; i++) {
+        intBuffer[i] = value >> (8 * (3- i));
+    }
+    Tlv *valueTlv = EncapTlv(INT_VALUE_TYPE, sizeof(int), (void *)intBuffer, sizeof(int));
+    if (valueTlv == nullptr) {
+        FreeTlvStruct(keyTlv);
+        return result;
+    }
+    Tlv *newTlv = CombineKeyValueTlv(keyTlv, valueTlv);
+    FreeTlvStruct(keyTlv);
+    FreeTlvStruct(valueTlv);
+    if (newTlv == nullptr) {
+        return result;
+    }
+    if (UpdateWantData(want, newTlv)) {
+        AdapterFree(newTlv);
+    }
+    return result;
+}
+
+bool SetStrParam(Want *want, const char *key, int8_t keyLen, const char *value, int8_t valueLen)
+{
+    bool result = false;
+    if (keyLen <= 0 || valueLen <= 0) {
+        return result;
+    }
+
+    Tlv *keyTlv = EncapTlv(STRING_VALUE_TYPE, keyLen, (void *)key, keyLen);
+    if (keyTlv == nullptr) {
+        return result;
+    }
+
+    Tlv *valueTlv = EncapTlv(STRING_VALUE_TYPE, valueLen, (void *)value, valueLen);
+    if (valueTlv == nullptr) {
+        FreeTlvStruct(keyTlv);
+        return result;
+    }
+    Tlv *newTlv = CombineKeyValueTlv(keyTlv, valueTlv);
+    FreeTlvStruct(keyTlv);
+    FreeTlvStruct(valueTlv);
+    if (newTlv == nullptr) {
+        return result;
+    }
+    if (UpdateWantData(want, newTlv)) {
+        AdapterFree(newTlv);
+    }
+    return result;
 }
 
 #ifdef OHOS_APPEXECFWK_BMS_BUNDLEMANAGER
