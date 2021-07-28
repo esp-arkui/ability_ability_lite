@@ -109,6 +109,7 @@ void AbilityMgrFeature::OnFeatureStop(Feature *feature, Identity identity)
 {
     (void) feature;
     (void) identity;
+    AdapterFree(myCallback_);
 }
 
 BOOL AbilityMgrFeature::OnFeatureMessage(Feature *feature, Request *request)
@@ -177,9 +178,11 @@ int32 AbilityMgrFeature::StartAbility(const Want *want)
 
 int32 AbilityMgrFeature::StartRemoteAbilityInner(const Want *want, const char *deviceId, pid_t uid, OnRequestCallbackFunc callback)
 {
-    IDmsListener *myCallback = new IDmsListener();
+    if (myCallback_ == nullptr) {
+        myCallback_ = new IDmsListener();
+    }
     if (callback != nullptr) {
-        myCallback->OnResultCallback = callback;
+        myCallback_->OnResultCallback = callback;
     }
     IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(DISTRIBUTED_SCHEDULE_SERVICE, DMSLITE_FEATURE);
     DmsProxy *dmsInterface = NULL;
@@ -193,7 +196,7 @@ int32 AbilityMgrFeature::StartRemoteAbilityInner(const Want *want, const char *d
     CallerInfo callerInfo = {
         .uid = uid
     };
-    retVal = dmsInterface->StartRemoteAbility((Want *)want, &callerInfo, myCallback);
+    retVal = dmsInterface->StartRemoteAbility((Want *)want, &callerInfo, myCallback_);
     return retVal;
 }
 

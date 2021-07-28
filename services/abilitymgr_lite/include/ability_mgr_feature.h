@@ -74,6 +74,7 @@ private:
 private:
     Identity identity_;
     static SvcIdentity *svc_;
+    static IDmsListener *myCallback_;
     static InvokeFunc invokeFuncList[INNER_BEGIN];
     DISALLOW_COPY_AND_MOVE(AbilityMgrFeature);
 };
