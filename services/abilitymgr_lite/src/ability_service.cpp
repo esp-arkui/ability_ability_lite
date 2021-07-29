@@ -42,7 +42,14 @@ constexpr int32_t QUEUE_LENGTH = 32;
 constexpr int32_t SIZE_COEFFICIENT = 12;
 constexpr int32_t TASK_STACK_SIZE = 0x400 * SIZE_COEFFICIENT;
 constexpr int32_t APP_TASK_PRI = 25;
-SliteAbility *g_NativeAbility = nullptr;
+
+AbilityService::LifecycleFuncStr AbilityService::lifecycleFuncList_[] = {
+    {STATE_UNINITIALIZED, &AbilityService::OnDestroyDone},
+    {STATE_INITIAL, nullptr},
+    {STATE_INACTIVE, nullptr},
+    {STATE_ACTIVE, &AbilityService::OnActiveDone},
+    {STATE_BACKGROUND, &AbilityService::OnBackgroundDone},
+};
 
 AbilityService::AbilityService()
 {
@@ -68,6 +75,20 @@ void AbilityService::CleanWant()
 {
     ClearWant(want_);
     AdapterFree(want_);
+}
+
+bool AbilityService::IsValidAbility(AbilityInfo *abilityInfo)
+{
+    if (abilityInfo == nullptr) {
+        return false;
+    }
+    if (abilityInfo->bundleName == nullptr || abilityInfo->srcPath == nullptr) {
+        return false;
+    }
+    if (strlen(abilityInfo->bundleName) == 0 || strlen(abilityInfo->srcPath) == 0) {
+        return false;
+    }
+    return true;
 }
 
 int32_t AbilityService::StartAbility(const Want *want)
@@ -97,8 +118,7 @@ int32_t AbilityService::StartAbility(const Want *want)
         // JS APP
         AbilityInfo abilityInfo = { nullptr, nullptr };
         QueryAbilityInfo(want, &abilityInfo);
-        if ((abilityInfo.bundleName == nullptr) || (strlen(abilityInfo.bundleName) == 0) ||
-            (abilityInfo.srcPath == nullptr) || (strlen(abilityInfo.srcPath) == 0)) {
+        if (!IsValidAbility(&abilityInfo)) {
             APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_START_UNKNOWN_BUNDLE_INFO);
             ClearAbilityInfo(&abilityInfo);
             AdapterFree(info);
@@ -249,8 +269,8 @@ int32_t AbilityService::ForceStop(char* bundlename)
 
     //stop js app
     if (strcmp(abilityStack_.GetTopAbility()->GetAppName(), bundlename) == 0) {
-        HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop [%s]", bundlename);
         AbilityRecord *topRecord = const_cast<AbilityRecord *>(abilityStack_.GetTopAbility());
+        HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop [%u]", topRecord->GetToken());
         return TerminateAbility(topRecord->GetToken());
     }
 
@@ -312,12 +332,14 @@ int32_t AbilityService::PreCheckStartAbility(
 bool AbilityService::CheckResponse(const char *bundleName)
 {
     StartCheckFunc callBackFunc = getAbilityCallback();
-    if (callBackFunc != nullptr) {
-        int ret = (*callBackFunc)(bundleName);
-        if (ret != ERR_OK) {
-            HILOG_ERROR(HILOG_MODULE_AAFWK, "calling ability callback failed bundlename is: [%s]", bundleName);
-            return false;
-        }
+    if (callBackFunc == nullptr) {
+        HILOG_ERROR(HILOG_MODULE_AAFWK, "calling ability callback failed: null");
+        return true;
+    }
+    int32_t ret = (*callBackFunc)(bundleName);
+    if (ret != ERR_OK) {
+        HILOG_ERROR(HILOG_MODULE_AAFWK, "calling ability callback failed: check");
+        return false;
     }
     return true;
 }
@@ -325,6 +347,7 @@ bool AbilityService::CheckResponse(const char *bundleName)
 int32_t AbilityService::CreateAppTask(AbilityRecord *record)
 {
     if ((record == nullptr) || (record->GetAppName() == nullptr)) {
+        HILOG_ERROR(HILOG_MODULE_AAFWK, "CreateAppTask fail: null");
         return PARAM_NULL_ERROR;
     }
 
@@ -339,8 +362,9 @@ int32_t AbilityService::CreateAppTask(AbilityRecord *record)
     auto jsAppHost = new JsAppHost();
     stTskInitParam.uwArg = reinterpret_cast<UINT32>((uintptr_t)jsAppHost);
     UINT32 appTaskId = 0;
-    UINT32 res = LOS_TaskCreate(&appTaskId, &stTskInitParam);
-    if (res != LOS_OK) {
+    UINT32 ret = LOS_TaskCreate(&appTaskId, &stTskInitParam);
+    if (ret != LOS_OK) {
+        HILOG_ERROR(HILOG_MODULE_AAFWK, "CreateAppTask fail: ret = %d", ret);
         APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_START_CREATE_TSAK_FAILED);
         delete jsAppHost;
         LOS_TaskUnlock();
@@ -518,7 +542,7 @@ int32_t AbilityService::SchedulerLifecycleInner(const AbilityRecord *record, int
         return ERR_OK;
     }
     // dispatch native life cycle
-    if (g_NativeAbility == nullptr) {
+    if (nativeAbility_ == nullptr) {
         return PARAM_NULL_ERROR;
     }
     // malloc want memory and release after use
@@ -535,7 +559,7 @@ int32_t AbilityService::SchedulerLifecycleInner(const AbilityRecord *record, int
     SetWantElement(info, elementName);
     ClearElement(&elementName);
     SetWantData(info, record->GetAppData(), record->GetDataLength());
-    SchedulerAbilityLifecycle(g_NativeAbility, *info, state);
+    SchedulerAbilityLifecycle(nativeAbility_, *info, state);
     ClearWant(info);
     return ERR_OK;
 }
@@ -563,21 +587,9 @@ void AbilityService::SchedulerAbilityLifecycle(SliteAbility *ability, const Want
 
 int32_t AbilityService::SchedulerLifecycleDone(uint64_t token, int32_t state)
 {
-    switch (state) {
-        case STATE_ACTIVE: {
-            OnActiveDone(token);
-            break;
-        }
-        case STATE_BACKGROUND: {
-            OnBackgroundDone(token);
-            break;
-        }
-        case STATE_UNINITIALIZED: {
-            OnDestroyDone(token);
-            break;
-        }
-        default: {
-            break;
+    for (auto temp : lifecycleFuncList_) {
+        if (state == temp.state && temp.func_ptr != nullptr) {
+            (this->*temp.func_ptr)(token);
         }
     }
     return ERR_OK;
@@ -635,7 +647,7 @@ ElementName *AbilityService::GetTopAbility()
 
 void AbilityService::setNativeAbility(const SliteAbility *ability)
 {
-    g_NativeAbility = const_cast<SliteAbility *>(ability);
+    nativeAbility_ = const_cast<SliteAbility *>(ability);
 }
 } // namespace OHOS
 
