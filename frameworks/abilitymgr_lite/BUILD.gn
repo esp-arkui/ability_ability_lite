@@ -19,7 +19,9 @@ lite_library("abilitymanager") {
   cflags_cc = cflags
 
   sources = [
+    "src/ability_callback_utils.cpp",
     "src/ability_manager.cpp",
+    "src/ability_self_callback.cpp",
     "src/ability_service_manager.cpp",
     "src/abilityms_client.cpp",
   ]
