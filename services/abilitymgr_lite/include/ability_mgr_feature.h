@@ -28,6 +28,7 @@
 
 namespace OHOS {
 typedef int32 (*InvokeFunc)(const void *origin, IpcIo *req);
+typedef void (*OnRequestCallbackFunc)(const void *data, int32_t ret);
 
 class AbilityMgrFeature : public Feature {
 public:
@@ -49,7 +50,7 @@ public:
 private:
     AbilityMgrFeature();
     static int32 StartAbilityInner(const Want *want, pid_t callingUid);
-    static int32 StartRemoteAbilityInner(const Want *want, const char *deviceId, pid_t uid);
+    static int32 StartRemoteAbilityInner(const Want *want, const char *deviceId, pid_t uid, OnRequestCallbackFunc callback);
     static int32 ConnectAbilityInner(const Want *want, SvcIdentity *svc, uint64_t token, pid_t callingUid);
     static int32 StopAbilityInner(const Want *want, pid_t callingUid);
     static int32 StartAbilityInvoke(const void *origin, IpcIo *req);
@@ -68,9 +69,12 @@ private:
     static void OnFeatureInitialize(Feature *feature, Service *parent, Identity identity);
     static void OnFeatureStop(Feature *feature, Identity identity);
     static BOOL OnFeatureMessage(Feature *feature, Request *request);
+    static void OnRequestCallback(const void *data, int32_t ret);
 
 private:
     Identity identity_;
+    static SvcIdentity *svc_;
+    static IDmsListener *myCallback_;
     static InvokeFunc invokeFuncList[INNER_BEGIN];
     DISALLOW_COPY_AND_MOVE(AbilityMgrFeature);
 };
