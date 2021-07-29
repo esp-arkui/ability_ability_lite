@@ -32,6 +32,9 @@
 #include "want_utils.h"
 
 namespace OHOS {
+SvcIdentity * AbilityMgrFeature::svc_ = nullptr;
+IDmsListener* AbilityMgrFeature::myCallback_ = nullptr;
+
 AbilityMgrFeatureImpl g_amsImpl = {
     SERVER_IPROXY_IMPL_BEGIN,
     .Invoke = AbilityMgrFeature::Invoke,
@@ -110,6 +113,7 @@ void AbilityMgrFeature::OnFeatureStop(Feature *feature, Identity identity)
     (void) feature;
     (void) identity;
     AdapterFree(myCallback_);
+    AdapterFree(svc_);
 }
 
 BOOL AbilityMgrFeature::OnFeatureMessage(Feature *feature, Request *request)
