@@ -176,7 +176,7 @@ int32_t AbilityService::StartAbility(AbilitySvcInfo *info)
             HILOG_INFO(HILOG_MODULE_AAFWK, "Js app already started or starting.");
         } else {
             // js to js
-            HILOG_INFO(HILOG_MODULE_AAFWK, "Terminate pre js app when js to js")
+            HILOG_INFO(HILOG_MODULE_AAFWK, "Terminate pre js app when js to js");
             TerminateAbility(topRecord->GetToken());
             pendingToken_ = GenerateToken();
         }
@@ -249,8 +249,8 @@ int32_t AbilityService::ForceStop(char* bundlename)
 
     //stop js app
     if (strcmp(abilityStack_.GetTopAbility()->GetAppName(), bundlename) == 0) {
-        HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop [%s]", bundlename);
         AbilityRecord *topRecord = const_cast<AbilityRecord *>(abilityStack_.GetTopAbility());
+        HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop [%u]", topRecord->GetToken());
         return TerminateAbility(topRecord->GetToken());
     }
 
@@ -315,7 +315,7 @@ bool AbilityService::CheckResponse(const char *bundleName)
     if (callBackFunc != nullptr) {
         int ret = (*callBackFunc)(bundleName);
         if (ret != ERR_OK) {
-            HILOG_ERROR(HILOG_MODULE_AAFWK, "calling ability callback failed bundlename is: [%s]", bundleName);
+            HILOG_ERROR(HILOG_MODULE_AAFWK, "calling ability callback failed");
             return false;
         }
     }
