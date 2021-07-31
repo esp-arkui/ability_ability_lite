@@ -32,7 +32,7 @@
 #include "want_utils.h"
 
 namespace OHOS {
-SvcIdentity * AbilityMgrFeature::svc_ = nullptr;
+SvcIdentity AbilityMgrFeature::svc_ = {0};
 IDmsListener* AbilityMgrFeature::myCallback_ = nullptr;
 
 AbilityMgrFeatureImpl g_amsImpl = {
@@ -113,7 +113,6 @@ void AbilityMgrFeature::OnFeatureStop(Feature *feature, Identity identity)
     (void) feature;
     (void) identity;
     AdapterFree(myCallback_);
-    AdapterFree(svc_);
 }
 
 BOOL AbilityMgrFeature::OnFeatureMessage(Feature *feature, Request *request)
@@ -133,12 +132,12 @@ void AbilityMgrFeature::OnRequestCallback(const void *data, int32_t ret)
     IpcIo reply;
     IpcIoInit(&io, ipcData, IPC_IO_DATA_MAX, 0);
     IpcIoPushInt32(&io, static_cast<int32_t>(ret));
-    int32_t transRet = Transact(NULL, *svc_, START_ABILITY_CALLBACK, &io, &reply, LITEIPC_FLAG_ONEWAY, NULL);
+    int32_t transRet = Transact(NULL, svc_, START_ABILITY_CALLBACK, &io, &reply, LITEIPC_FLAG_ONEWAY, NULL);
     if (transRet != LITEIPC_OK) {
         HILOG_ERROR(HILOG_MODULE_APP, "AbilityManagerFeature InnerSelfTransact fialed %{public}d\n", ret);
     }
     #ifdef __LINUX__
-        BinderRelease(svc_->ipcContext, svc_->handle);
+        BinderRelease(svc_.ipcContext, svc_.handle);
     #endif
 }
 
@@ -154,11 +153,12 @@ int32 AbilityMgrFeature::StartAbilityInvoke(const void *origin, IpcIo *req)
         return EC_FAILURE;
     }
     SvcIdentity *svc = IpcIoPopSvc(req);
-    if (svc_ != nullptr) {
-        AdapterFree(svc_);
-    }
     if (svc != nullptr) {
-        svc_ = svc;
+        svc_ = *svc;
+    } else {
+        PRINTE("AbilityMgrFeature", "invalid svc");
+        svc_ = {0};
+        return EC_INVALID;
     }
     if (want.element == nullptr) {
         PRINTE("AbilityMgrFeature", "invalid argument");
