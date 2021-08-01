@@ -26,6 +26,7 @@
 #include "nocopyable.h"
 #include "want.h"
 #include "slite_ability.h"
+#include "ability_state.h"
 
 namespace OHOS {
 struct AbilitySvcInfo {
@@ -45,6 +46,7 @@ public:
     ~AbilityService() override;
     int32_t StartAbility(const Want *want);
     int32_t TerminateAbility(uint16_t token);
+    int32_t ForceStop(char *bundlename);
     int32_t ForceStopBundle(uint16_t token);
     int32_t SchedulerLifecycleDone(uint64_t token, int32_t state);
     ElementName *GetTopAbility();
