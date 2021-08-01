@@ -196,7 +196,7 @@ int32_t AbilityService::StartAbility(AbilitySvcInfo *info)
             HILOG_INFO(HILOG_MODULE_AAFWK, "Js app already started or starting.");
         } else {
             // js to js
-            HILOG_INFO(HILOG_MODULE_AAFWK, "Terminate pre js app when js to js")
+            HILOG_INFO(HILOG_MODULE_AAFWK, "Terminate pre js app when js to js");
             TerminateAbility(topRecord->GetToken());
             pendingToken_ = GenerateToken();
         }
