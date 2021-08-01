@@ -26,6 +26,7 @@
 #include "nocopyable.h"
 #include "want.h"
 #include "slite_ability.h"
+#include "ability_state.h"
 
 namespace OHOS {
 struct AbilitySvcInfo {
