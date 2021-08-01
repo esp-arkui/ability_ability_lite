@@ -20,6 +20,7 @@
 #include "ability_service_interface.h"
 #include "ability_service_manager.h"
 #include "abilityms_client.h"
+#include "ability_self_callback.h"
 
 extern "C" {
 const int DEFAULT_TOKEN = 1;
@@ -32,6 +33,17 @@ int StartAbility(const Want *want)
 
     OHOS::AbilityMsClient::GetInstance().Initialize();
     return OHOS::AbilityMsClient::GetInstance().ScheduleAms(want, 0, nullptr, START_ABILITY);
+}
+
+int StartAbilityWithCallback(const Want *want, AbilityClientCallback abilityClientCallback)
+{
+    if (want == nullptr || abilityClientCallback == nullptr) {
+        HILOG_ERROR(HILOG_MODULE_APP, "want or callback is null, StartAbilityWithCallback failed!");
+        return -1;
+    }
+    const SvcIdentity *svc = OHOS::AbilitySelfCallback::GetInstance().RegisterAbilitySelfCallback(abilityClientCallback);
+    OHOS::AbilityMsClient::GetInstance().Initialize();
+    return OHOS::AbilityMsClient::GetInstance().ScheduleAms(want, 0, svc, START_ABILITY);
 }
 
 int StopAbility(const Want *want)
