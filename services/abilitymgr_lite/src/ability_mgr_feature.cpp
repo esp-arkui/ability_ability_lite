@@ -181,12 +181,6 @@ int32 AbilityMgrFeature::StartAbility(const Want *want)
 
 int32 AbilityMgrFeature::StartRemoteAbilityInner(const Want *want, const char *deviceId, pid_t uid, OnRequestCallbackFunc callback)
 {
-    // if (myCallback_ == nullptr) {
-    //     myCallback_ = new IDmsListener();
-    // }
-    // if (callback != nullptr) {
-    //     myCallback_->OnResultCallback = callback;
-    // }
     IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(DISTRIBUTED_SCHEDULE_SERVICE, DMSLITE_FEATURE);
     DmsProxy *dmsInterface = NULL;
     if (iUnknown == NULL) {
