@@ -152,23 +152,22 @@ int32 AbilityMgrFeature::StartAbilityInvoke(const void *origin, IpcIo *req)
     if (!DeserializeWant(&want, req)) {
         return EC_FAILURE;
     }
-    SvcIdentity *svc = IpcIoPopSvc(req);
-    if (svc != nullptr) {
-        svc_ = *svc;
-    } else {
-        PRINTE("AbilityMgrFeature", "invalid svc");
-        svc_ = {0};
-        return EC_INVALID;
-    }
     if (want.element == nullptr) {
         PRINTE("AbilityMgrFeature", "invalid argument");
         return EC_INVALID;
     }
     const char *deviceId = want.element->deviceId;
+    SvcIdentity *svc = IpcIoPopSvc(req);
+    if (svc != nullptr) {
+        svc_ = *svc;
+    } else {
+        svc_ = {0};
+    }
     int32 retVal;
     if (deviceId != nullptr && *deviceId != '\0') {
         retVal = StartRemoteAbilityInner(&want, deviceId, uid, OnRequestCallback);
     } else {
+        svc_ = {0};
         retVal = StartAbilityInner(&want, uid);
     }
     ClearWant(&want);
@@ -182,12 +181,6 @@ int32 AbilityMgrFeature::StartAbility(const Want *want)
 
 int32 AbilityMgrFeature::StartRemoteAbilityInner(const Want *want, const char *deviceId, pid_t uid, OnRequestCallbackFunc callback)
 {
-    if (myCallback_ == nullptr) {
-        myCallback_ = new IDmsListener();
-    }
-    if (callback != nullptr) {
-        myCallback_->OnResultCallback = callback;
-    }
     IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(DISTRIBUTED_SCHEDULE_SERVICE, DMSLITE_FEATURE);
     DmsProxy *dmsInterface = NULL;
     if (iUnknown == NULL) {
@@ -200,7 +193,7 @@ int32 AbilityMgrFeature::StartRemoteAbilityInner(const Want *want, const char *d
     CallerInfo callerInfo = {
         .uid = uid
     };
-    retVal = dmsInterface->StartRemoteAbility((Want *)want, &callerInfo, myCallback_);
+    retVal = dmsInterface->StartRemoteAbility((Want *)want, &callerInfo, nullptr);
     return retVal;
 }
 
