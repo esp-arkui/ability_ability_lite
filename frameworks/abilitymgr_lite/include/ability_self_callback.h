@@ -32,13 +32,13 @@ public:
         return instance;
     }
     ~AbilitySelfCallback();
-    const SvcIdentity *RegisterAbilitySelfCallback(AbilityClientCallback &abilityClientCallback);
-    const AbilityClientCallback GetCallback();
+    const SvcIdentity *RegisterAbilitySelfCallback(IAbilityStartCallback &iAbilityStartCallback);
+    const IAbilityStartCallback GetCallback();
 private:
     AbilitySelfCallback() = default;
     static int32_t Callback(const IpcContext *context, void *ipcMsg, IpcIo *io, void *arg);
     int32_t GenerateLocalServiceId();
-    AbilityClientCallback abilityClientCallback_ { nullptr };
+    IAbilityStartCallback iAbilityStartCallback_ { nullptr };
     SvcIdentity *svcIdentity_ { nullptr };
 
     DISALLOW_COPY_AND_MOVE(AbilitySelfCallback);

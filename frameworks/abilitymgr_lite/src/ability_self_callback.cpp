@@ -31,15 +31,15 @@ AbilitySelfCallback::~AbilitySelfCallback()
     }
 }
 
-int32_t InnerCallback(const char *resultMessage, uint8_t resultCode, const AbilityClientCallback &abilityClientCallback)
+int32_t InnerCallback(const char *resultMessage, uint8_t resultCode, const IAbilityStartCallback &iAbilityStartCallback)
 {
-    if (resultMessage == nullptr || abilityClientCallback == nullptr) {
+    if (resultMessage == nullptr || iAbilityStartCallback == nullptr) {
         return PARAM_NULL_ERROR;
     }
     if (resultCode == ERR_OK) {
-        abilityClientCallback(resultCode, resultMessage);
+        iAbilityStartCallback(resultCode, resultMessage);
     } else {
-        abilityClientCallback(resultCode, ObtainErrorMessage(resultCode).c_str());
+        iAbilityStartCallback(resultCode, ObtainErrorMessage(resultCode).c_str());
     }
     return ERR_OK;
 }
@@ -56,8 +56,8 @@ int32_t AbilitySelfCallback::Callback(const IpcContext *context, void *ipcMsg, I
         FreeBuffer(NULL, ipcMsg);
         return PARAM_NULL_ERROR;
     }
-    AbilityClientCallback abilityClientCallback = GetInstance().GetCallback();
-    if (abilityClientCallback == nullptr) {
+    IAbilityStartCallback iAbilityStartCallback = GetInstance().GetCallback();
+    if (iAbilityStartCallback == nullptr) {
         FreeBuffer(NULL, ipcMsg);
         return PARAM_NULL_ERROR;
     }
@@ -71,7 +71,7 @@ int32_t AbilitySelfCallback::Callback(const IpcContext *context, void *ipcMsg, I
     auto resultCode = static_cast<uint8_t>(IpcIoPopInt32(io));
     FreeBuffer(NULL, ipcMsg);
     if (callbackType == START_ABILITY_CALLBACK) {
-        return InnerCallback(START_ABILITY_SUCCESS, resultCode, abilityClientCallback);
+        return InnerCallback(START_ABILITY_SUCCESS, resultCode, iAbilityStartCallback);
     }
     HILOG_ERROR(HILOG_MODULE_APP, "AbilitySelfCallback get error callback type");
     return GET_CALLBACK_TYPE_ERROR;
@@ -93,9 +93,9 @@ int32 AbilitySelfCallback::GenerateLocalServiceId()
     return ERR_OK;
 }
 
-const SvcIdentity *AbilitySelfCallback::RegisterAbilitySelfCallback(AbilityClientCallback &abilityClientCallback)
+const SvcIdentity *AbilitySelfCallback::RegisterAbilitySelfCallback(IAbilityStartCallback &iAbilityStartCallback)
 {
-    if (abilityClientCallback == nullptr) {
+    if (iAbilityStartCallback == nullptr) {
         return nullptr;
     }
     if (svcIdentity_ == nullptr) {
@@ -104,12 +104,12 @@ const SvcIdentity *AbilitySelfCallback::RegisterAbilitySelfCallback(AbilityClien
             return nullptr;
         }
     }
-    abilityClientCallback_ = abilityClientCallback;
+    iAbilityStartCallback_ = iAbilityStartCallback;
     return svcIdentity_;
 }
 
-const AbilityClientCallback AbilitySelfCallback::GetCallback()
+const IAbilityStartCallback AbilitySelfCallback::GetCallback()
 {
-    return abilityClientCallback_;
+    return iAbilityStartCallback_;
 }
 } // namespace
