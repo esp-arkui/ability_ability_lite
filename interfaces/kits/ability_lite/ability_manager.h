@@ -71,6 +71,16 @@ typedef void (*AbilityClientCallback)(const uint8_t resultCode, const void *resu
 int StartAbility(const Want *want);
 
 /**
+ * @brief Starts an ability based on the specified {@link Want} information with specific callback {@link AbilityClientCallback}.
+ *
+ * @param want Indicates the pointer to the {@link Want} structure containing information about the ability to start.
+ * @param abilityClientCallback callback to be invoked when finishing starting ability.
+ * @return Returns <b>0</b> if this function is successfully called; returns another value otherwise.
+ */
+
+int StartAbilityWithCallback(const Want *want, AbilityClientCallback abilityClientCallback);
+
+/**
  * @brief Stops an ability based on the specified {@link Want} information.
  *
  * This function takes effect only on Service abilities.
