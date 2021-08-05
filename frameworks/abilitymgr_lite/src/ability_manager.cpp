@@ -35,7 +35,7 @@ int StartAbility(const Want *want)
     return OHOS::AbilityMsClient::GetInstance().ScheduleAms(want, 0, nullptr, START_ABILITY);
 }
 
-int StartAbilityWithCallback(const Want *want, IAbilityStartCallback iAbilityStartCallback)
+int StartAbility(const Want *want, IAbilityStartCallback iAbilityStartCallback)
 {
     if (want == nullptr || iAbilityStartCallback == nullptr) {
         HILOG_ERROR(HILOG_MODULE_APP, "want or callback is null, StartAbilityWithCallback failed!");
