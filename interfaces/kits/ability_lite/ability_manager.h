@@ -57,10 +57,8 @@ extern "C" {
  * @param resultCode Indicates the status code returned for starting ability result. For details, see {@link AppexecfwkErrors}.
  * @param resultMessage Indicates the result message returned with the status code.
  *
- * @since 7.0
- * @version 7.0
  */
-typedef void (*AbilityClientCallback)(const uint8_t resultCode, const void *resultMessage); 
+typedef void (*IAbilityStartCallback)(const uint8_t resultCode, const void *resultMessage); 
 
 /**
  * @brief Starts an ability based on the specified {@link Want} information.
@@ -71,17 +69,13 @@ typedef void (*AbilityClientCallback)(const uint8_t resultCode, const void *resu
 int StartAbility(const Want *want);
 
 /**
- * @brief Starts an ability based on the specified {@link Want} information with specific callback {@link AbilityClientCallback}.
+ * @brief Starts an ability based on the specified {@link Want} information with specific callback {@link IAbilityStartCallback}.
  *
  * @param want Indicates the pointer to the {@link Want} structure containing information about the ability to start.
- * @param abilityClientCallback callback to be invoked when finishing starting ability.
+ * @param iAbilityStartCallback callback to be invoked when finishing starting ability.
  * @return Returns <b>0</b> if this function is successfully called; returns another value otherwise.
- *
- * @since 7.0
- * @version 7.0
  */
-
-int StartAbilityWithCallback(const Want *want, AbilityClientCallback abilityClientCallback);
+int StartAbility(const Want *want, IAbilityStartCallback iAbilityStartCallback);
 
 /**
  * @brief Stops an ability based on the specified {@link Want} information.
