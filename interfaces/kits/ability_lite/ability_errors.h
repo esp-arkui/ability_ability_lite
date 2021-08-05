@@ -71,6 +71,12 @@ enum {
     /** The parameter is error. */
     PARAM_CHECK_ERROR,
 
+    /** Get callback type error. */
+    GET_CALLBACK_TYPE_ERROR,
+
+    /** Generate callback local serviceId error. */
+    CALLBACK_GENERATE_LOCAL_SERVICEID_FAILED,
+
     /** Command error. */
     COMMAND_ERROR = 0x7fff,
 };
