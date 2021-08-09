@@ -35,13 +35,13 @@ int StartAbility(const Want *want)
     return OHOS::AbilityMsClient::GetInstance().ScheduleAms(want, 0, nullptr, START_ABILITY);
 }
 
-int StartAbilityWithCallback(const Want *want, AbilityClientCallback abilityClientCallback)
+int StartAbilityWithCallback(const Want *want, IAbilityStartCallback iAbilityStartCallback)
 {
-    if (want == nullptr || abilityClientCallback == nullptr) {
+    if (want == nullptr || iAbilityStartCallback == nullptr) {
         HILOG_ERROR(HILOG_MODULE_APP, "want or callback is null, StartAbilityWithCallback failed!");
         return -1;
     }
-    const SvcIdentity *svc = OHOS::AbilitySelfCallback::GetInstance().RegisterAbilitySelfCallback(abilityClientCallback);
+    const SvcIdentity *svc = OHOS::AbilitySelfCallback::GetInstance().RegisterAbilitySelfCallback(iAbilityStartCallback);
     OHOS::AbilityMsClient::GetInstance().Initialize();
     return OHOS::AbilityMsClient::GetInstance().ScheduleAms(want, 0, svc, START_ABILITY);
 }

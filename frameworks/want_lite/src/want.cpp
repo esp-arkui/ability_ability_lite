@@ -51,10 +51,11 @@ constexpr static char URI_SEPARATOR = ';';
 constexpr static int VALUE_NULL = 0;
 constexpr static int VALUE_OBJECT = 1;
 constexpr static int DATA_LENGTH = 2048;
+#endif
+
 constexpr uint8_t INT_VALUE_TYPE = 6;
 constexpr uint8_t STRING_VALUE_TYPE = 13;
 constexpr uint8_t KEY_VALUE_PAIR_TYPE = 97;
-#endif
 
 void ClearWant(Want *want)
 {
