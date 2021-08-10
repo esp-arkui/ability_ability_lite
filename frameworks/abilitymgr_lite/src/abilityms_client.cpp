@@ -26,6 +26,8 @@
 namespace OHOS {
 const unsigned int ERROR_SLEEP_TIMES = 300000;
 const unsigned int RETRY_TIMES = 20;
+constexpr static int VALUE_NULL = 0;
+constexpr static int VALUE_OBJECT = 1;
 
 bool AbilityMsClient::Initialize() const
 {
@@ -79,6 +81,7 @@ int AbilityMsClient::ScheduleAms(const Want *want, uint64_t token, const SvcIden
         IpcIoPushUint64(&req, token);
     }
     if (sid != nullptr) {
+        IpcIoPushInt32(&req, VALUE_OBJECT);
         IpcIoPushSvc(&req, sid);
 #ifdef __LINUX__
         if (commandType == ATTACH_BUNDLE) {
@@ -86,6 +89,8 @@ int AbilityMsClient::ScheduleAms(const Want *want, uint64_t token, const SvcIden
             IpcIoPushUint64(&req, pid);
         }
 #endif
+    } else {
+        IpcIoPushInt32(&req, VALUE_NULL);
     }
     if (want != nullptr && !SerializeWant(&req, want)) {
         return SERIALIZE_ERROR;
