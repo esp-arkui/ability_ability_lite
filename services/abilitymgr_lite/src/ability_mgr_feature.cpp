@@ -161,7 +161,6 @@ int32 AbilityMgrFeature::StartAbilityInvoke(const void *origin, IpcIo *req)
         }
         PRINTE("AbilityMgrFeature", "svc is NOT null");
         svc_ = *sid;
-        hasSvc = true;
 #ifdef __LINUX__
         BinderAcquire(svc_.ipcContext, svc_.handle);
         AdapterFree(sid);
