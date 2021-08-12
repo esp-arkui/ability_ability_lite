@@ -42,8 +42,12 @@ int StartAbilityWithCallback(const Want *want, IAbilityStartCallback iAbilitySta
         return -1;
     }
     const SvcIdentity *svc = OHOS::AbilitySelfCallback::GetInstance().RegisterAbilitySelfCallback(iAbilityStartCallback);
+    if (svc == nullptr) {
+        HILOG_ERROR(HILOG_MODULE_APP, "Register svc failed");
+        return -1;
+    }
     OHOS::AbilityMsClient::GetInstance().Initialize();
-    return OHOS::AbilityMsClient::GetInstance().ScheduleAms(want, 0, svc, START_ABILITY);
+    return OHOS::AbilityMsClient::GetInstance().ScheduleAms(want, 0, svc, START_ABILITY_With_CB);
 }
 
 int StopAbility(const Want *want)

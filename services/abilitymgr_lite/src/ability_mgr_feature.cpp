@@ -48,6 +48,7 @@ AbilityMgrFeatureImpl g_amsImpl = {
 
 InvokeFunc AbilityMgrFeature::invokeFuncList[INNER_BEGIN] {
     AbilityMgrFeature::StartAbilityInvoke,
+    AbilityMgrFeature::StartAbilityWithCbInvoke,
     AbilityMgrFeature::TerminateAbilityInvoke,
     AbilityMgrFeature::AttachBundleInvoke,
     AbilityMgrFeature::ConnectAbilityInvoke,
@@ -148,29 +149,45 @@ int32 AbilityMgrFeature::StartAbilityInvoke(const void *origin, IpcIo *req)
         PRINTE("AbilityMgrFeature", "invalid uid argument");
         return EC_INVALID;
     }
-    if (IpcIoPopInt32(req) == 1) {
-        auto sid = IpcIoPopSvc(req);
-        if (sid == nullptr) {
-            PRINTE("AbilityMgrFeature", "svc is null");
-            svc_ = {0};
-#ifdef __LINUX__
-            AdapterFree(sid);
-            sid = nullptr;
-#endif
-            return EC_INVALID;
-        }
-        PRINTE("AbilityMgrFeature", "svc is NOT null");
-        svc_ = *sid;
-#ifdef __LINUX__
-        BinderAcquire(svc_.ipcContext, svc_.handle);
-        AdapterFree(sid);
-        sid = nullptr;
-#endif
-    } else {
-        svc_ = {0};
+    Want want = { nullptr, nullptr, nullptr, 0};
+    if (!DeserializeWant(&want, req)) {
+        return EC_FAILURE;
     }
+    if (want.element == nullptr) {
+        PRINTE("AbilityMgrFeature", "invalid argument");
+        return EC_INVALID;
+    }
+    const char *deviceId = want.element->deviceId;
 
-    Want want = { nullptr, nullptr, nullptr, 0 };
+    int32 retVal;
+    if (deviceId != nullptr && *deviceId != '\0') {
+        retVal = StartRemoteAbilityInner(&want, deviceId, uid, nullptr);
+    } else {
+        retVal = StartAbilityInner(&want, uid);
+    }
+    ClearWant(&want);
+    return retVal;
+}
+
+int32 AbilityMgrFeature::StartAbilityWithCbInvoke(const void *origin, IpcIo *req)
+{
+    pid_t uid = GetCallingUid(origin);
+    if (uid < 0) {
+        PRINTE("AbilityMgrFeature", "invalid uid argument");
+        return EC_INVALID;
+    }
+    SvcIdentity *svcIdentity = IpcIoPopSvc(req);
+    if (svcIdentity == nullptr) {
+        svc_ = {0};
+        return EC_INVALID;
+    }
+    svc_ = *svcIdentity;
+#ifdef __LINUX__
+    BinderAcquire(svc_.ipcContext, svc_.handle);
+    AdapterFree(svcIdentity);
+    svcIdentity = nullptr;
+#endif
+    Want want = { nullptr, nullptr, nullptr, 0};
     if (!DeserializeWant(&want, req)) {
         return EC_FAILURE;
     }
@@ -183,8 +200,6 @@ int32 AbilityMgrFeature::StartAbilityInvoke(const void *origin, IpcIo *req)
     int32 retVal;
     if (deviceId != nullptr && *deviceId != '\0') {
         retVal = StartRemoteAbilityInner(&want, deviceId, uid, OnRequestCallback);
-    } else {
-        retVal = StartAbilityInner(&want, uid);
     }
     ClearWant(&want);
     return retVal;
@@ -197,12 +212,6 @@ int32 AbilityMgrFeature::StartAbility(const Want *want)
 
 int32 AbilityMgrFeature::StartRemoteAbilityInner(const Want *want, const char *deviceId, pid_t uid, OnRequestCallbackFunc callback)
 {
-    if (myCallback_ == nullptr) {
-        myCallback_ = new IDmsListener();
-    }
-    if (callback != nullptr) {
-        myCallback_ -> OnResultCallback = callback;
-    }
     IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(DISTRIBUTED_SCHEDULE_SERVICE, DMSLITE_FEATURE);
     DmsProxy *dmsInterface = NULL;
     if (iUnknown == NULL) {
@@ -215,7 +224,16 @@ int32 AbilityMgrFeature::StartRemoteAbilityInner(const Want *want, const char *d
     CallerInfo callerInfo = {
         .uid = uid
     };
-    retVal = dmsInterface->StartRemoteAbility((Want *)want, &callerInfo, myCallback_);
+
+    if (callback != nullptr) {
+        if (myCallback_ == nullptr) {
+            myCallback_ = new IDmsListener();
+        }
+        myCallback_ -> OnResultCallback = callback;
+        retVal = dmsInterface->StartRemoteAbility((Want *)want, &callerInfo, myCallback_);
+    } else {
+        retVal = dmsInterface->StartRemoteAbility((Want *)want, &callerInfo, NULL);
+    }
     return retVal;
 }
 
@@ -300,9 +318,6 @@ int32 AbilityMgrFeature::AbilityTransactionDoneInvoke(const void *origin, IpcIo 
 int32 AbilityMgrFeature::AttachBundleInvoke(const void *origin, IpcIo *req)
 {
     uint64_t token = IpcIoPopUint64(req);
-    if (IpcIoPopInt32(req) == 0) {
-        return EC_INVALID;
-    }
     SvcIdentity *svcIdentity = IpcIoPopSvc(req);
     if (svcIdentity == nullptr) {
         return EC_INVALID;
