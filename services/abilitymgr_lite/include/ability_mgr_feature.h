@@ -54,6 +54,7 @@ private:
     static int32 ConnectAbilityInner(const Want *want, SvcIdentity *svc, uint64_t token, pid_t callingUid);
     static int32 StopAbilityInner(const Want *want, pid_t callingUid);
     static int32 StartAbilityInvoke(const void *origin, IpcIo *req);
+    static int32 StartAbilityWithCbInvoke(const void *origin, IpcIo *req);
     static int32 TerminateAbilityInvoke(const void *origin, IpcIo *req);
     static int32 ConnectAbilityInvoke(const void *origin, IpcIo *req);
     static int32 DisconnectAbilityInvoke(const void *origin, IpcIo *req);
