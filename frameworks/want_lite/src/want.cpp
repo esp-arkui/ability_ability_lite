@@ -160,7 +160,7 @@ bool UpdateWantData(Want *want, Tlv *tlv)
     return result;
 }
 
-bool SetIntParam(Want *want, const char *key, int8_t keyLen, int32_t value)
+bool SetIntParam(Want *want, const char *key, uint8_t keyLen, int32_t value)
 {
     bool result = false;
     if (keyLen <= 0) {
@@ -193,7 +193,7 @@ bool SetIntParam(Want *want, const char *key, int8_t keyLen, int32_t value)
     return result;
 }
 
-bool SetStrParam(Want *want, const char *key, int8_t keyLen, const char *value, int8_t valueLen)
+bool SetStrParam(Want *want, const char *key, uint8_t keyLen, const char *value, uint8_t valueLen)
 {
     bool result = false;
     if (keyLen <= 0 || valueLen <= 0) {
