@@ -33,7 +33,7 @@ const char AMS_INNER_FEATURE[] = "AmsInnerFeature";
 
 enum AmsCommand {
     START_ABILITY = 0,
-    START_ABILITY_With_CB,
+    START_ABILITY_WITH_CB,
     TERMINATE_ABILITY,
     ATTACH_BUNDLE,
     CONNECT_ABILITY,
