@@ -111,23 +111,11 @@ bool SetIntParam(Want *want, const char *key, uint8_t keyLen, int32_t value);
  * @param key Indicates the pointer to the key which would be added to the want.
  * @param keyLen Indicates the length of key.
  * @param value Indicate the pointer to the value which would be added to the want.
+ * @param keyLen Indicates the length of value.
  *
  * @return Returns <b>true</b> if the setting is successful; returns <b>false</b> otherwise.
  */
 bool SetStrParam(Want *want, const char *key, uint8_t keyLen, const char *value, uint8_t valueLen);
-
-/**
- * @brief Sets the <b>element</b> variable for a specified <b>Want</b> object.
- *
- * To start a specified ability, you should call this function to set the {@link ElementName} required for starting
- * the ability.
- *
- * @param want Indicates the pointer to the <b>Want</b> object to set.
- * @param element Indicates the {@link ElementName} containing information required for starting the ability.
- *
- * @return Returns <b>true</b> if the setting is successful; returns <b>false</b> otherwise.
- */
-bool SetWantElement(Want *want, ElementName element);
 
 /**
  * @brief Sets the <b>element</b> variable for a specified <b>Want</b> object.

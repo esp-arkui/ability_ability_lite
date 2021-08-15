@@ -47,7 +47,7 @@ int StartAbilityWithCallback(const Want *want, IAbilityStartCallback iAbilitySta
         return -1;
     }
     OHOS::AbilityMsClient::GetInstance().Initialize();
-    return OHOS::AbilityMsClient::GetInstance().ScheduleAms(want, 0, svc, START_ABILITY_With_CB);
+    return OHOS::AbilityMsClient::GetInstance().ScheduleAms(want, 0, svc, START_ABILITY_WITH_CB);
 }
 
 int StopAbility(const Want *want)
