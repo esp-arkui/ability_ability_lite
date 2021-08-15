@@ -148,13 +148,10 @@ bool UpdateWantData(Want *want, Tlv *tlv)
             AdapterFree(newWantData);
             return result;
         }
-        AdapterFree(want->data);
-        want->data = newWantData;
-        want->dataLength = tlv->totalLen + want->dataLength;
+        SetWantData(want, newWantData, tlv->totalLen + want->dataLength);
         result = true;
     } else {
-        want->data = tlv->entity;
-        want->dataLength = tlv->totalLen;
+        SetWantData(want, tlv->entity, tlv->totalLen);
         result = true;
     }
     return result;
