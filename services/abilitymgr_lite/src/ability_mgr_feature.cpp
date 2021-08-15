@@ -48,7 +48,6 @@ AbilityMgrFeatureImpl g_amsImpl = {
 
 InvokeFunc AbilityMgrFeature::invokeFuncList[INNER_BEGIN] {
     AbilityMgrFeature::StartAbilityInvoke,
-    AbilityMgrFeature::StartAbilityWithCbInvoke,
     AbilityMgrFeature::TerminateAbilityInvoke,
     AbilityMgrFeature::AttachBundleInvoke,
     AbilityMgrFeature::ConnectAbilityInvoke,
@@ -57,6 +56,7 @@ InvokeFunc AbilityMgrFeature::invokeFuncList[INNER_BEGIN] {
     AbilityMgrFeature::DisconnectAbilityDoneInvoke,
     AbilityMgrFeature::AbilityTransactionDoneInvoke,
     AbilityMgrFeature::StopAbilityInvoke,
+    AbilityMgrFeature::StartAbilityWithCbInvoke,
 };
 
 static void Init()

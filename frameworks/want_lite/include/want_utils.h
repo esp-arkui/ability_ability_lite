@@ -35,10 +35,6 @@ extern "C" {
 
 bool SerializeWant(IpcIo *io, const Want *want);
 bool DeserializeWant(Want *want, IpcIo *io);
-void FreeTlvStruct(Tlv *tlv);
-bool UpdateWantData(Want *want, Tlv *tlv);
-Tlv *EncapTlv(uint8_t type, uint8_t length, void *value, uint8_t valueLen);
-Tlv *CombineKeyValueTlv(Tlv *keyTlv, Tlv *valueTlv);
 #endif
 
 #ifdef __cplusplus
