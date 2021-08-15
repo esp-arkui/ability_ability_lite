@@ -27,6 +27,11 @@ namespace OHOS {
 const unsigned int ERROR_SLEEP_TIMES = 300000;
 const unsigned int RETRY_TIMES = 20;
 
+static int32_t Callback(void *owner, int code, IpcIo *reply)
+{
+    return 0;
+}
+
 bool AbilityMsClient::Initialize() const
 {
     if (amsProxy_ != nullptr) {
@@ -64,7 +69,7 @@ int AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int state) const
     IpcIoInit(&req, data, IPC_IO_DATA_MAX, 0);
     IpcIoPushUint64(&req, token);
     IpcIoPushInt32(&req, state);
-    return amsProxy_->Invoke(amsProxy_, ABILITY_TRANSACTION_DONE, &req, nullptr, nullptr);
+    return amsProxy_->Invoke(amsProxy_, ABILITY_TRANSACTION_DONE, &req, nullptr, Callback);
 }
 
 int AbilityMsClient::ScheduleAms(const Want *want, uint64_t token, const SvcIdentity *sid, int commandType) const
@@ -90,6 +95,6 @@ int AbilityMsClient::ScheduleAms(const Want *want, uint64_t token, const SvcIden
     if (want != nullptr && !SerializeWant(&req, want)) {
         return SERIALIZE_ERROR;
     }
-    return amsProxy_->Invoke(amsProxy_, commandType, &req, nullptr, nullptr);
+    return amsProxy_->Invoke(amsProxy_, commandType, &req, nullptr, Callback);
 }
 } //  namespace OHOS
