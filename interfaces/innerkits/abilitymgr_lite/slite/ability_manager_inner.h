@@ -74,6 +74,11 @@ int ForceStop(char *bundlename);
  * @return Returns the ability callback function 
  */
 StartCheckFunc getAbilityCallback();
+
+void setCleanAbilityFlag(bool cleanFlag);
+
+bool getCleanAbilityDataFlag();
+
 #ifdef __cplusplus
 #if __cplusplus
 }
