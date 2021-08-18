@@ -50,6 +50,19 @@ extern "C" {
 #endif /* __cplusplus */
 
 /**
+ * @brief Called when desired ability has been started.
+ *
+ * This function can be registered through {@link StartAbility} to receive the start ability result.
+ *
+ * @param resultCode Indicates the status code returned for starting ability result. For details, see {@link AppexecfwkErrors}.
+ * @param resultMessage Indicates the result message returned with the status code.
+ *
+ * @since 6.0
+ * @version 6.0
+ */
+typedef void (*AbilityClientCallback)(const uint8_t resultCode, const void *resultMessage); 
+
+/**
  * @brief Starts an ability based on the specified {@link Want} information.
  *
  * @param want Indicates the pointer to the {@link Want} structure containing information about the ability to start.
