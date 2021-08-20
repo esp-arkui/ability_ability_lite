@@ -82,4 +82,12 @@ void AbilitySliceStack::Clear()
     }
     slices_.clear();
 }
+
+void AbilitySliceStacks::Clears()
+{
+    for (auto node : slices_) {
+        delete node;
+    }
+    slices_.clear();
+}
 }
