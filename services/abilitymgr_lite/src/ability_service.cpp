@@ -449,6 +449,12 @@ void AbilityService::OnBackgroundDone(uint16_t token)
     // the launcher background
     if (topRecord->GetToken() != LAUNCHER_TOKEN) {
         (void) SchedulerLifecycleInner(topRecord, STATE_ACTIVE);
+        if (getCleanAbilityDataFlag()) {
+            HILOG_INFO(HILOG_MODULE_AAFWK, "OnBackgroundDone clean launcher record data");
+            AbilityRecord *record = abilityList_.Get(token);
+            record->SetAppData(nullptr, 0);
+            setCleanAbilityDataFlag(false);
+        }
         return;
     }
     HILOG_WARN(HILOG_MODULE_AAFWK, "Js app exit, but has no js app.");
