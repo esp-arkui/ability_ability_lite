@@ -14,7 +14,7 @@
 import("//build/lite/config/component/lite_component.gni")
 import("//build/lite/config/test.gni")
 
-unittest("ability_test_pageAbilityTest_lv0") {
+unittest("ability_test_pageAbilityTest_door") {
     output_extension = "bin"
     output_dir = "$root_out_dir/test/unittest/PageAbilityTest_lv0"
 
