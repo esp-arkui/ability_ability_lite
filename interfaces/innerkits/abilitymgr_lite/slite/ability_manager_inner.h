@@ -75,7 +75,7 @@ int ForceStop(char *bundlename);
  */
 StartCheckFunc getAbilityCallback();
 
-void setCleanAbilityFlag(bool cleanFlag);
+void setCleanAbilityDataFlag(bool cleanFlag);
 
 bool getCleanAbilityDataFlag();
 
