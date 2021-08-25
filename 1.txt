@@ -1,0 +1,39 @@
+{
+    "code": 200,
+    "message": null,
+    "result": {
+        "total": 428,
+        "resultList": [
+            {
+                "eventTriggerNum": 21,
+                "sigName": null,
+                "repoName": "kernel_liteos_a",
+                "repoBranch": "master"
+            },
+            {
+                "eventTriggerNum": 20,
+                "sigName": "sig-basicsoftwareservice",
+                "repoName": "startup_init_lite",
+                "repoBranch": "master"
+            },
+            {
+                "eventTriggerNum": 17,
+                "sigName": null,
+                "repoName": "kernel_liteos_a",
+                "repoBranch": "master"
+            },
+            {
+                "eventTriggerNum": 16,
+                "sigName": "sig-graphicsandmedia",
+                "repoName": "graphic_ui",
+                "repoBranch": "master"
+            },
+            {
+                "eventTriggerNum": 16,
+                "sigName": null,
+                "repoName": "build",
+                "repoBranch": "master"
+            }
+        ]
+    }
+}

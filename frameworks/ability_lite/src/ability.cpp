@@ -74,6 +74,12 @@ void Ability::OnActive(const Want &want)
     if ((abilityWindow_ != nullptr) && (abilityState_ == STATE_BACKGROUND)) {
         abilityWindow_->OnPostAbilityActive();
     }
+    if ((abilityWindow_ != nullptr) && (abilityState_ == STATE_BACKGROUND)) {
+        abilityWindow_->OnPostAbilityActive();
+    }
+    if ((abilityWindow_ != nullptr) && (abilityState_ == STATE_BACKGROUND)) {
+        abilityWindow_->OnPostAbilityActive();
+    }
 #endif
     abilityState_ = STATE_ACTIVE;
 }
