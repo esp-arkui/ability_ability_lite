@@ -53,7 +53,7 @@ void JsAppHost::JsAppTaskHandler(uint32_t uwArg)
         if (ret != osOK) {
             return;
         }
-        // work_begin(MC_MAIL_EXTERN_APP)
+        LP_TaskBegin();
         switch ((uint32_t)innerMsg.msgId) {
             case ACTIVE:
                 jsappHost->OnActive(innerMsg.token, innerMsg.bundleName, innerMsg.path);
@@ -65,7 +65,7 @@ void JsAppHost::JsAppTaskHandler(uint32_t uwArg)
                 // cleanup the message queue id to present any new async message
                 JsAsyncWork::SetAppQueueHandler(nullptr);
                 jsappHost->OnDestroy(innerMsg.token);
-                // work_end(MC_MAIL_EXTERN_APP)
+                LP_TaskEnd();
                 return; // here exit the loop, and abort all messages afterwards
             case BACKPRESSED:
                 jsappHost->BackPressed();
@@ -81,7 +81,7 @@ void JsAppHost::JsAppTaskHandler(uint32_t uwArg)
             default:
                 break;
         }
-        // work_end(MC_MAIL_EXTERN_APP)
+        LP_TaskEnd();
     }
 }
 
