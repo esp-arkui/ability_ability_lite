@@ -20,6 +20,9 @@
 #include "js_ability.h"
 #include "js_async_work.h"
 
+extern "C" void LP_TaskBegin();
+extern "C" void LP_TaskEnd();
+
 namespace OHOS {
 class JsAppHost {
 public:
