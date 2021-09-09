@@ -457,4 +457,5 @@ const char *WantToUri(Want want)
 
     return uri;
 }
+
 #endif
