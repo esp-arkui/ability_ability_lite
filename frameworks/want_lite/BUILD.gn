@@ -25,10 +25,6 @@ source_set("want") {
   ]
   cflags_cc = cflags
 
-  deps = [
-    "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
-  ]
-
   include_dirs = [
     "include",
     "//third_party/bounds_checking_function/include",
