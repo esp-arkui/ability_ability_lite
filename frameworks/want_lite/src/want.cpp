@@ -287,7 +287,7 @@ bool SerializeWant(IpcIo *io, const Want *want)
     IpcIoPushInt32(io, want->dataLength);
     if (want->dataLength > 0) {
 #ifdef __LINUX__
-        IpcIoPushFlatObj(io, want->data, want->dataLength);
+        IpcIoPushString(io, reinterpret_cast<char *>(want->data));
 #else
         const BuffPtr buff = {
             want->dataLength,
@@ -323,9 +323,9 @@ bool DeserializeWant(Want *want, IpcIo *io)
     }
     if (IpcIoPopInt32(io) > 0) {
 #ifdef __LINUX__
-        uint32_t size = 0;
-        void *data = IpcIoPopFlatObj(io, &size);
-        if (!SetWantData(want, data, size)) {
+        size_t len = 0;
+        char *data = reinterpret_cast<char *>(IpcIoPopString(io, &len));
+        if (!SetWantData(want, data, len + 1)) {
             ClearWant(want);
             return false;
         }
