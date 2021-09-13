@@ -22,6 +22,7 @@
 #include <liteipc_adapter.h>
 #endif
 
+#include "log.h"
 #include "utils.h"
 
 #ifdef OHOS_APPEXECFWK_BMS_BUNDLEMANAGER
@@ -173,6 +174,7 @@ bool SetIntParam(Want *want, const char *key, uint8_t keyLen, int32_t value)
         return result;
     }
     if (value < 0) {
+        HILOG_ERROR(HILOG_MODULE_APP, "SetIntParam value should be positive");
         return result;
     }
     unsigned char intBuffer[4] = {0};
