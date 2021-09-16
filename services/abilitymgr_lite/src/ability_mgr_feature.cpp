@@ -197,7 +197,7 @@ int32 AbilityMgrFeature::StartAbilityWithCbInvoke(const void *origin, IpcIo *req
     }
     const char *deviceId = want.element->deviceId;
 
-    int32 retVal;
+    int32 retVal = EC_FAILURE;
     if (deviceId != nullptr && *deviceId != '\0') {
         retVal = StartRemoteAbilityInner(&want, deviceId, uid, OnRequestCallback);
     }
