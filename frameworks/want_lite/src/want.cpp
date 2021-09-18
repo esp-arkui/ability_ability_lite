@@ -174,7 +174,8 @@ bool SetIntParam(Want *want, const char *key, uint8_t keyLen, int32_t value)
     }
     if (value < 0) {
         HILOG_ERROR(HILOG_MODULE_APP, "SetIntParam value should be positive");
-        return result;
+	FreeTlvStruct(keyTlv);
+	return result;
     }
     unsigned char intBuffer[4] = {0};
     for (int i = 0; i < 4; i++) {
