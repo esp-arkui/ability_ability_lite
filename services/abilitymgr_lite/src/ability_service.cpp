@@ -275,7 +275,7 @@ int32_t AbilityService::ForceStop(char* bundlename)
     } else {
         uint16_t size = abilityStack_.GetAllAbilities();
         HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop innerStack mumber is [%u]", size);
-        // When ScreenSaver is on, topAbility may be not the targert, need to search the abilityStack_
+        //topAbility may be not the targert, need to search the abilityStack_
         AbilityRecord *jsAbilityRecord = const_cast<AbilityRecord *>(abilityStack_.GetAbility(bundlename));
         if (jsAbilityRecord != nullptr) {
             jsAbilityRecord->SetTerminated(true);
