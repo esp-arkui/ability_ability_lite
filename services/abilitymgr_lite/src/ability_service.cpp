@@ -29,6 +29,7 @@
 #include "cmsis_os.h"
 #include "js_app_host.h"
 #include "los_task.h"
+#include "pms.h"
 #include "slite_ability.h"
 #include "utils.h"
 #include "want.h"
@@ -378,7 +379,7 @@ int32_t AbilityService::CreateAppTask(AbilityRecord *record)
     record->SetMessageQueueId(jsAppQueueId);
     record->SetJsAppHost(jsAppHost);
 
-    // LoadPermissions(record->GetAppName(), appTaskId)
+    LoadPermissions(record->GetAppName(), appTaskId);
     record->SetState(SCHEDULE_INACTIVE);
     abilityStack_.PushAbility(record);
     APP_EVENT(MT_ACE_APP_START);
@@ -409,7 +410,7 @@ void AbilityService::DeleteRecordInfo(uint16_t token)
     if (token != LAUNCHER_TOKEN) {
         if (record->IsAttached()) {
             UINT32 taskId = record->GetTaskId();
-            // UnLoadPermissions(taskId)
+            UnLoadPermissions(taskId);
             LOS_TaskDelete(taskId);
             osMessageQueueId_t jsAppQueueId = record->GetMessageQueueId();
             osMessageQueueDelete(jsAppQueueId);
