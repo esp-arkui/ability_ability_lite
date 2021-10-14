@@ -273,8 +273,18 @@ int32_t AbilityService::ForceStop(char* bundlename)
         AbilityRecord *topRecord = const_cast<AbilityRecord *>(abilityStack_.GetTopAbility());
         HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop [%u]", topRecord->GetToken());
         return TerminateAbility(topRecord->GetToken());
+    } else {
+        uint16_t size = abilityStack_.GetAllAbilities();
+        HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop innerStack mumber is [%u]", size);
+        //topAbility may be not the targert, need to search the abilityStack_
+        AbilityRecord *jsAbilityRecord = const_cast<AbilityRecord *>(abilityStack_.GetAbility(bundlename));
+        if (jsAbilityRecord != nullptr) {
+            jsAbilityRecord->SetTerminated(true);
+            // TerminateAbility top js
+            return SchedulerLifecycleInner(topRecord, STATE_UNINITIALIZED);
+        }
+        HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop cannot find exact Js ability");
     }
-
     return PARAM_CHECK_ERROR;
 }
 
