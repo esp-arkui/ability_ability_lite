@@ -258,7 +258,7 @@ int32_t AbilityService::ForceStop(char* bundlename)
         if (jsAbilityRecord != nullptr && strcmp(jsAbilityRecord->GetAppName(), bundlename) == 0) {
             jsAbilityRecord->SetTerminated(true);
             // TerminateAbility top js
-            return SchedulerLifecycleInner(topRecord, STATE_UNINITIALIZED);
+            return SchedulerLifecycleInner(jsAbilityRecord, STATE_UNINITIALIZED);
         }
         HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop cannot find exact Js ability");
     }
