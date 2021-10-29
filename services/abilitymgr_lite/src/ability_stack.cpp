@@ -26,6 +26,14 @@ const AbilityRecord *AbilityStack::GetTopAbility() const
     return nullptr;
 }
 
+const AbilityRecord *AbilityStack::GetBackAbility() const
+{
+    if (abilityStack_.Size() != 0) {
+        return abilityStack_.Back();
+    }
+    return nullptr;
+}
+
 int AbilityStack::GetAllAbilities(AbilityRecord **abilityRecords)
 {
     int size = abilityStack_.Size();
