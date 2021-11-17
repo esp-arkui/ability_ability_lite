@@ -16,7 +16,7 @@
 #ifndef OHOS_ABILITY_RECORD_H
 #define OHOS_ABILITY_RECORD_H
 
-#ifdef APP_PLATFORM_WATCHGT
+#ifdef __LITEOS_M__
 #include "cmsis_os.h"
 #endif
 #include "ability_info.h"
@@ -25,6 +25,7 @@ namespace OHOS {
 class JsAppHost;
 
 constexpr int FAIL_CALLBACK_ERRORCODE = 200;
+#define UINT32 uint32_t
 
 /* States-feedback from launcher to AMS */
 typedef enum {

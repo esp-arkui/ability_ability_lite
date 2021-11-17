@@ -25,8 +25,6 @@ source_set("want") {
   ]
   cflags_cc = cflags
 
-  deps = [ "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared" ]
-
   include_dirs = [
     "include",
     "//third_party/bounds_checking_function/include",
@@ -36,7 +34,13 @@ source_set("want") {
     "${appexecfwk_lite_path}/frameworks/bundle_lite/include",
     "${appexecfwk_lite_path}/utils/bundle_lite",
     "//foundation/communication/ipc_lite/interfaces/kits",
+    "//utils/native/lite/memory/include",
   ]
 
-  defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
+  if (ohos_kernel_type == "liteos_m") {
+    deps = [ "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_static" ]
+  } else {
+    defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
+    deps = [ "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared" ]
+  }
 }
