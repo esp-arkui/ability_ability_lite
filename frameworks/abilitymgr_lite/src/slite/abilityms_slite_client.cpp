@@ -77,8 +77,8 @@ int AbilityMsClient::StartAbility(const Want *want) const
     AbilityService::GetInstance().want_ = info;
     Request request = {
         .msgId = START_ABILITY,
-        .data = nullptr,
         .len = 0,
+        .data = nullptr,
         .msgValue = 0,
     };
     return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
@@ -92,8 +92,8 @@ int AbilityMsClient::TerminateAbility(uint64_t token) const
     }
     Request request = {
         .msgId = TERMINATE_ABILITY,
-        .data = nullptr,
         .len = 0,
+        .data = nullptr,
         .msgValue = static_cast<uint32_t>(token & 0xFFFF),
     };
     return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
@@ -107,8 +107,8 @@ int AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int state) const
     }
     Request request = {
         .msgId = ABILITY_TRANSACTION_DONE,
-        .data = nullptr,
         .len = 0,
+        .data = nullptr,
         .msgValue = static_cast<uint32_t>((token & 0xFF) | (state << 8)),
     };
     return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
@@ -122,8 +122,8 @@ int AbilityMsClient::ForceStopBundle(uint64_t token) const
     }
     Request request = {
         .msgId = TERMINATE_APP,
-        .data = nullptr,
         .len = 0,
+        .data = nullptr,
         .msgValue = static_cast<uint32_t>(token & 0xFFFF),
     };
     return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
@@ -146,8 +146,8 @@ int AbilityMsClient::ForceStop(char *bundlename) const
     char* name = Utils::Strdup(bundlename);
     Request request = {
         .msgId = TERMINATE_APP_BY_BUNDLENAME,
+        .len = (int16)strlen(name),
         .data = reinterpret_cast<void *>(name),
-        .len = strlen(name),
     };
 
     return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
