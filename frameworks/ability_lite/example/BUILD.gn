@@ -13,58 +13,51 @@
 import("//build/lite/config/component/lite_component.gni")
 import("//build/lite/config/subsystem/aafwk/config.gni")
 
-src_path = "${aafwk_lite_path}/frameworks/ability_lite/example/entry/src/main/cpp"
+src_path =
+    "${aafwk_lite_path}/frameworks/ability_lite/example/entry/src/main/cpp"
 
 lite_library("hiability") {
-    target_type = "shared_library"
-    ldflags = [
-        "-shared",
-    ]
-    sources = [
-        "${src_path}/root_view_helper.cpp",
-        "${src_path}/service_ability.cpp",
-    ]
+  target_type = "shared_library"
+  ldflags = [ "-shared" ]
+  sources = [
+    "${src_path}/root_view_helper.cpp",
+    "${src_path}/service_ability.cpp",
+  ]
 
-    if (enable_ohos_appexecfwk_feature_ability == true) {
-        sources += [
-            "${src_path}/main_ability.cpp",
-            "${src_path}/second_ability.cpp",
-            "${src_path}/main_ability_slice.cpp",
-            "${src_path}/next_ability_slice.cpp",
-            "${src_path}/second_ability_slice.cpp",
-        ]
-    }
-
-    include_dirs = [
-        ".",
-        "${aafwk_lite_path}/frameworks/ability_lite/example/entry/src/main/cpp",
-        "${aafwk_lite_path}/interfaces/innerkits/abilitymgr_lite",
-        "${aafwk_lite_path}/interfaces/kits/ability_lite",
-        "${aafwk_lite_path}/interfaces/kits/want_lite",
-        "${appexefwk_lite_path}/interfaces/kits/bundle_lite",
-        "${appexefwk_lite_path}/utils/bundle_lite",
-        "//foundation/communication/ipc_lite/interfaces/kits",
-        "//foundation/graphic/utils/interfaces/innerkits",
-        "//foundation/graphic/ui/interfaces/kits",
-        "//foundation/graphic/utils/interfaces/kits/gfx_utils",
+  if (enable_ohos_appexecfwk_feature_ability == true) {
+    sources += [
+      "${src_path}/main_ability.cpp",
+      "${src_path}/main_ability_slice.cpp",
+      "${src_path}/next_ability_slice.cpp",
+      "${src_path}/second_ability.cpp",
+      "${src_path}/second_ability_slice.cpp",
     ]
+  }
 
-    deps = [
-        "${aafwk_lite_path}/frameworks/ability_lite:aafwk_abilitykit_lite",
+  include_dirs = [
+    ".",
+    "${aafwk_lite_path}/frameworks/ability_lite/example/entry/src/main/cpp",
+    "${aafwk_lite_path}/interfaces/innerkits/abilitymgr_lite",
+    "${aafwk_lite_path}/interfaces/kits/ability_lite",
+    "${aafwk_lite_path}/interfaces/kits/want_lite",
+    "${appexefwk_lite_path}/interfaces/kits/bundle_lite",
+    "${appexefwk_lite_path}/utils/bundle_lite",
+    "//foundation/communication/ipc_lite/interfaces/kits",
+    "//foundation/graphic/utils/interfaces/innerkits",
+    "//foundation/graphic/ui/interfaces/kits",
+    "//foundation/graphic/utils/interfaces/kits/gfx_utils",
+  ]
+
+  deps = [ "${aafwk_lite_path}/frameworks/ability_lite:aafwk_abilitykit_lite" ]
+
+  defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
+
+  if (enable_ohos_appexecfwk_feature_ability == true) {
+    deps += [ "//foundation/graphic/ui:lite_ui" ]
+    defines += [
+      "ENABLE_WINDOW=1",
+      "ABILITY_WINDOW_SUPPORT",
     ]
-
-    defines = [
-        "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER",
-    ]
-
-    if (enable_ohos_appexecfwk_feature_ability == true) {
-        deps += [
-            "//foundation/graphic/ui:lite_ui",
-        ]
-        defines += [
-            "ENABLE_WINDOW=1",
-            "ABILITY_WINDOW_SUPPORT"
-        ]
-    }
-    output_dir = "$root_out_dir/dev_tools/example"
+  }
+  output_dir = "$root_out_dir/dev_tools/example"
 }
