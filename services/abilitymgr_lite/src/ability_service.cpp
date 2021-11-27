@@ -117,6 +117,7 @@ int32_t AbilityService::StartAbility(const Want *want)
         info->path = nullptr;
     } else {
         // JS APP
+#ifdef OHOS_APPEXECFWK_BMS_BUNDLEMANAGER
         AbilityInfo abilityInfo = { nullptr, nullptr };
         QueryAbilityInfo(want, &abilityInfo);
         if (!IsValidAbility(&abilityInfo)) {
@@ -129,6 +130,11 @@ int32_t AbilityService::StartAbility(const Want *want)
         info->bundleName = OHOS::Utils::Strdup(abilityInfo.bundleName);
         info->path = OHOS::Utils::Strdup(abilityInfo.srcPath);
         ClearAbilityInfo(&abilityInfo);
+#else
+        info->bundleName = Utils::Strdup(bundleName);
+        // Here users assign want->data with js app path.
+        info->path = Utils::Strdup((const char *)want->data);
+#endif
     }
 
     info->data = OHOS::Utils::Memdup(want->data, want->dataLength);
@@ -273,6 +279,7 @@ int32_t AbilityService::ForceStop(char* bundlename)
         AbilityRecord *topRecord = const_cast<AbilityRecord *>(abilityStack_.GetTopAbility());
         HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop [%u]", topRecord->GetToken());
         return TerminateAbility(topRecord->GetToken());
+#ifndef __LITEOS_M__
     } else {
         uint16_t size = abilityStack_.GetAllAbilities();
         HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop innerStack mumber is [%u]", size);
@@ -284,6 +291,7 @@ int32_t AbilityService::ForceStop(char* bundlename)
             return SchedulerLifecycleInner(topRecord, STATE_UNINITIALIZED);
         }
         HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop cannot find exact Js ability");
+#endif
     }
     return PARAM_CHECK_ERROR;
 }
@@ -389,15 +397,23 @@ int32_t AbilityService::CreateAppTask(AbilityRecord *record)
     record->SetMessageQueueId(jsAppQueueId);
     record->SetJsAppHost(jsAppHost);
 
+    // LiteOS-M not support permissions checking right now, when permission checking is ready, we
+    // can remove the macro.
+#ifndef __LITEOS_M__
     LoadPermissions(record->GetAppName(), appTaskId);
+#endif
     record->SetState(SCHEDULE_INACTIVE);
     abilityStack_.PushAbility(record);
     APP_EVENT(MT_ACE_APP_START);
-    if (SchedulerLifecycle(LAUNCHER_TOKEN, STATE_BACKGROUND) != 0) {
-        APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_START_LAUNCHER_EXIT_FAILED);
-        HILOG_INFO(HILOG_MODULE_AAFWK, "CreateAppTask Fail to hide launcher");
-        abilityStack_.PopAbility();
-        return SCHEDULER_LIFECYCLE_ERROR;
+    if (nativeAbility_ != nullptr) {
+        if (SchedulerLifecycle(LAUNCHER_TOKEN, STATE_BACKGROUND) != 0) {
+            APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_START_LAUNCHER_EXIT_FAILED);
+            HILOG_INFO(HILOG_MODULE_AAFWK, "CreateAppTask Fail to hide launcher");
+            abilityStack_.PopAbility();
+            return SCHEDULER_LIFECYCLE_ERROR;
+        }
+    } else {
+        SchedulerLifecycle(record->GetToken(), STATE_ACTIVE);
     }
     return ERR_OK;
 }
@@ -420,7 +436,11 @@ void AbilityService::DeleteRecordInfo(uint16_t token)
     if (token != LAUNCHER_TOKEN) {
         if (record->IsAttached()) {
             UINT32 taskId = record->GetTaskId();
+            // LiteOS-M not support permissions checking right now, when permission checking is
+            // ready, we can remove the macro.
+#ifndef __LITEOS_M__
             UnLoadPermissions(taskId);
+#endif
             LOS_TaskDelete(taskId);
             osMessageQueueId_t jsAppQueueId = record->GetMessageQueueId();
             osMessageQueueDelete(jsAppQueueId);

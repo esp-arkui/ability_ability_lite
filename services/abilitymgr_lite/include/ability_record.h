@@ -16,7 +16,7 @@
 #ifndef OHOS_ABILITY_RECORD_H
 #define OHOS_ABILITY_RECORD_H
 
-#ifdef APP_PLATFORM_WATCHGT
+#ifdef __LITEOS_M__
 #include "cmsis_os.h"
 #endif
 #include "ability_info.h"
@@ -105,12 +105,12 @@ public:
         return token_;
     }
 
-    void SetTaskId(UINT32 taskId)
+    void SetTaskId(uint32_t taskId)
     {
         taskId_ = taskId;
     }
 
-    UINT32 GetTaskId() const
+    uint32_t GetTaskId() const
     {
         return taskId_;
     }
@@ -155,7 +155,7 @@ private:
     uint16_t dataLength_ { 0 };
     AbilityState state_ { SCHEDULE_STOP };
     uint16_t token_ { 0 };
-    UINT32 taskId_ { 0 };
+    uint32_t taskId_ { 0 };
     osMessageQueueId_t jsAppQueueId_ { nullptr };
     JsAppHost *jsAppHost_ { nullptr };
     bool isTerminated_ = false;

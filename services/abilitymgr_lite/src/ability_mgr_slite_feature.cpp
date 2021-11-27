@@ -90,25 +90,25 @@ BOOL AbilityMgrSliteFeature::OnFeatureMessage(Feature *feature, Request *request
     return TRUE;
 }
 
-int32_t AbilityMgrSliteFeature::StartAbility(const Want *want)
+int32 AbilityMgrSliteFeature::StartAbility(const Want *want)
 {
-    int32_t ret = AbilityService::GetInstance().StartAbility(want);
+    int32 ret = AbilityService::GetInstance().StartAbility(want);
     ClearWant(const_cast<Want *>(want));
     return ret;
 }
 
-int32_t AbilityMgrSliteFeature::TerminateAbility(uint64_t token)
+int32 AbilityMgrSliteFeature::TerminateAbility(uint64_t token)
 {
     uint16_t slitToken = token & 0xFFFF;
     return AbilityService::GetInstance().TerminateAbility(slitToken);
 }
 
-int32_t AbilityMgrSliteFeature::SchedulerLifecycleDone(uint64_t token, int state)
+int32 AbilityMgrSliteFeature::SchedulerLifecycleDone(uint64_t token, int state)
 {
     return AbilityService::GetInstance().SchedulerLifecycleDone(token, state);
 }
 
-int32_t AbilityMgrSliteFeature::ForceStopBundle(uint64_t token)
+int32 AbilityMgrSliteFeature::ForceStopBundle(uint64_t token)
 {
     uint16_t slitToken = token & 0xFFFF;
     return AbilityService::GetInstance().ForceStopBundle(slitToken);
