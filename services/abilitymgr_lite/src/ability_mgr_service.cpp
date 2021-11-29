@@ -16,7 +16,7 @@
 #include "ability_mgr_service.h"
 
 #include "ability_errors.h"
-#ifdef APP_PLATFORM_WATCHGT
+#ifdef __LITEOS_M__
 #include "ability_service.h"
 #endif
 #include "ability_service_interface.h"
@@ -26,11 +26,6 @@
 #include "util/abilityms_log.h"
 
 namespace OHOS {
-#ifndef APP_PLATFORM_WATCHGT
-const int STACK_SIZE = 0x800;
-#else
-const int STACK_SIZE = 0xE00;
-#endif
 const int QUEUE_SIZE = 20;
 const int BYTE_OFFSET = 8;
 
@@ -77,7 +72,7 @@ BOOL AbilityMgrService::ServiceMessageHandle(Service *service, Request *request)
     if (request == nullptr) {
         return FALSE;
     }
-#ifdef APP_PLATFORM_WATCHGT
+#ifdef __LITEOS_M__
     int ret = ERR_OK;
     if (request->msgId == START_ABILITY) {
         ret = AbilityService::GetInstance().StartAbility(AbilityService::GetInstance().want_);
@@ -102,7 +97,7 @@ BOOL AbilityMgrService::ServiceMessageHandle(Service *service, Request *request)
 
 TaskConfig AbilityMgrService::GetServiceTaskConfig(Service *service)
 {
-    TaskConfig config = {LEVEL_HIGH, PRI_NORMAL, STACK_SIZE, QUEUE_SIZE, SINGLE_TASK};
+    TaskConfig config = {LEVEL_HIGH, PRI_NORMAL, AMS_TASK_STACK_SIZE, QUEUE_SIZE, SINGLE_TASK};
     return config;
 }
 } // namespace OHOS

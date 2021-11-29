@@ -23,43 +23,64 @@ generate_notice_file("ability_notice_file") {
 }
 
 lite_library("ability") {
-  target_type = "shared_library"
+  if (ohos_kernel_type == "liteos_m") {
+    target_type = "static_library"
+
+    sources = [
+      "src/slite/lite_context.cpp",
+      "src/slite/slite_ability.cpp",
+    ]
+
+    public_deps = [
+      "${aafwk_lite_path}/frameworks/abilitymgr_lite:abilitymanager",
+      "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_static",
+      "//utils/native/lite/kv_store:kv_store",
+    ]
+
+    defines = []
+  } else {
+    target_type = "shared_library"
+
+    sources = [
+      "src/ability.cpp",
+      "src/ability_context.cpp",
+      "src/ability_env.cpp",
+      "src/ability_env_impl.cpp",
+      "src/ability_event_handler.cpp",
+      "src/ability_loader.cpp",
+      "src/ability_main.cpp",
+      "src/ability_scheduler.cpp",
+      "src/ability_thread.cpp",
+    ]
+
+    if (enable_ohos_appexecfwk_feature_ability == true) {
+      sources += [
+        "src/ability_slice.cpp",
+        "src/ability_slice_manager.cpp",
+        "src/ability_slice_route.cpp",
+        "src/ability_slice_scheduler.cpp",
+        "src/ability_slice_stack.cpp",
+        "src/ability_window.cpp",
+      ]
+    }
+
+    public_deps = [
+      "${aafwk_lite_path}/frameworks/abilitymgr_lite:abilitymanager",
+      "${appexecfwk_lite_path}/frameworks/bundle_lite:bundle",
+      "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
+      "//foundation/communication/ipc_lite:liteipc_adapter",
+      "//utils/native/lite/kv_store:kv_store",
+    ]
+
+    defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
+  }
+
   cflags = [
     "-Wall",
     "-Wno-format",
     "-Wno-format-extra-args",
   ]
   cflags_cc = cflags
-  sources = [
-    "src/ability.cpp",
-    "src/ability_context.cpp",
-    "src/ability_env.cpp",
-    "src/ability_env_impl.cpp",
-    "src/ability_event_handler.cpp",
-    "src/ability_loader.cpp",
-    "src/ability_main.cpp",
-    "src/ability_scheduler.cpp",
-    "src/ability_thread.cpp",
-  ]
-
-  if (enable_ohos_appexecfwk_feature_ability == true) {
-    sources += [
-      "src/ability_slice.cpp",
-      "src/ability_slice_manager.cpp",
-      "src/ability_slice_route.cpp",
-      "src/ability_slice_scheduler.cpp",
-      "src/ability_slice_stack.cpp",
-      "src/ability_window.cpp",
-    ]
-  }
-
-  public_deps = [
-    "${aafwk_lite_path}/frameworks/abilitymgr_lite:abilitymanager",
-    "${appexecfwk_lite_path}/frameworks/bundle_lite:bundle",
-    "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
-    "//foundation/communication/ipc_lite:liteipc_adapter",
-    "//utils/native/lite/kv_store:kv_store",
-  ]
 
   if (enable_ohos_appexecfwk_feature_ability == true) {
     public_deps += [ "//foundation/graphic/ui:lite_ui" ]
@@ -71,6 +92,7 @@ lite_library("ability") {
     "${aafwk_lite_path}/interfaces/innerkits/abilitymgr_lite",
     "${aafwk_lite_path}/interfaces/kits/want_lite",
     "${aafwk_lite_path}/interfaces/kits/ability_lite",
+    "${aafwk_lite_path}/interfaces/kits/ability_lite/slite",
     "${appexecfwk_lite_path}/utils/bundle_lite",
     "${appexecfwk_lite_path}/interfaces/kits/bundle_lite",
     "${appexecfwk_lite_path}/frameworks/bundle_lite/include",
@@ -79,6 +101,7 @@ lite_library("ability") {
     "//foundation/distributedschedule/samgr_lite/interfaces/kits/registry",
     "//foundation/distributedschedule/samgr_lite/interfaces/kits/samgr",
     "//foundation/communication/ipc_lite/frameworks/liteipc/include",
+    "//foundation/communication/ipc_lite/interfaces/kits",
     "//third_party/bounds_checking_function/include",
     "//third_party/freetype/include",
     "//utils/native/lite/kv_store/innerkits",
@@ -86,8 +109,6 @@ lite_library("ability") {
     "./include",
     "./",
   ]
-
-  defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
 
   if (board_name == "hispark_taurus") {
     defines += [ "OPENHARMONY_FONT_PATH" ]
@@ -110,6 +131,11 @@ config("abilitykit_config") {
   ldflags = [
     "-lstdc++",
     "-Wl,-rpath-link=$ohos_root_path/$root_out_dir",
+  ]
+  include_dirs = [
+    "${aafwk_lite_path}/interfaces/kits/want_lite",
+    "${aafwk_lite_path}/interfaces/kits/ability_lite",
+    "${aafwk_lite_path}/interfaces/kits/ability_lite/slite",
   ]
 }
 
