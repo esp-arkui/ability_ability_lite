@@ -89,14 +89,16 @@ bool SetWantElement(Want *want, ElementName element)
     return true;
 }
 
-Tlv *EncapTlv(uint8_t type, uint8_t length, void *value, uint8_t valueLen)
+Tlv *EncapTlv(uint8_t type, uint8_t length, const void *value, uint8_t valueLen)
 {
     void *entity = nullptr;
 
     // Tlv header can only has 2 bytes.
     uint8_t totalLen = valueLen + 2;
     entity = calloc(1, totalLen);
-
+    if (entity == nullptr) {
+        return nullptr;
+    }
     if (memcpy_s((unsigned char *)entity, 1, &type, 1) != 0 || 
         memcpy_s((unsigned char *)entity + 1, 1, &length, 1) != 0 || 
         memcpy_s((unsigned char *)entity + 2, valueLen, value, valueLen) != 0) {
@@ -149,7 +151,8 @@ bool UpdateWantData(Want *want, Tlv *tlv)
             return result;
         }
         SetWantData(want, newWantData, tlv->totalLen + want->dataLength);
-        result = true;
+        AdapterFree(newWantData);
+	result = true;
     } else {
         SetWantData(want, tlv->entity, tlv->totalLen);
         result = true;
@@ -191,6 +194,7 @@ bool SetIntParam(Want *want, const char *key, uint8_t keyLen, int32_t value)
         AdapterFree(newTlv);
         result = true;
     }
+    AdapterFree(newTlv);
     return result;
 }
 
@@ -221,6 +225,7 @@ bool SetStrParam(Want *want, const char *key, uint8_t keyLen, const char *value,
         AdapterFree(newTlv);
         result = true;
     }
+    AdapterFree(newTlv);
     return result;
 }
 
