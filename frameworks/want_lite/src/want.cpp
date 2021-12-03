@@ -152,7 +152,7 @@ bool UpdateWantData(Want *want, Tlv *tlv)
         }
         SetWantData(want, newWantData, tlv->totalLen + want->dataLength);
         AdapterFree(newWantData);
-	result = true;
+        result = true;
     } else {
         SetWantData(want, tlv->entity, tlv->totalLen);
         result = true;
