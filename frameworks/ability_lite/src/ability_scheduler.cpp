@@ -82,6 +82,7 @@ int32_t AbilityScheduler::AmsCallback(const IpcContext* context, void *ipcMsg, I
             IpcIoInit(&reply, tmpData, DEFAULT_IPC_SIZE, 1);
             IpcIoPushInt32(&reply, 0);
             SendReply(nullptr, ipcMsg, &reply);
+            ipcMsg = nullptr;
             break;
         }
         case SCHEDULER_ABILITY_LIFECYCLE: {
