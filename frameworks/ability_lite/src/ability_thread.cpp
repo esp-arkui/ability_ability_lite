@@ -182,7 +182,7 @@ void AbilityThread::PerformAppInit(const AppInfo &appInfo)
                 HILOG_ERROR(HILOG_MODULE_APP, "Fail to get realpath of %{public}s", modulePath.c_str());
                 continue;
             }
-            HILOG_INFO(HILOG_MODULE_APP, "dlopen before %{public}s, [%{public}s]", modulePath.c_str(), dlerror());
+            HILOG_INFO(HILOG_MODULE_APP, "dlopen before %{public}s", modulePath.c_str());
             void *handle = dlopen(static_cast<char *>(realPath), RTLD_NOW | RTLD_GLOBAL);
             HILOG_INFO(HILOG_MODULE_APP, "dlopen after %{public}s, [%{public}s]", modulePath.c_str(), dlerror());
             if (handle == nullptr) {
