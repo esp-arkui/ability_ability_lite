@@ -153,38 +153,48 @@ void AbilityThread::StartAbilityCallback(const Want &want)
 void AbilityThread::PerformAppInit(const AppInfo &appInfo)
 {
     HILOG_INFO(HILOG_MODULE_APP, "Start app init");
+    HILOG_INFO(HILOG_MODULE_APP, "Start app init 2");
     if ((appInfo.bundleName.empty()) || (appInfo.srcPath.empty())) {
         HILOG_ERROR(HILOG_MODULE_APP, "appInfo is null");
         return;
     }
+    HILOG_INFO(HILOG_MODULE_APP, "Start app init 3");
     if (!appInfo.isNativeApp && (appInfo.moduleNames.size() != 1)) {
         HILOG_ERROR(HILOG_MODULE_APP, "only native app support multi hap");
         return;
     }
+    HILOG_INFO(HILOG_MODULE_APP, "Start app init 4");
     AbilityEnvImpl::GetInstance().SetAppInfo(appInfo);
     AbilityThread::isNativeApp_ = appInfo.isNativeApp;
-
+    HILOG_INFO(HILOG_MODULE_APP, "Start app init 5");
     for (const auto &module : appInfo.moduleNames) {
         std::string modulePath;
+        HILOG_INFO(HILOG_MODULE_APP, "Start native init 6");
         if (appInfo.isNativeApp) {
+            HILOG_INFO(HILOG_MODULE_APP, "Start native init 7");
             modulePath = appInfo.srcPath + PATH_SEPARATOR + module + LIB_PREFIX + module + LIB_SUFFIX;
             if (modulePath.size() > PATH_MAX) {
                 continue;
             }
+            HILOG_INFO(HILOG_MODULE_APP, "Start native init 8");
             char realPath[PATH_MAX + 1] = { 0 };
             if (realpath(modulePath.c_str(), realPath) == nullptr) {
                 HILOG_ERROR(HILOG_MODULE_APP, "Fail to get realpath of %{public}s", modulePath.c_str());
                 continue;
             }
+            HILOG_INFO(HILOG_MODULE_APP, "dlopen before %{public}s, [%{public}s]", modulePath.c_str(), dlerror());
             void *handle = dlopen(static_cast<char *>(realPath), RTLD_NOW | RTLD_GLOBAL);
+            HILOG_INFO(HILOG_MODULE_APP, "dlopen after %{public}s, [%{public}s]", modulePath.c_str(), dlerror());
             if (handle == nullptr) {
                 HILOG_ERROR(HILOG_MODULE_APP, "Fail to dlopen %{public}s, [%{public}s]", modulePath.c_str(), dlerror());
                 exit(-1);
             }
+            HILOG_INFO(HILOG_MODULE_APP, "Start native init 9");
             handle_.emplace_front(handle);
+            HILOG_INFO(HILOG_MODULE_APP, "Start native init 10");
         }
     }
-
+    HILOG_INFO(HILOG_MODULE_APP, "Start native init 11");
     int ret = UtilsSetEnv(GetDataPath());
     HILOG_INFO(HILOG_MODULE_APP, "Set env ret: %{public}d, App init end", ret);
 }
