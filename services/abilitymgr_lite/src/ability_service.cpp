@@ -468,7 +468,7 @@ void AbilityService::OnActiveDone(uint16_t token)
     // the launcher active
     if (token == LAUNCHER_TOKEN) {
         if (nativeAbility_->GetState() != STATE_ACTIVE) {
-            HILOG_ERROR(HILOG_MODULE_AAFWK, "native ability is in wrong state : %d", nativeAbility_->GetState());
+            HILOG_ERROR(HILOG_MODULE_AAFWK, "native ability is in wrong state : %{public}d", nativeAbility_->GetState());
             return;
         }
         if (topRecord->GetToken() != LAUNCHER_TOKEN) {
