@@ -1,0 +1,58 @@
+{
+    "name": "@ohos/aafwk_lite",
+    "version": "",
+    "description": "轻量级元能力框架子系统，是OpenHarmony为开发者提供的一套开发鸿蒙应用的开发框架",
+    "homePage": "https://gitee.com/openharmony",
+    "license": "Apache V2",
+    "repository": "https://gitee.com/openharmony/aafwk_aafwk_lite",
+    "domain": "os",
+    "language": "",
+    "publishAs": "code-segment",
+    "private": false,
+    "scripts": {},
+    "tags": [
+        "foundation"
+    ],
+    "keywords": [
+        "aafwk",
+        "lite"
+    ],
+    "envs": [],
+    "dirs": [],
+    "author": {
+        "name": "",
+        "email": "",
+        "url": ""
+    },
+    "contributors": [
+        {
+            "name": "",
+            "email": "",
+            "url": ""
+        }
+    ],
+    "segment": {
+        "destPath": "foundation/aafwk/aafwk_lite"
+    },
+    "component": {
+        "name": "aafwk_lite",
+        "subsystem": "aafwk",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [
+            "min",
+            "small"
+        ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [],
+            "inner_kits": [],
+            "test": []
+        }
+    }
+}
