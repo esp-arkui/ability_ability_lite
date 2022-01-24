@@ -29,7 +29,6 @@
 
 namespace OHOS {
     constexpr uint32_t WAIT_TIMEOUT = 30;
-    constexpr int MAX_BUFFER_SIZE_PER = 1024; // 1024 byte
     constexpr char ABILITY_STATE[] = "Ability State: [";
     constexpr char NO_ABILITY[] = "Ability not found";
     constexpr char SLICE_STACK[] = "\n   [";
