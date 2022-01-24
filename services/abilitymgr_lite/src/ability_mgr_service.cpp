@@ -27,7 +27,9 @@
 
 namespace OHOS {
 const int QUEUE_SIZE = 20;
+#ifdef __LITEOS_M__
 const int BYTE_OFFSET = 8;
+#endif
 
 AbilityMgrService::AbilityMgrService() : Service(), identity_()
 {

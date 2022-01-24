@@ -20,7 +20,6 @@
 using namespace testing::ext;
 
 namespace OHOS {
-    constexpr char HAP_PATH[] = "/system/internal/setting.hap";
     constexpr char BUNDLE_NAME[] = "com.huawei.setting";
     constexpr char ABILITY_NAME[] = "SettingMainAbility";
 
@@ -29,7 +28,7 @@ namespace OHOS {
 
     class PageAbilityTest : public testing::Test {
       public :
-          static void SetUpTestCase() 
+          static void SetUpTestCase()
           {
               AbilityTestHelper::Initialize();
           }
