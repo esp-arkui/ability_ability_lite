@@ -140,10 +140,15 @@ void AbilityMgrHandler::StartKeepAliveApps()
         if (AbilityMsHelper::IsLauncherAbility(bundleInfos[i].bundleName)) {
 #ifdef ABILITY_WINDOW_SUPPORT
             StartLauncher();
+            break;
 #endif
-        } else {
-            StartKeepAliveApp(bundleInfos[i]);
         }
+    }
+    for (int32_t i = 0; i < len; ++i) {
+        if (AbilityMsHelper::IsLauncherAbility(bundleInfos[i].bundleName)) {
+            continue;
+        }
+        StartKeepAliveApp(bundleInfos[i]);
     }
     for (int32_t i = 0; i < len; ++i) {
         ClearBundleInfo(&(bundleInfos[i]));
@@ -193,6 +198,7 @@ int AbilityMgrHandler::StartAbility(const Want *want, pid_t callingUid)
     ClearAbilityInfo(&target);
     CHECK_RESULT_LOG_CODE(status, EC_COMMU);
 
+    WMSClient::WaitUntilWmsReady();
     return EC_SUCCESS;
 }
 
