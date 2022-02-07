@@ -370,14 +370,14 @@ int32_t AbilityService::CreateAppTask(AbilityRecord *record)
 
     HILOG_INFO(HILOG_MODULE_AAFWK, "CreateAppTask.");
     LOS_TaskLock();
-    TSK_INIT_PARAM_S stTskInitParam;
-    stTskInitParam.pfnTaskEntry = (TSK_ENTRY_FUNC)(JsAppHost::JsAppTaskHandler);
-    stTskInitParam.uwStackSize = TASK_STACK_SIZE;
-    stTskInitParam.usTaskPrio = OS_TASK_PRIORITY_LOWEST - APP_TASK_PRI;
+    TskInitParam stTskInitParam;
+    stTskInitParam.pfnTaskEntry = (TskEntryFunc)(JsAppHost::JsAppTaskHandler);
+    stTskInitParam.stackSize = TASK_STACK_SIZE;
+    stTskInitParam.taskPrio = OS_TASK_PRIORITY_LOWEST - APP_TASK_PRI;
     stTskInitParam.pcName = const_cast<char *>("AppTask");
-    stTskInitParam.uwResved = 0;
+    stTskInitParam.resved = 0;
     auto jsAppHost = new JsAppHost();
-    stTskInitParam.uwArg = reinterpret_cast<UINT32>((uintptr_t)jsAppHost);
+    stTskInitParam.arg = reinterpret_cast<UINT32>((uintptr_t)jsAppHost);
     UINT32 appTaskId = 0;
     UINT32 ret = LOS_TaskCreate(&appTaskId, &stTskInitParam);
     if (ret != LOS_OK) {
