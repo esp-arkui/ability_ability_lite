@@ -369,8 +369,8 @@ int32_t AbilityService::CreateAppTask(AbilityRecord *record)
     }
 
     HILOG_INFO(HILOG_MODULE_AAFWK, "CreateAppTask.");
+    TSK_INIT_PARAM_S stTskInitParam = {0};
     LOS_TaskLock();
-    TSK_INIT_PARAM_S stTskInitParam;
     stTskInitParam.pfnTaskEntry = (TSK_ENTRY_FUNC)(JsAppHost::JsAppTaskHandler);
     stTskInitParam.uwStackSize = TASK_STACK_SIZE;
     stTskInitParam.usTaskPrio = OS_TASK_PRIORITY_LOWEST - APP_TASK_PRI;
