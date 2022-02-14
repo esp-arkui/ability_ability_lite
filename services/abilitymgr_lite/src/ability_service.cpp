@@ -226,7 +226,7 @@ int32_t AbilityService::TerminateAbility(uint16_t token)
     if (token == LAUNCHER_TOKEN) {
         // if js is in background, the launcher goes back to background and js goes to active
         if (topToken != token && topRecord->GetState() == SCHEDULE_BACKGROUND) {
-            HILOG_INFO(HILOG_MODULE_AAFWK, "Resume Js app [%u]", topToken);
+            HILOG_INFO(HILOG_MODULE_AAFWK, "Resume Js app [%{public}u]", topToken);
             return SchedulerLifecycle(LAUNCHER_TOKEN, STATE_BACKGROUND);
         }
         return ERR_OK;
