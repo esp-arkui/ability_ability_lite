@@ -29,6 +29,7 @@
 #include "cmsis_os.h"
 #include "js_app_host.h"
 #include "los_task.h"
+#include "pthread.h"
 #include "pms.h"
 #include "slite_ability.h"
 #include "utils.h"
@@ -369,17 +370,22 @@ int32_t AbilityService::CreateAppTask(AbilityRecord *record)
     }
 
     HILOG_INFO(HILOG_MODULE_AAFWK, "CreateAppTask.");
-    TSK_INIT_PARAM_S stTskInitParam = {0};
-    LOS_TaskLock();
-    stTskInitParam.pfnTaskEntry = (TSK_ENTRY_FUNC)(JsAppHost::JsAppTaskHandler);
-    stTskInitParam.uwStackSize = TASK_STACK_SIZE;
-    stTskInitParam.usTaskPrio = OS_TASK_PRIORITY_LOWEST - APP_TASK_PRI;
-    stTskInitParam.pcName = const_cast<char *>("AppTask");
-    stTskInitParam.uwResved = 0;
+    typedef void *(*PthreadEntry)(void *);
+    pthread_t appTaskId = 0;
+    pthread_attr_t attr;
+    struct sched_param param = {0};
+
+    (void)pthread_attr_init(&attr);
+    (void)pthread_attr_setstacksize(&attr, TASK_STACK_SIZE);
+    param.sched_priority = OS_TASK_PRIORITY_LOWEST - APP_TASK_PRI;
+    (void)pthread_attr_setschedparam(&attr, &param);
+    (void)pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED);
+
     auto jsAppHost = new JsAppHost();
-    stTskInitParam.uwArg = reinterpret_cast<UINT32>((uintptr_t)jsAppHost);
-    UINT32 appTaskId = 0;
-    UINT32 ret = LOS_TaskCreate(&appTaskId, &stTskInitParam);
+    void *threadArg = reinterpret_cast<void *>(jsAppHost);
+
+    LOS_TaskLock();
+    int ret = pthread_create(&appTaskId, &attr, (PthreadEntry)(JsAppHost::JsAppTaskHandler), threadArg);
     if (ret != LOS_OK) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "CreateAppTask fail: ret = %{public}d", ret);
         APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_START_CREATE_TSAK_FAILED);
