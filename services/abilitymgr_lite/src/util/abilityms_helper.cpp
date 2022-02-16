@@ -29,7 +29,7 @@ const char * const LAUNCHER_ABILITY_NAME = "MainAbility";
 const char * const ACE_ABILITY_NAME = "AceAbility";
 const int MAX_BUNDLE_NAME_SIZE = 128;
 
-bool AbilityMsHelper::IsLauncherAbility(const char *bundleName)
+bool AbilityMsHelper::IsLauncherAbility(const std::string bundleName)
 {
     if (bundleName == nullptr) {
         PRINTW("AbilityMsHelper", "bundleName is null");
@@ -38,7 +38,7 @@ bool AbilityMsHelper::IsLauncherAbility(const char *bundleName)
     return strcmp(LAUNCHER_BUNDLE_NAME, bundleName) == 0;
 }
 
-bool AbilityMsHelper::IsAceAbility(const char *abilityName)
+bool AbilityMsHelper::IsAceAbility(const std::string abilityName)
 {
     if (abilityName == nullptr) {
         PRINTW("AbilityMsHelper", "abilityName is null");
@@ -105,7 +105,7 @@ std::string AbilityMsHelper::AbilityStateToString(State state)
 }
 #endif
 
-bool AbilityMsHelper::IsLegalBundleName(const char *bundleName)
+bool AbilityMsHelper::IsLegalBundleName(const std::string bundleName)
 {
     if (bundleName == nullptr) {
         return false;
