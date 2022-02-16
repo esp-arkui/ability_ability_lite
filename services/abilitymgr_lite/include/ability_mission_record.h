@@ -25,10 +25,10 @@ namespace OHOS {
 class AbilityMissionStack;
 class AbilityMissionRecord {
 public:
-    AbilityMissionRecord(AbilityMissionStack *missionStack, const char *bundleName);
+    AbilityMissionRecord(AbilityMissionStack *missionStack, const std::string bundleName);
     ~AbilityMissionRecord();
     bool IsEmpty() const;
-    bool IsSameMissionRecord(const char *bundleName) const;
+    bool IsSameMissionRecord(const std::string bundleName) const;
     void SetMissionStack(AbilityMissionStack *missionStack);
     const AbilityMissionStack *GetMissionStack() const;
     const PageAbilityRecord *GetTopPageAbility() const;
@@ -49,7 +49,7 @@ private:
     AbilityMissionStack *abilityMissionStack_ { nullptr };
     std::list<PageAbilityRecord *> pageAbilityRecords_;
     const AbilityMissionRecord *prevMissionRecord_ { nullptr };
-    const char *bundleName_ { nullptr };
+    const std::string bundleName_ { nullptr };
 };
 } // namespace OHOS
 #endif // OHOS_ABILITY_MISSION_RECORD_H
