@@ -39,8 +39,7 @@ struct AbilitySvcInfo {
 class AbilityService : public NoCopyable {
 public:
     typedef void (AbilityService::*LifecycleFunc)(uint16_t token);
-    struct LifecycleFuncStr
-    {
+    struct LifecycleFuncStr{
         int32_t state;
         LifecycleFunc func_ptr;
     };
