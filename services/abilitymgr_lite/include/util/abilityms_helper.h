@@ -27,14 +27,14 @@
 namespace OHOS {
 class AbilityMsHelper {
 public:
-    static bool IsLauncherAbility(const char *bundleName);
-    static bool IsAceAbility(const char *abilityName);
+    static bool IsLauncherAbility(const std::string bundleName);
+    static bool IsAceAbility(const std::string abilityName);
     static AbilityMsStatus SetLauncherWant(Want &want);
     static AbilityMsStatus SetKeepAliveWant(const BundleInfo &bundleInfo, Want &want);
 #ifdef OHOS_DEBUG
     static std::string AbilityStateToString(State state);
 #endif
-    static bool IsLegalBundleName(const char *bundleName);
+    static bool IsLegalBundleName(const std::string bundleName);
     static bool CheckVisiblePermission(pid_t callingUid, pid_t targetUid, bool isVisible);
 
     static const pid_t SYSTEM_UID = 0;
