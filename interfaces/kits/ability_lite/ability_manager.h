@@ -75,7 +75,7 @@ int StartAbility(const Want *want);
  * @param iAbilityStartCallback callback to be invoked when finishing starting ability.
  * @return Returns <b>0</b> if this function is successfully called; returns another value otherwise.
  */
-int StartAbilityWithCallback(const Want * want, IAbilityStartCallback iAbilityStartCallback);
+int StartAbilityWithCallback(const Want *want, IAbilityStartCallback iAbilityStartCallback);
 
 /**
  * @brief Stops an ability based on the specified {@link Want} information.

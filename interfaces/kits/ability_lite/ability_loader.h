@@ -110,7 +110,7 @@ private:
  * @param className Indicates the {@link Ability} class name to register.
  */
 #define REGISTER_AA(className)                                                                \
-    do {
+    do {                                                                                      \
     __attribute__((constructor)) void RegisterAA##className() {                               \
         AbilityLoader::GetInstance().RegisterAbility(#className, []()->Ability* {             \
             return new className;                                                             \
@@ -128,7 +128,7 @@ private:
  */
 #ifdef ABILITY_WINDOW_SUPPORT
 #define REGISTER_AS(className)                                                                \
-    do{
+    do {                                                                                      \
     __attribute__((constructor)) void RegisterAS##className() {                               \
         AbilityLoader::GetInstance().RegisterAbilitySlice(#className, []()->AbilitySlice* {   \
             return new className;                                                             \

@@ -16,8 +16,9 @@
 #ifndef OHOS_WANT_UTILS_H
 #define OHOS_WANT_UTILS_H
 
-#include "want.h"
 #include <serializer.h>
+#include "want.h"
+
 
 typedef struct {
     uint8_t type = 0;
