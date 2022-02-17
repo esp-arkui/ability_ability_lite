@@ -26,7 +26,7 @@ namespace {
     constexpr int HEX = 10;
 }
 
-namespace {
+namespace OHOS {
 int AbilityMain(const char *token)
 {
     if (token == nullptr) {
