@@ -23,6 +23,7 @@
 #include "ability_mission_stack.h"
 
 namespace OHOS {
+class AbilityMissionStack;
 class AbilityMissionRecord {
 public:
     AbilityMissionRecord(AbilityMissionStack *missionStack, const char *bundleName);
