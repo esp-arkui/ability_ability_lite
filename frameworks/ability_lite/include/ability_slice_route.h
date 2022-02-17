@@ -16,6 +16,7 @@
 #ifndef OHOS_ABILITY_SLICE_ROUTE_H
 #define OHOS_ABILITY_SLICE_ROUTE_H
 
+#include <map>
 #include <string>
 
 namespace OHOS {
