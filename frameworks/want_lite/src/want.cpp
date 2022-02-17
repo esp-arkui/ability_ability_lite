@@ -180,7 +180,7 @@ bool SetIntParam(Want *want, const char *key, uint8_t keyLen, int32_t value)
         return result;
     }
     int intBufferbNumber = 4;
-    unsigned char intBuffer[intBufferbNumber] = {0};
+    unsigned char intBuffer[4] = {0};
     for (int i = 0; i < intBufferbNumber; i++) {
         intBuffer[i] = value >> (8 * (3- i));
     }
