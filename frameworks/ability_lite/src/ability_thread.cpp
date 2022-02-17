@@ -299,7 +299,7 @@ void AbilityThread::PerformDumpAbility(const Want &want, uint64_t token)
     IpcIoPushString(&io, dumpInfo.c_str());
 #else
     BuffPtr dataBuff = {
-            .buffSz = dumpInfo.length() + 1, // include \0
+            .buffSz = dumpInfo.length() + 1,
             .buff = const_cast<char *>(dumpInfo.c_str()),
     };
     IpcIoPushDataBuff(&io, &dataBuff);
