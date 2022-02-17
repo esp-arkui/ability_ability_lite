@@ -14,8 +14,8 @@
  */
 
 #include "app_manager.h"
-#include <cinttypes.h>
-#include <cstring.h>
+#include <cinttypes>
+#include <cstring>
 
 #include "token_generate.h"
 #include "util/abilityms_log.h"

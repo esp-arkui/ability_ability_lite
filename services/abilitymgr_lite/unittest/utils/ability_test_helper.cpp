@@ -184,7 +184,7 @@ namespace OHOS {
             return static_cast<State>(g_resultString[position + strlen(ABILITY_STATE)] - '0');
         }
 
-        if (g_resultString.find(NO_ABILITY) != std::string::npos){
+        if (g_resultString.find(NO_ABILITY) != std::string::npos) {
             return STATE_INITIAL;
         }
         printf("[ERROR] [AbilityTestHelper] Failed to GetAbilityState\n");
