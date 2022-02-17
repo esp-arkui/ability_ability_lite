@@ -15,8 +15,7 @@
 
 #include "ability_worker.h"
 
-#define __STDC_FORMAT_MACROS
-#include <inttypes.h>
+#include <cinttypes.h>
 
 #include "ability_activate_task.h"
 #include "ability_attach_task.h"

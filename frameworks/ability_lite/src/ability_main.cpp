@@ -26,6 +26,7 @@ namespace {
     constexpr int HEX = 10;
 }
 
+namespace {
 int AbilityMain(const char *token)
 {
     if (token == nullptr) {
@@ -44,4 +45,5 @@ int AbilityMain(const char *token)
 
     OHOS::AbilityThread::ThreadMain(tokenId);
     return 0;
+}
 }

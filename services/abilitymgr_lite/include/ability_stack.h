@@ -16,8 +16,9 @@
 #ifndef OHOS_ABILITY_STACK_H
 #define OHOS_ABILITY_STACK_H
 
-#include "ability_record.h"
 #include "utils_list.h"
+#include "ability_record.h"
+
 #include <new>
 
 namespace OHOS {
