@@ -25,7 +25,6 @@
 #include "log.h"
 #include "utils.h"
 
-namespace OHOS {
 #ifdef OHOS_APPEXECFWK_BMS_BUNDLEMANAGER
 using UriKeyType = enum {
     BEGIN,
@@ -472,4 +471,3 @@ const char *WantToUri(Want want)
     return uri;
 }
 #endif
-}
