@@ -15,7 +15,7 @@
 
 #include "client/ability_thread_client.h"
 
-#include <cinttypes.h>
+#include <cinttypes>
 
 #include "ability_kit_command.h"
 #include "adapter.h"
