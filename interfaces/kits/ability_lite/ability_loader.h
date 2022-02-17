@@ -114,7 +114,7 @@ private:
         AbilityLoader::GetInstance().RegisterAbility(#className, []()->Ability* {             \
             return new className;                                                             \
         });                                                                                   \
-    }                                                                                         
+    }
 
 /**
  * @brief Registers the class name of an {@link AbilitySlice} child class.
@@ -130,7 +130,7 @@ private:
         AbilityLoader::GetInstance().RegisterAbilitySlice(#className, []()->AbilitySlice* {   \
             return new className;                                                             \
         });                                                                                   \
-    }                                                                                         
+    }
 #endif
 } // namespace OHOS
 #endif // OHOS_ABILITY_LOADER_H
