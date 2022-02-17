@@ -36,8 +36,8 @@ namespace OHOS {
         static void Initialize();
         static void UnInitialize();
 
-        static void InstallCallback(uint8_t resultCode, const void *resultMessage);
-        static void UninstallCallback(uint8_t resultCode, const void *resultMessage);
+        static void InstallCallback(const uint8_t resultCode, const void *resultMessage);
+        static void UninstallCallback(const uint8_t resultCode, const void *resultMessage);
         static int32_t AbilityCallback(const IpcContext* context, void *ipcMsg, IpcIo *data, void *arg);
         static bool TestInstall(const std::string &hap);
         static bool TestUnInstall(const std::string &bundleName);

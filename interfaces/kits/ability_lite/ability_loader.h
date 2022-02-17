@@ -47,7 +47,6 @@
 
 #include <functional>
 #include <string>
-#include <unordered_map>
 
 #include "ability.h"
 #ifdef ABILITY_WINDOW_SUPPORT
@@ -111,11 +110,13 @@ private:
  * @param className Indicates the {@link Ability} class name to register.
  */
 #define REGISTER_AA(className)                                                                \
+    do {
     __attribute__((constructor)) void RegisterAA##className() {                               \
         AbilityLoader::GetInstance().RegisterAbility(#className, []()->Ability* {             \
             return new className;                                                             \
         });                                                                                   \
-    }
+    }                                                                                         \
+    } while (0)
 
 /**
  * @brief Registers the class name of an {@link AbilitySlice} child class.
@@ -127,11 +128,13 @@ private:
  */
 #ifdef ABILITY_WINDOW_SUPPORT
 #define REGISTER_AS(className)                                                                \
+    do{
     __attribute__((constructor)) void RegisterAS##className() {                               \
         AbilityLoader::GetInstance().RegisterAbilitySlice(#className, []()->AbilitySlice* {   \
             return new className;                                                             \
         });                                                                                   \
-    }
+    }                                                                                         \
+    } while (0)
 #endif
 } // namespace OHOS
 #endif // OHOS_ABILITY_LOADER_H

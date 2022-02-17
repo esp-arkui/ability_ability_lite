@@ -68,12 +68,13 @@ ElementName *GetTopAbility();
  */
 int ForceStop(char *bundlename);
 
+
 /**
- * @brief get ability callback function 
+ * @brief get ability callback function.
  *
- * @return Returns the ability callback function 
+ * @return Returns the ability callback function.
  */
-StartCheckFunc getAbilityCallback();
+StartCheckFunc getAbilityCallback(void);
 
 void setCleanAbilityDataFlag(bool cleanFlag);
 

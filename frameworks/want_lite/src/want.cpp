@@ -25,6 +25,7 @@
 #include "log.h"
 #include "utils.h"
 
+namespace OHOS {
 #ifdef OHOS_APPEXECFWK_BMS_BUNDLEMANAGER
 using UriKeyType = enum {
     BEGIN,
@@ -129,7 +130,8 @@ Tlv *CombineKeyValueTlv(Tlv *keyTlv, Tlv *valueTlv)
         return nullptr;
     }
     if (memcpy_s((unsigned char *)newTlvValue, keyTlv->totalLen, keyTlv->entity, keyTlv->totalLen) != 0 ||
-        memcpy_s((unsigned char *)newTlvValue + keyTlv->totalLen, valueTlv->totalLen, valueTlv->entity, valueTlv->totalLen) != 0) {
+        memcpy_s((unsigned char *)newTlvValue + keyTlv->totalLen, valueTlv->totalLen,
+        valueTlv->entity, valueTlv->totalLen) != 0) {
         AdapterFree(newTlvValue);
         return nullptr;
     }
@@ -470,3 +472,4 @@ const char *WantToUri(Want want)
     return uri;
 }
 #endif
+}
