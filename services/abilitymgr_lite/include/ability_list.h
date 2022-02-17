@@ -16,6 +16,7 @@
 #ifndef OHOS_ABILITY_LIST_H
 #define OHOS_ABILITY_LIST_H
 
+#include <cstring>
 #include "ability_record.h"
 #include "utils_list.h"
 
