@@ -17,9 +17,8 @@
 
 #include "abilityms_slite_client.h"
 
-namespace OHOS {
-    StartCheckFunc CALLBACKFUNC = nullptr;
-}
+StartCheckFunc CALLBACKFUNC = nullptr;
+
 
 bool cleanAbilityDataFlag = false;
 

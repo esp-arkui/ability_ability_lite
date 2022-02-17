@@ -13,11 +13,11 @@
  * limitations under the License.
  */
 
+#include <securec.h>
+#include <assert.h>
 #include "ability_manager.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
-#include <securec.h>
-#include <assert.h>
 #include "ability_errors.h"
 
 #define GET_PARAMS(env, info, num) \
