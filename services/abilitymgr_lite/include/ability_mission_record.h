@@ -17,13 +17,11 @@
 #define OHOS_ABILITY_MISSION_RECORD_H
 
 #include <list>
-
+#include "ability_mission_stack.h"
 #include "ability_connect_mission.h"
 #include "page_ability_record.h"
-#include "ability_mission_stack.h"
 
 namespace OHOS {
-class AbilityMissionStack;
 class AbilityMissionRecord {
 public:
     AbilityMissionRecord(AbilityMissionStack *missionStack, const char *bundleName);
