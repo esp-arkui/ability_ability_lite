@@ -19,7 +19,6 @@
 
 StartCheckFunc CALLBACKFUNC = nullptr;
 
-
 bool cleanAbilityDataFlag = false;
 
 extern "C" {
