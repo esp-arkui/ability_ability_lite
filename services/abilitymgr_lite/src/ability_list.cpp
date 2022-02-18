@@ -13,10 +13,8 @@
  * limitations under the License.
  */
 
-#include "ability_list.h"
-
 #include <cstring>
-
+#include "ability_list.h"
 #include "ability_record.h"
 
 namespace OHOS {
