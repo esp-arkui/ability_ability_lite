@@ -48,7 +48,6 @@
 #include <functional>
 #include <string>
 #include <unordered_map>
-
 #include "ability.h"
 #ifdef ABILITY_WINDOW_SUPPORT
 #include "ability_slice.h"

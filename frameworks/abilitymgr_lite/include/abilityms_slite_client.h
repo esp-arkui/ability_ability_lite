@@ -54,5 +54,4 @@ private:
     DISALLOW_COPY_AND_MOVE(AbilityMsClient);
 };
 } // namespace OHOS
-
 #endif // OHOS_ABILITYMS_SLITE_CLIENT_H
