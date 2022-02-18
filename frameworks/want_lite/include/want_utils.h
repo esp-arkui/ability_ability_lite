@@ -16,9 +16,7 @@
 #ifndef OHOS_WANT_UTILS_H
 #define OHOS_WANT_UTILS_H
 
-#include <serializer.h>
 #include "want.h"
-
 
 typedef struct {
     uint8_t type = 0;
@@ -33,6 +31,7 @@ extern "C" {
 #endif // __cplusplus
 
 #ifdef OHOS_APPEXECFWK_BMS_BUNDLEMANAGER
+#include <serializer.h>
 
 bool SerializeWant(IpcIo *io, const Want *want);
 bool DeserializeWant(Want *want, IpcIo *io);
