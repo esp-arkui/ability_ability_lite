@@ -18,6 +18,7 @@
 #include "abilityms_slite_client.h"
 
 StartCheckFunc CALLBACKFUNC = nullptr;
+
 bool cleanAbilityDataFlag = false;
 
 extern "C" {

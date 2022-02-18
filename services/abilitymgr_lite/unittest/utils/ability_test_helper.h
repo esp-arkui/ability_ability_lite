@@ -30,7 +30,7 @@ namespace OHOS {
     };
 
     class AbilityTestHelper {
-        public:
+    public:
         AbilityTestHelper() = delete;
         ~AbilityTestHelper() = delete;
         static void Initialize();
@@ -46,7 +46,7 @@ namespace OHOS {
         static State GetAbilityState(const ElementName &elementName);
         static std::list<std::shared_ptr<SliceRecord>> GetSliceStack(const ElementName &elementName);
 
-        private:
+    private:
         static IClientProxy *GetAbilityInnerFeature();
         static void TestDumpAbility(const ElementName &elementName);
         static void SemWait();
