@@ -178,7 +178,8 @@ namespace OHOS {
         IpcIoInit(&req, data, IPC_IO_DATA_MAX, 0);
         IpcIoPushString(&req, bundleName.c_str());
         int32_t ret = proxy_->Invoke(proxy_, TERMINATE_APP, &req, nullptr, nullptr);
-        sleep(2);
+        int sleepTime = 2;
+        sleep(sleepTime);
         return ret == EC_SUCCESS;
     }
 
