@@ -58,6 +58,7 @@ constexpr uint8_t INT_VALUE_TYPE = 6;
 constexpr uint8_t STRING_VALUE_TYPE = 13;
 constexpr uint8_t KEY_VALUE_PAIR_TYPE = 97;
 
+namespace {
 void ClearWant(Want *want)
 {
     if (want == nullptr) {
@@ -71,7 +72,9 @@ void ClearWant(Want *want)
 #endif
     AdapterFree(want->data);
 }
+}
 
+namespace {
 bool SetWantElement(Want *want, ElementName element)
 {
     if (want == nullptr) {
@@ -88,6 +91,7 @@ bool SetWantElement(Want *want, ElementName element)
     want->element->bundleName = OHOS::Utils::Strdup(element.bundleName);
     want->element->abilityName = OHOS::Utils::Strdup(element.abilityName);
     return true;
+}
 }
 
 Tlv *EncapTlv(uint8_t type, uint8_t length, const void *value, uint8_t valueLen)
@@ -116,12 +120,15 @@ Tlv *EncapTlv(uint8_t type, uint8_t length, const void *value, uint8_t valueLen)
     return newTlv;
 }
 
+namespace {
 void FreeTlvStruct(Tlv *tlv)
 {
     AdapterFree(tlv->entity);
     AdapterFree(tlv);
 }
+}
 
+namespace {
 Tlv *CombineKeyValueTlv(Tlv *keyTlv, Tlv *valueTlv)
 {
     uint8_t newTlvValueLen = keyTlv->totalLen + valueTlv->totalLen;
@@ -138,6 +145,7 @@ Tlv *CombineKeyValueTlv(Tlv *keyTlv, Tlv *valueTlv)
     Tlv *newTlv = EncapTlv(KEY_VALUE_PAIR_TYPE, newTlvValueLen, newTlvValue, newTlvValueLen);
     AdapterFree(newTlvValue);
     return newTlv;
+}
 }
 
 bool UpdateWantData(Want *want, Tlv *tlv)
