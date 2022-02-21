@@ -58,7 +58,7 @@ extern "C" {
  * @param resultMessage Indicates the result message returned with the status code.
  *
  */
-typedef void (*IAbilityStartCallback)(const uint8_t resultCode, const void *resultMessage); 
+typedef void (*IAbilityStartCallback)(const uint8_t resultCode, const void *resultMessage);
 
 /**
  * @brief Starts an ability based on the specified {@link Want} information.
