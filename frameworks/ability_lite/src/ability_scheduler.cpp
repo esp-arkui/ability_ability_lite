@@ -31,8 +31,7 @@ AbilityScheduler::AbilityScheduler(AbilityEventHandler &eventHandler, Scheduler 
 {
 }
 
-int32_t AbilityScheduler::AmsCallback(const IpcContext* context,
-    void *ipcMsg, IpcIo *data, void *arg)
+int32_t AbilityScheduler::AmsCallback(const IpcContext* context, void *ipcMsg, IpcIo *data, void *arg)
 {
     if (ipcMsg == nullptr) {
         HILOG_ERROR(HILOG_MODULE_APP, "ams call back error, ipcMsg is null");

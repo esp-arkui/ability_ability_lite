@@ -368,8 +368,7 @@ bool DeserializeWant(Want *want, IpcIo *io)
     return true;
 }
 
-Want *WantParseUri(
-    const char *uri)
+Want *WantParseUri(const char *uri)
 {
     if (uri == nullptr) {
         return nullptr;

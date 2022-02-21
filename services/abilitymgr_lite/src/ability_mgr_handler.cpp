@@ -35,8 +35,7 @@ void AbilityMgrHandler::Init()
     CHECK_RESULT_LOG(status);
 }
 
-void AbilityMgrHandler::ServiceMsgProcess(
-    const Request &request)
+void AbilityMgrHandler::ServiceMsgProcess(const Request &request)
 {
     switch (request.msgId) {
         case AMS_SERVICE_INITED: {
