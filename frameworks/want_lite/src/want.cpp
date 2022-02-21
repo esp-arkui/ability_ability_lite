@@ -188,8 +188,10 @@ bool SetIntParam(Want *want, const char *key, uint8_t keyLen, int32_t value)
         return result;
     }
     unsigned char intBuffer[4] = {0};
+    int tmp1 = 8;
+    int tmp2 = 3;
     for (int i = 0; i < 4; i++) {
-        intBuffer[i] = value >> (8 * (3- i));
+        intBuffer[i] = value >> (tmp1 * (tmp2- i));
     }
     Tlv *valueTlv = EncapTlv(INT_VALUE_TYPE, sizeof(int), (void *)intBuffer, sizeof(int));
     if (valueTlv == nullptr) {
