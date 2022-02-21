@@ -101,9 +101,10 @@ Tlv *EncapTlv(uint8_t type, uint8_t length, const void *value, uint8_t valueLen)
         return nullptr;
     }
 
+    int tmps = 2;
     if (memcpy_s((unsigned char *)entity, 1, &type, 1) != 0 || 
         memcpy_s((unsigned char *)entity + 1, 1, &length, 1) != 0 || 
-        memcpy_s((unsigned char *)entity + 2, valueLen, value, valueLen) != 0) {
+        memcpy_s((unsigned char *)entity + tmps, valueLen, value, valueLen) != 0) {
         AdapterFree(entity);
         return nullptr;
     }
