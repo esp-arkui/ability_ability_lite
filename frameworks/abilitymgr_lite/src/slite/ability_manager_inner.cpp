@@ -47,7 +47,7 @@ StartCheckFunc getAbilityCallback()
     return CALLBACKFUNC;
 }
 
-void setCleanAbilityDataFlag(bool cleanFlag) 
+void setCleanAbilityDataFlag(bool cleanFlag)
 {
     cleanAbilityDataFlag = cleanFlag;
 }
