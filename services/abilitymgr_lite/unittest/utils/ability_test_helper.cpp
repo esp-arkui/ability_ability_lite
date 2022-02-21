@@ -96,8 +96,7 @@ namespace OHOS {
         if (flag == LITEIPC_FLAG_ONEWAY) {
             FreeBuffer(nullptr, ipcMsg);
         }
-        switch (funcId)
-        {
+        switch (funcId){
             case SCHEDULER_APP_INIT: {
                 ElementName element = {};
                 DeserializeElement(&element, data);
@@ -109,8 +108,7 @@ namespace OHOS {
             }
             case SCHEDULER_DUMP_ABILITY: {
                 BuffPtr *buff = IpcIoPopDataBuff(data);
-                if ((buff == nullptr) || (buff->buff == nullptr))
-                {
+                if ((buff == nullptr) || (buff->buff == nullptr)){
                     printf("ams call back error, buff is empty\n");
                     return false;
                 }
@@ -171,7 +169,8 @@ namespace OHOS {
         IpcIoInit(&req, data, IPC_IO_DATA_MAX, 0);
         IpcIoPushString(&req, bundleName.c_str());
         int32_t ret = proxy_->Invoke(proxy_, TERMINATE_APP, &req, nullptr, nullptr);
-        sleep(2);
+        int sleepTime = 2;
+        sleep(sleepTime);
         return ret == EC_SUCCESS;
     }
 
@@ -229,7 +228,8 @@ namespace OHOS {
     {
         IpcIo req;
         char data[IPC_IO_DATA_MAX];
-        IpcIoInit(&req, data, IPC_IO_DATA_MAX, 2);
+        int tmps = 2;
+        IpcIoInit(&req, data, IPC_IO_DATA_MAX, tmps);
         Want want = {};
         SetWantElement(&want, elementName);
         SetWantSvcIdentity(&want, identity_);

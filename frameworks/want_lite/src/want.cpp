@@ -58,6 +58,7 @@ constexpr uint8_t INT_VALUE_TYPE = 6;
 constexpr uint8_t STRING_VALUE_TYPE = 13;
 constexpr uint8_t KEY_VALUE_PAIR_TYPE = 97;
 
+namespace {
 void ClearWant(Want *want)
 {
     if (want == nullptr) {
@@ -71,7 +72,9 @@ void ClearWant(Want *want)
 #endif
     AdapterFree(want->data);
 }
+}
 
+namespace {
 bool SetWantElement(Want *want, ElementName element)
 {
     if (want == nullptr) {
@@ -89,6 +92,7 @@ bool SetWantElement(Want *want, ElementName element)
     want->element->abilityName = OHOS::Utils::Strdup(element.abilityName);
     return true;
 }
+}
 
 Tlv *EncapTlv(uint8_t type, uint8_t length, const void *value, uint8_t valueLen)
 {
@@ -101,9 +105,10 @@ Tlv *EncapTlv(uint8_t type, uint8_t length, const void *value, uint8_t valueLen)
         return nullptr;
     }
 
-    if (memcpy_s((unsigned char *)entity, 1, &type, 1) != 0 ||
-        memcpy_s((unsigned char *)entity + 1, 1, &length, 1) != 0 ||
-        memcpy_s((unsigned char *)entity + 2, valueLen, value, valueLen) != 0) {
+    int tmps = 2;
+    if (memcpy_s((unsigned char *)entity, 1, &type, 1) != 0 || 
+        memcpy_s((unsigned char *)entity + 1, 1, &length, 1) != 0 || 
+        memcpy_s((unsigned char *)entity + tmps, valueLen, value, valueLen) != 0) {
         AdapterFree(entity);
         return nullptr;
     }
@@ -115,12 +120,15 @@ Tlv *EncapTlv(uint8_t type, uint8_t length, const void *value, uint8_t valueLen)
     return newTlv;
 }
 
+namespace {
 void FreeTlvStruct(Tlv *tlv)
 {
     AdapterFree(tlv->entity);
     AdapterFree(tlv);
 }
+}
 
+namespace {
 Tlv *CombineKeyValueTlv(Tlv *keyTlv, Tlv *valueTlv)
 {
     uint8_t newTlvValueLen = keyTlv->totalLen + valueTlv->totalLen;
@@ -138,6 +146,7 @@ Tlv *CombineKeyValueTlv(Tlv *keyTlv, Tlv *valueTlv)
     Tlv *newTlv = EncapTlv(KEY_VALUE_PAIR_TYPE, newTlvValueLen, newTlvValue, newTlvValueLen);
     AdapterFree(newTlvValue);
     return newTlv;
+}
 }
 
 bool UpdateWantData(Want *want, Tlv *tlv)
@@ -181,8 +190,10 @@ bool SetIntParam(Want *want, const char *key, uint8_t keyLen, int32_t value)
     }
     int intBufferbNumber = 4;
     unsigned char intBuffer[4] = {0};
-    for (int i = 0; i < intBufferbNumber; i++) {
-        intBuffer[i] = value >> (8 * (3- i));
+    int tmp1 = 8;
+    int tmp2 = 3;
+    for (int i = 0; i < 4; i++) {
+        intBuffer[i] = value >> (tmp1 * (tmp2- i));
     }
     Tlv *valueTlv = EncapTlv(INT_VALUE_TYPE, sizeof(int), (void *)intBuffer, sizeof(int));
     if (valueTlv == nullptr) {
@@ -365,7 +376,8 @@ bool DeserializeWant(Want *want, IpcIo *io)
     return true;
 }
 
-Want *WantParseUri(const char *uri)
+Want *WantParseUri(
+    const char *uri)
 {
     if (uri == nullptr) {
         return nullptr;

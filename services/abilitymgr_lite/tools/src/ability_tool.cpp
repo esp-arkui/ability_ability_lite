@@ -232,7 +232,8 @@ bool AbilityTool::Dump(IClientProxy *proxy)
     return true;
 }
 
-int32_t AbilityTool::AaCallback(const IpcContext* context, void *ipcMsg, IpcIo *data, void *arg)
+int32_t AbilityTool::AaCallback(const IpcContext* context,
+                                void *ipcMsg, IpcIo *data, void *arg)
 {
     printf("get ability info\n");
     if (ipcMsg == nullptr) {
