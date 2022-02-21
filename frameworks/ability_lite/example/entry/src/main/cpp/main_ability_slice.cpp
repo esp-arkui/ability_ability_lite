@@ -48,8 +48,11 @@ int32_t IpcMsgHandler(int funcId, ElementName *elementName, SvcIdentity *service
     IpcIo request;
     char data[IPC_IO_DATA_MAX];
     IpcIoInit(&request, data, IPC_IO_DATA_MAX, 0);
-    IpcIoPushInt32(&request, 10);
-    IpcIoPushInt32(&request, 6);
+
+    int tmp1 = 10;
+    int tmp2 = 6;
+    IpcIoPushInt32(&request, tmp1);
+    IpcIoPushInt32(&request, tmp2);
 
     // send and getReply
     IpcIo reply;
