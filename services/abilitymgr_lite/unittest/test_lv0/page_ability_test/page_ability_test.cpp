@@ -57,7 +57,7 @@ namespace OHOS {
     /**
      * @tc.name: StartAbilityTest001
      * @tc.desc: test StartAbility.
-     * @tc.require: AR000DSMBM 
+     * @tc.require: AR000DSMBM
      * @tc.type: FUNC
      */
     HWTEST_F(PageAbilityTest, startAbility001, TestSize.Level0)
