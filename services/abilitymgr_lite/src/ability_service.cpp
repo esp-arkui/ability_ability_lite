@@ -13,8 +13,9 @@
  * limitations under the License.
  */
 
+#include "aafwk_event_error__id.h"
+#include "aafwk_event_error_code.h"
 #include "ability_service.h"
-
 #include "ability_errors.h"
 #include "ability_list.h"
 #include "ability_message_id.h"
