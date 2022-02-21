@@ -241,7 +241,8 @@ namespace OHOS {
     {
         IpcIo req;
         char data[IPC_IO_DATA_MAX];
-        IpcIoInit(&req, data, IPC_IO_DATA_MAX, 2);
+        int tmps = 2;
+        IpcIoInit(&req, data, IPC_IO_DATA_MAX, tmps);
         Want want = {};
         SetWantElement(&want, elementName);
         SetWantSvcIdentity(&want, identity_);
