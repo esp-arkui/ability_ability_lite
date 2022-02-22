@@ -14,7 +14,8 @@
  */
 
 #include "ability_service.h"
-#include "../../../../appexecfwk/appexecfwk_lite/utils/bundle_lite/aafwk_event_error_code.h"
+#include "aafwk_event_error_id.h"
+#include "aafwk_event_error_code.h"
 #include "ability_errors.h"
 #include "ability_list.h"
 #include "ability_message_id.h"
@@ -33,26 +34,6 @@
 #include "slite_ability.h"
 #include "utils.h"
 #include "want.h"
-
-#define MT_ACE_APP_START 0x00
-#define MT_ACE_APP_ACTIVITY 0x01
-#define MT_ACE_APP_BACKGROUND 0x02
-#define MT_ACE_APP_STOP 0x03
-
-// error codes
-#define EXCE_ACE_APP_START 0x01
-#define EXCE_ACE_APP_SCAN 0x07
-
-#define EXCE_ACE_APP_START_UNKNOWN_BUNDLE_INFO 0x0
-#define EXCE_ACE_APP_STOP_NO_ABILITY_RUNNING 0x5
-#define EXCE_ACE_APP_STOP_UNKNOWN_ABILITY_TOKEN 0x6
-#define EXCE_ACE_APP_START_CREATE_TASK_FAILED 0x3
-#define EXCE_ACE_APP_START_LAUNCHER_EXIT_FAILED 0x4
-
-#define EXCE_ACE_APP_SCAN_INVALID_SYSTEM_APP 0x0
-#define EXCE_ACE_APP_SCAN_UNKNOWN_BUNDLE_INFO 0x3
-#define EXCE_ACE_APP_SCAN_PARSE_JSON_FAILED 0x1
-#define EXCE_ACE_APP_SCAN_PARSE_PROFILE_FAILEd 0x2
 
 using namespace OHOS::ACELite;
 
