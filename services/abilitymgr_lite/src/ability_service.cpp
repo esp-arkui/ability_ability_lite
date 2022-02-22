@@ -14,8 +14,8 @@
  */
 
 #include "ability_service.h"
-#include "../../../appexecfwk_appexecfwk_lite/utils/bundle_lite/aafwk_event_error__id.h"
-#include "../../../appexecfwk_appexecfwk_lite/utils/bundle_lite/aafwk_event_error_code.h"
+#include "../../../appexecfwk/appexecfwk_lite/utils/bundle_lite/aafwk_event_error__id.h"
+#include "../../../appexecfwk/appexecfwk_lite/utils/bundle_lite/aafwk_event_error_code.h"
 #include "ability_errors.h"
 #include "ability_list.h"
 #include "ability_message_id.h"
