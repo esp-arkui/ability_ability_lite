@@ -347,9 +347,9 @@ int32_t AbilityService::CreateAppTask(AbilityRecord *record)
     TSK_INIT_PARAM_S stTskInitParam = {0};
     stTskInitParam.pfnTaskEntry = (TSK_ENTRY_FUNC)(JsAppHost::JsAppTaskHandler);
     stTskInitParam.uwStackSize = TASK_STACK_SIZE;
-    #ifdef AAFWK_STATIC_STACK_SPACE
+#ifdef AAFWK_STATIC_STACK_SPACE
     stTskInitParam.pStackAddr = ptrStackSpace;
-    #endif
+#endif
     stTskInitParam.usTaskPrio = OS_TASK_PRIORITY_LOWEST - APP_TASK_PRI;
     stTskInitParam.pcName = const_cast<char *>("AppTask");
     stTskInitParam.uwResved = 0;
