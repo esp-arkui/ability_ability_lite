@@ -45,7 +45,7 @@ constexpr int32_t TASK_STACK_SIZE = 0x400 * SIZE_COEFFICIENT;
 constexpr int32_t APP_TASK_PRI = 25;
 SliteAbility *g_NativeAbility = nullptr;
 
-#ifdef AAFWK_STATIC_STACK_SPACE
+#ifdef APP_PLATFORM_WATCHGT
 static uint8_t ptrStackSpace[TASK_STACK_SIZE];
 #endif
 
