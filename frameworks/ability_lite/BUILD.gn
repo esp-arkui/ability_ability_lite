@@ -138,7 +138,6 @@ unittest("ability_main_test_lv0") {
     "${aafwk_lite_path}/interfaces/innerkits/abilitymgr_lite"
   ]
 
-  features += [ ":ability_main_test" ]
 }
 
 config("abilitykit_config") {
