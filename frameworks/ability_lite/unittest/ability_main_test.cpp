@@ -43,5 +43,4 @@ namespace OHOS {
         printf("--------AbilityMainTest001  end--------");
         TDD_CASE_END();
     }
-
 }
