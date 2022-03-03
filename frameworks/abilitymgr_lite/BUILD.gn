@@ -12,6 +12,7 @@
 # limitations under the License.
 import("//build/lite/config/component/lite_component.gni")
 import("//build/lite/config/subsystem/aafwk/config.gni")
+import("//build/lite/config/test.gni")
 
 lite_library("abilitymanager") {
   if (ohos_kernel_type == "liteos_m") {
