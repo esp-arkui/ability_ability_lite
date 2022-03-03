@@ -12,6 +12,7 @@
 # limitations under the License.
 import("//build/lite/config/component/lite_component.gni")
 import("//build/lite/config/subsystem/aafwk/config.gni")
+import("//build/lite/config/test.gni")
 import("//build/lite/ndk/ndk.gni")
 
 generate_notice_file("ability_notice_file") {
@@ -164,7 +165,10 @@ lite_component("aafwk_abilitykit_lite") {
     public_configs = [ ":abilitykit_config" ]
   }
 
-  features = [ ":ability" ]
+  features = [
+    ":ability",
+    ":ability_main_test",
+  ]
 }
 
 config("abilitykit_config") {
