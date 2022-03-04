@@ -36,11 +36,11 @@ namespace OHOS {
     void AbilityMainTest::AbilityMainTest001()
     {
         printf("AbilityMainTest setup");
-        TDD_CASE_BEGIN();
+        SetUp();
         const char *token = "launcher";
         auto ret = AbilityMain(token);
         EXPECT_TRUE(ret == 0);
+        TearDown();
         printf("--------AbilityMainTest001  end--------");
-        TDD_CASE_END();
     }
 }

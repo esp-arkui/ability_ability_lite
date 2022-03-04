@@ -1,19 +1,27 @@
+/*
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "gtest/gtest.h"
 #include "../../../interfaces/innerkits/abilitymgr_lite/slite/ability_manager_inner.h"
 
-#define TDD_CASE_BEGIN() SetUp()
-#define TDD_CASE_END() TearDown()
-
-#define HC_SUCCESS 0x00000000
-
 using namespace testing::ext;
 
-typedef int (*StartCheckFunc)(const char *bundleName);
+using int (*StartCheckFunc)(const char *bundleName);
 
-namespace OHOS
-{
-    class AbilityManagerInnerTest : public testing::Test
-    {
+namespace OHOS {
+    class AbilityManagerInnerTest : public testing::Test {
     public:
         void SetUp() override
         {
@@ -39,86 +47,86 @@ namespace OHOS
     void AbilityManagerInnerTest::AbilityManagerInnerTest001()
     {
         printf("AbilityManagerInnerTest setup");
-        TDD_CASE_BEGIN();
+        SetUp();
         StartCheckFunc startChecktCallback = getAbilityCallback();
         auto ret = RegAbilityCallback(startChecktCallback);
-        EXPECT_TRUE(ret == HC_SUCCESS);
+        EXPECT_TRUE(ret == 0);
+        TearDown();
         printf("--------AbilityManagerInnerTest001 RegAbilityCallback end--------");
-        TDD_CASE_END();
     }
 
     void AbilityManagerInnerTest::AbilityManagerInnerTest002()
     {
         printf("--------AbilityManagerInnerTest002 SchedulerLifecycleDone begin--------");
-        TDD_CASE_BEGIN();
+        SetUp();
         int state = 2;
         auto token = 0;
         auto ret = SchedulerLifecycleDone(token, state);
-        EXPECT_TRUE(ret == HC_SUCCESS);
+        EXPECT_TRUE(ret == 0);
+        TearDown();
         printf("--------AbilityManagerInnerTest002 SchedulerLifecycleDone end--------");
-        TDD_CASE_END();
     }
 
     void AbilityManagerInnerTest::AbilityManagerInnerTest003()
     {
         printf("--------AbilityManagerInnerTest003 ForceStopBundle begin--------");
-        TDD_CASE_BEGIN();
+        SetUp();
         auto token = 0;
         auto ret = ForceStopBundle(token);
-        EXPECT_TRUE(ret == HC_SUCCESS);
+        EXPECT_TRUE(ret == 0);
+        TearDown();
         printf("--------AbilityManagerInnerTest003 ForceStopBundle end--------");
-        TDD_CASE_END();
     }
 
     void AbilityManagerInnerTest::AbilityManagerInnerTest004()
     {
         printf("--------AbilityManagerInnerTest004 GetTopAbility begin--------");
-        TDD_CASE_BEGIN();
+        SetUp();
         auto ret = GetTopAbility();
         EXPECT_TRUE(ret == nullptr);
+        TearDown();
         printf("--------AbilityManagerInnerTest004 GetTopAbility end--------");
-        TDD_CASE_END();
     }
 
     void AbilityManagerInnerTest::AbilityManagerInnerTest005()
     {
         printf("--------AbilityManagerInnerTest005 ForceStop begin--------");
-        TDD_CASE_BEGIN();
-        char *bundlename = "com.huawei.launcher";
+        SetUp();
+        char *bundlename = "bundletest";
         auto ret = ForceStop(bundlename);
-        EXPECT_TRUE(ret == HC_SUCCESS);
+        EXPECT_TRUE(ret == 0);
+        TearDown();
         printf("--------AbilityManagerInnerTest005 ForceStop end--------");
-        TDD_CASE_END();
     }
 
     void AbilityManagerInnerTest::AbilityManagerInnerTest006()
     {
         printf("--------AbilityManagerInnerTest006 getAbilityCallback begin--------");
-        TDD_CASE_BEGIN();
+        SetUp();
         auto ret = getAbilityCallback();
         EXPECT_TRUE(ret == nullptr);
+        TearDown();
         printf("--------AbilityManagerInnerTest006 getAbilityCallback end--------");
-        TDD_CASE_END();
     }
 
     void AbilityManagerInnerTest::AbilityManagerInnerTest007()
     {
         printf("--------AbilityManagerInnerTest007 setCleanAbilityDataFlag begin--------");
-        TDD_CASE_BEGIN();
+        SetUp();
         bool cleanFlag = true;
         setCleanAbilityDataFlag(cleanFlag);
+        TearDown();
         printf("--------AbilityManagerInnerTest007 setCleanAbilityDataFlag end--------");
-        TDD_CASE_END();
     }
 
     void AbilityManagerInnerTest::AbilityManagerInnerTest008()
     {
         printf("--------AbilityManagerInnerTest008 getCleanAbilityDataFlag begin--------");
-        TDD_CASE_BEGIN();
+        SetUp();
         auto ret = getCleanAbilityDataFlag();
-        EXPECT_TRUE(ret == HC_SUCCESS);
+        EXPECT_TRUE(ret == 0);
+        TearDown();
         printf("--------AbilityManagerInnerTest008 getCleanAbilityDataFlag end--------");
-        TDD_CASE_END();
     }
 
     void AbilityManagerInnerTest::RunTests()
@@ -132,5 +140,4 @@ namespace OHOS
         void AbilityManagerInnerTest007();
         void AbilityManagerInnerTest008();
     }
-
 }
