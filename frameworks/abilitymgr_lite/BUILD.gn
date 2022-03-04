@@ -76,13 +76,11 @@ lite_library("abilitymanager") {
   ]
 }
 
-
 unittest("ability_manager_inner_test") {
   output_extension = "bin"
   output_dir = "$root_out_dir/test/unittest/ManagerInnerTest_lv0"
 
   sources = [ "//foundation/aafwk/aafwk_lite/frameworks/abilitymgr_lite/unittest/ability_manager_inner_test.cpp" ]
-
 }
 
 lite_component("aafwk_abilityManager_lite") {
