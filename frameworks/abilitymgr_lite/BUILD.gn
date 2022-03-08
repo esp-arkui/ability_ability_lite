@@ -37,6 +37,7 @@ lite_library("abilitymanager") {
     "${aafwk_lite_path}/frameworks/abilitymgr_lite/include",
     "${aafwk_lite_path}/frameworks/want_lite/include",
     "${aafwk_lite_path}/interfaces/innerkits/abilitymgr_lite",
+    "${aafwk_lite_path}/interfaces/innerkits/abilitymgr_lite/slite",
     "${aafwk_lite_path}/interfaces/kits/want_lite",
     "${aafwk_lite_path}/interfaces/kits/ability_lite",
     "${appexecfwk_lite_path}/utils/bundle_lite",
