@@ -92,7 +92,7 @@ namespace OHOS {
     {
         printf("--------AbilityManagerInnerTest005 ForceStop begin--------");
         SetUp();
-        const char *bundlename = "bundletest";
+        char *bundlename = (char *) "bundletest";
         auto ret = ForceStop(bundlename);
         EXPECT_TRUE(ret == 0);
         TearDown();
