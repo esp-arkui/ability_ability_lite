@@ -114,6 +114,11 @@ void AbilityThread::InitUITaskEnv()
         return;
     }
 
+    if(std::experimental::filesystem::exists("/sdcard/data/"))
+    {
+        constexpr static char FONT_PATH[] = "/sdcard/data/";
+    }
+
     HILOG_INFO(HILOG_MODULE_APP, "Hal and UI init");
     GraphicStartUp::Init();
     GraphicStartUp::InitFontEngine(reinterpret_cast<uintptr_t>(g_fontPsramBaseAddr), MIN_FONT_PSRAM_LENGTH,
