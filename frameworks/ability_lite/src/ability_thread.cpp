@@ -114,8 +114,7 @@ void AbilityThread::InitUITaskEnv()
         return;
     }
 
-    if(std::experimental::filesystem::exists("/sdcard/data/"))
-    {
+    if (std::experimental::filesystem::exists("/sdcard/data/")){
         constexpr static char FONT_PATH[] = "/sdcard/data/";
     }
 
