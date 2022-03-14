@@ -57,8 +57,9 @@ constexpr static int DATA_LENGTH = 2048;
 constexpr uint8_t INT_VALUE_TYPE = 6;
 constexpr uint8_t STRING_VALUE_TYPE = 13;
 constexpr uint8_t KEY_VALUE_PAIR_TYPE = 97;
-namespace {
-void ClearWant(Want *want)
+
+
+static void ClearWant(Want *want)
 {
     if (want == nullptr) {
         return;
@@ -72,7 +73,7 @@ void ClearWant(Want *want)
     AdapterFree(want->data);
 }
 
-bool SetWantElement(Want *want, ElementName element)
+static bool SetWantElement(Want *want, ElementName element)
 {
     if (want == nullptr) {
         return false;
@@ -472,4 +473,3 @@ const char *WantToUri(Want want)
     return uri;
 }
 #endif
-}
