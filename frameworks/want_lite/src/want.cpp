@@ -59,7 +59,7 @@ constexpr uint8_t STRING_VALUE_TYPE = 13;
 constexpr uint8_t KEY_VALUE_PAIR_TYPE = 97;
 
 
-static void ClearWant(Want *want)
+void ClearWant(Want *want)
 {
     if (want == nullptr) {
         return;
@@ -73,7 +73,7 @@ static void ClearWant(Want *want)
     AdapterFree(want->data);
 }
 
-static bool SetWantElement(Want *want, ElementName element)
+bool SetWantElement(Want *want, ElementName element)
 {
     if (want == nullptr) {
         return false;

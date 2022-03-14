@@ -111,11 +111,13 @@ private:
  * @param className Indicates the {@link Ability} class name to register.
  */
 #define REGISTER_AA(className)                                                                \
+    do{\
     __attribute__((constructor)) void RegisterAA##className() {                               \
         AbilityLoader::GetInstance().RegisterAbility(#className, []()->Ability* {             \
             return new className;                                                             \
         });                                                                                   \
-    }
+    }\
+     } while(0)
 
 /**
  * @brief Registers the class name of an {@link AbilitySlice} child class.
