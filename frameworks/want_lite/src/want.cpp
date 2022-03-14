@@ -57,7 +57,7 @@ constexpr static int DATA_LENGTH = 2048;
 constexpr uint8_t INT_VALUE_TYPE = 6;
 constexpr uint8_t STRING_VALUE_TYPE = 13;
 constexpr uint8_t KEY_VALUE_PAIR_TYPE = 97;
-namespace OHOS {
+namespace {
 void ClearWant(Want *want)
 {
     if (want == nullptr) {
