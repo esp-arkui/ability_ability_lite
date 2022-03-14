@@ -143,25 +143,25 @@ private:
 
 #define CHECK_RESULT_LOG_CODE(status, code)  \
     do {                                     \
-        if (!((status).IsOk())) {                \
-            status.LogStatus();              \
+        if (!((status).IsOk())) {            \
+            (status).LogStatus();            \
             return code;                     \
         }                                    \
     } while (0)
 
-#define CHECK_RESULT_LOG(status)       \
-    do {                               \
-        if (!((status).IsOk())) {          \
-            status.LogStatus();        \
-            return;                    \
-        }                              \
+#define CHECK_RESULT_LOG(status)             \
+    do {                                     \
+        if (!((status).IsOk())) {            \
+            (status).LogStatus();            \
+            return;                          \
+        }                                    \
     } while (0)
 
-#define CHECK_RESULT(status)           \
-    do {                               \
-        if (!((status).IsOk())) {          \
-            return status;             \
-        }                              \
+#define CHECK_RESULT(status)                 \
+    do {                                     \
+        if (!((status).IsOk())) {            \
+            return status;                   \
+        }                                    \
     } while (0)
 }
 #endif // OHOS_ABILITY_CONST_H

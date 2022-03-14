@@ -79,7 +79,8 @@ int AbilityMsClient::ScheduleAms(const Want *want, uint64_t token, const SvcIden
     }
     IpcIo req;
     char data[IPC_IO_DATA_MAX];
-    IpcIoInit(&req, data, IPC_IO_DATA_MAX, 3);
+    int maxBufferSize = 3;
+    IpcIoInit(&req, data, IPC_IO_DATA_MAX, maxBufferSize);
     if (token != 0) {
         IpcIoPushUint64(&req, token);
     }
