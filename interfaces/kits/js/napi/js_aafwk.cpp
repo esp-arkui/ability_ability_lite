@@ -68,7 +68,7 @@ static int JSAafwkStopAbility(napi_env env, napi_callback_info info)
 {
     napi_status status;
     size_t argc = 1;
-    napi_value args[1] = {0};;
+    napi_value args[1] = {0};
     status = napi_get_cb_info(env, info, &argc, args, NULL, NULL);
     assert(status == napi_ok);
     
