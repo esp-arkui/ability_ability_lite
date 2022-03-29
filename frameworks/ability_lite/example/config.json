@@ -1,6 +1,6 @@
 {
     "app": {
-        "bundleName": "com.huawei.hiability",
+        "bundleName": "com.ohos.hiability",
         "vendor": "huawei",
         "version": {
             "code": 1,

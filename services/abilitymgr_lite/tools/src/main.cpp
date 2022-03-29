@@ -32,7 +32,7 @@ static void PrintUsage()
     printf("\n");
     printf("Options:\n");
     printf(" -h (--help)                Show the help information.             [eg: aa -h]\n");
-    printf(" -p (--bundlename)          Appoint the bundlename name.           [eg: -p com.huawei]\n");
+    printf(" -p (--bundlename)          Appoint the bundlename name.           [eg: -p com.ohos]\n");
     printf(" -n (--abilityname)         Appoint the ability name.              [eg: -n MyAbility]\n");
     printf(" -a (--all)                 [Unnecessary]dump all ability info.    [eg: -a]\n");
     printf(" -e (--extra)               [Unnecessary]extra info when dump.     [eg: -e]\n");

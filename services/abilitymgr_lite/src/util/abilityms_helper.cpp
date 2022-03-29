@@ -24,7 +24,7 @@
 #include "samgr_lite.h"
 
 namespace OHOS {
-const char * const LAUNCHER_BUNDLE_NAME = "com.huawei.launcher";
+const char * const LAUNCHER_BUNDLE_NAME = "com.ohos.launcher";
 const char * const LAUNCHER_ABILITY_NAME = "MainAbility";
 const char * const ACE_ABILITY_NAME = "AceAbility";
 const int MAX_BUNDLE_NAME_SIZE = 128;

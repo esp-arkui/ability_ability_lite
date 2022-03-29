@@ -14,7 +14,6 @@
  */
 
 #include <securec.h>
-#include <cassert>
 #include "ability_manager.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
@@ -46,18 +45,15 @@ static int JSAafwkStartAbility(napi_env env, napi_callback_info info)
     size_t argc = 1;
     napi_value args[1] = {0};
     status = napi_get_cb_info(env, info, &argc, args, NULL, NULL);
-    assert(status == napi_ok);
     
     napi_valuetype types[1];
     status = napi_typeof(env, args[0], types);
-    assert(status == napi_ok);
-    assert(argc == 1 && types[0] == napi_object);
 
     Want want;
     if (memset_s(&want, sizeof(Want), 0x00, sizeof(Want)) != 0) {
         return MEMORY_MALLOC_ERROR;
     }
-    if (GetWantFromNapiValue(env, args[0], want) == false) {
+    if (!GetWantFromNapiValue(env, args[0], want)) {
         return PARAM_CHECK_ERROR;
     }
     StartAbility(&want);
@@ -70,18 +66,15 @@ static int JSAafwkStopAbility(napi_env env, napi_callback_info info)
     size_t argc = 1;
     napi_value args[1] = {0};;
     status = napi_get_cb_info(env, info, &argc, args, NULL, NULL);
-    assert(status == napi_ok);
     
     napi_valuetype types[1];
     status = napi_typeof(env, args[0], types);
-    assert(status == napi_ok);
-    assert(argc == 1 && types[0] == napi_object);
 
     Want want;
     if (memset_s(&want, sizeof(Want), 0x00, sizeof(Want)) != 0) {
         return MEMORY_MALLOC_ERROR;
     }
-    if (GetWantFromNapiValue(env, args[0], want) == false) {
+    if (!GetWantFromNapiValue(env, args[0], want)) {
         return PARAM_CHECK_ERROR;
     }
     StopAbility(&want);
