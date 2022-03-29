@@ -53,15 +53,15 @@ AbilityMsStatus AbilityStopTask::Execute()
         return status;
     } else {
         // Step 2: Ability is bottom in MissionRecord
-        AbilityMsStatus status = AbilityMsStatus::Ok();
+        AbilityMsStatus okStatus = AbilityMsStatus::Ok();
         if (stopAbility->IsBottomPageAbility() &&
             serviceConnects->CountServiceInApp(stopAbility->GetAbilityInfo().bundleName) == 0) {
             // exit process
-            status = stopAbility->ExitApp();
+            okStatus = stopAbility->ExitApp();
         }
         // Step 3: Delete ability from stack
         stackManager.RemovePageAbility(*stopAbility, *abilityMgrContext_);
-        return status;
+        return okStatus;
     }
 }
 }  // namespace OHOS

@@ -71,15 +71,15 @@ void AbilityMgrHandler::ServiceMsgProcess(const Request &request)
             break;
         }
         case AMS_CONNECT_ABILITY_DONE: {
-            auto transParam = reinterpret_cast<AbilityConnectTransParam *>(request.data);
-            ConnectAbilityDone(transParam);
-            delete transParam;
+            auto doneTransParam = reinterpret_cast<AbilityConnectTransParam *>(request.data);
+            ConnectAbilityDone(doneTransParam);
+            delete doneTransParam;
             break;
         }
         case AMS_DISCONNECT_ABILITY: {
-            auto transParam = reinterpret_cast<AbilityConnectTransParam *>(request.data);
-            DisconnectAbility(transParam);
-            delete transParam;
+            auto disTransParam = reinterpret_cast<AbilityConnectTransParam *>(request.data);
+            DisconnectAbility(disTransParam);
+            delete disTransParam;
             break;
         }
         case AMS_DISCONNECT_ABILITY_DONE: {
@@ -95,9 +95,9 @@ void AbilityMgrHandler::ServiceMsgProcess(const Request &request)
             break;
         }
         case AMS_TERMINATE_APP: {
-            char *bundleName = reinterpret_cast<char *>(request.data);
-            TerminateApp(bundleName);
-            AdapterFree(bundleName);
+            char *terminateBundleName = reinterpret_cast<char *>(request.data);
+            TerminateApp(terminateBundleName);
+            AdapterFree(terminateBundleName);
             break;
         }
         case AMS_DUMP_ABILITY: {
@@ -105,9 +105,9 @@ void AbilityMgrHandler::ServiceMsgProcess(const Request &request)
             break;
         }
         case AMS_RESTART_APP: {
-            char *bundleName = reinterpret_cast<char *>(request.data);
-            RestartApp(bundleName);
-            AdapterFree(bundleName);
+            char *restartBundleName = reinterpret_cast<char *>(request.data);
+            RestartApp(restartBundleName);
+            AdapterFree(restartBundleName);
             break;
         }
         default: {

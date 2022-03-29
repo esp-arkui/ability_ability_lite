@@ -444,8 +444,6 @@ void AbilityService::DeleteRecordInfo(uint16_t token)
             osMessageQueueDelete(jsAppQueueId);
             auto jsAppHost = const_cast<JsAppHost *>(record->GetJsAppHost());
             delete jsAppHost;
-            // free all JS native memory after exiting it
-            // CleanTaskMem(taskId)
         }
         // record app info event when stop app
         RecordAbiityInfoEvt(record->GetAppName());

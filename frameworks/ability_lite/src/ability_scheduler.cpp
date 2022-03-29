@@ -86,34 +86,34 @@ int32_t AbilityScheduler::AmsCallback(const IpcContext* context, void *ipcMsg, I
         }
         case SCHEDULER_ABILITY_LIFECYCLE: {
             int state = IpcIoPopInt32(data);
-            uint64_t token = IpcIoPopUint64(data);
+            uint64_t lifecycleToken = IpcIoPopUint64(data);
             int abilityType = IpcIoPopInt32(data);
             Want want = { nullptr, nullptr, nullptr, 0 };
             if (!DeserializeWant(&want, data)) {
                 result = SERIALIZE_ERROR;
                 break;
             }
-            scheduler->PerformTransactAbilityState(want, state, token, abilityType);
+            scheduler->PerformTransactAbilityState(want, state, lifecycleToken, abilityType);
             break;
         }
         case SCHEDULER_ABILITY_CONNECT: {
-            uint64_t token = IpcIoPopUint64(data);
+            uint64_t connectToken = IpcIoPopUint64(data);
             Want want = { nullptr, nullptr, nullptr, 0 };
             if (!DeserializeWant(&want, data)) {
                 result = SERIALIZE_ERROR;
                 break;
             }
-            scheduler->PerformConnectAbility(want, token);
+            scheduler->PerformConnectAbility(want, connectToken);
             break;
         }
         case SCHEDULER_ABILITY_DISCONNECT: {
-            uint64_t token = IpcIoPopUint64(data);
+            uint64_t disconnectToken = IpcIoPopUint64(data);
             Want want = { nullptr, nullptr, nullptr, 0 };
             if (!DeserializeWant(&want, data)) {
                 result = SERIALIZE_ERROR;
                 break;
             }
-            scheduler->PerformDisconnectAbility(want, token);
+            scheduler->PerformDisconnectAbility(want, disconnectToken);
             break;
         }
         case SCHEDULER_APP_EXIT: {
@@ -126,8 +126,8 @@ int32_t AbilityScheduler::AmsCallback(const IpcContext* context, void *ipcMsg, I
                 result = SERIALIZE_ERROR;
                 break;
             }
-            uint64_t token = IpcIoPopUint64(data);
-            scheduler->PerformDumpAbility(want, token);
+            uint64_t dumpToken = IpcIoPopUint64(data);
+            scheduler->PerformDumpAbility(want, dumpToken);
             break;
         }
         default: {
@@ -141,45 +141,45 @@ int32_t AbilityScheduler::AmsCallback(const IpcContext* context, void *ipcMsg, I
 
 void AbilityScheduler::PerformAppInit(const AppInfo &appInfo)
 {
-    auto task = [this, appInfo] {
+    auto initTask = [this, appInfo] {
         scheduler_.PerformAppInit(appInfo);
     };
-    eventHandler_.PostTask(task);
+    eventHandler_.PostTask(initTask);
 }
 
 void AbilityScheduler::PerformTransactAbilityState(const Want &want, int state, uint64_t token, int abilityType)
 {
-    auto task = [this, want, state, token, abilityType] {
+    auto stateTask = [this, want, state, token, abilityType] {
         scheduler_.PerformTransactAbilityState(want, state, token, abilityType);
         ClearWant(const_cast<Want *>(&want));
     };
-    eventHandler_.PostTask(task);
+    eventHandler_.PostTask(stateTask);
 }
 
 void AbilityScheduler::PerformConnectAbility(const Want &want, uint64_t token)
 {
-    auto task = [this, want, token] {
+    auto ConnectTask = [this, want, token] {
         scheduler_.PerformConnectAbility(want, token);
         ClearWant(const_cast<Want *>(&want));
     };
-    eventHandler_.PostTask(task);
+    eventHandler_.PostTask(ConnectTask);
 }
 
 void AbilityScheduler::PerformDisconnectAbility(const Want &want, uint64_t token)
 {
-    auto task = [this, want, token] {
+    auto disconnectTask = [this, want, token] {
         scheduler_.PerformDisconnectAbility(want, token);
         ClearWant(const_cast<Want *>(&want));
     };
-    eventHandler_.PostTask(task);
+    eventHandler_.PostTask(disconnectTask);
 }
 
 void AbilityScheduler::PerformAppExit()
 {
-    auto task = [this] {
+    auto exitTask = [this] {
         scheduler_.PerformAppExit();
     };
-    eventHandler_.PostTask(task);
+    eventHandler_.PostTask(exitTask);
 }
 
 void AbilityScheduler::PerformDumpAbility(const Want &want, uint64_t token)
@@ -191,11 +191,11 @@ void AbilityScheduler::PerformDumpAbility(const Want &want, uint64_t token)
     }
     BinderAcquire(want.sid->ipcContext, want.sid->handle);
 #endif
-    auto task = [this, want, token] {
+    auto dumpTask = [this, want, token] {
         scheduler_.PerformDumpAbility(want, token);
         ClearWant(const_cast<Want *>(&want));
     };
-    eventHandler_.PostTask(task);
+    eventHandler_.PostTask(dumpTask);
 }
 
 void AbilityScheduler::ClearIpcMsg(void *ipcMsg)

@@ -154,8 +154,8 @@ AbilityMsStatus AbilityWorker::ConnectAbility(const AbilityConnectTransParam &co
     }
     AbilityConnectTask connectTask(abilityMgrContext_, *connectParam.GetWant(),
             connectParam.GetSvcIdentity(), connectParam.GetToken());
-    AbilityMsStatus status = connectTask.Execute();
-    return status;
+    AbilityMsStatus executeStatus = connectTask.Execute();
+    return executeStatus;
 }
 
 AbilityMsStatus AbilityWorker::DisconnectAbility(const SvcIdentity &identity, uint64_t token)
