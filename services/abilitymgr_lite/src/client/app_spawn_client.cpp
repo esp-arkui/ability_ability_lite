@@ -74,6 +74,7 @@ AbilityMsStatus AppSpawnClient::CallingInnerSpawnProcess(char *spawnMessage, App
             cJSON_free(spawnMessage);
             return AbilityMsStatus::ProcessStatus("CallingInnerSpawnProcess Initialize unsuccessfully");
         }
+        return;
     }
 
     IpcIo request;
