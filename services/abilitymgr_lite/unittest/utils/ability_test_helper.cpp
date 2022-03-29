@@ -205,7 +205,10 @@ namespace OHOS {
             record->state = static_cast<State>(g_resultString[end + strlen(SLICE_STATE)] - '0');
             sliceList.push_back(record);
         }
-
+        if (sliceList == nullptr) {
+            printf("slice List is null\n");
+            return nullptr;
+        }
         return sliceList;
     }
 

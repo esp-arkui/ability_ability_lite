@@ -151,6 +151,7 @@ Want* AbilityTool::BuildWant()
     if (extra_ != nullptr) {
         SetWantData(want, extra_, strlen(extra_) + 1);
     }
+    
     return want;
 }
 

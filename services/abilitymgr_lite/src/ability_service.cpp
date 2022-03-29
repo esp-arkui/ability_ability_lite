@@ -38,7 +38,7 @@
 using namespace OHOS::ACELite;
 
 namespace OHOS {
-constexpr char LAUNCHER_BUNDLE_NAME[] = "com.huawei.launcher";
+constexpr char LAUNCHER_BUNDLE_NAME[] = "com.ohos.launcher";
 constexpr uint16_t LAUNCHER_TOKEN = 0;
 constexpr int32_t QUEUE_LENGTH = 32;
 constexpr int32_t APP_TASK_PRI = 25;

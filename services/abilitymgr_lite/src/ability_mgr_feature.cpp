@@ -215,7 +215,7 @@ int32 AbilityMgrFeature::StartRemoteAbilityInner(const Want *want, const char *d
 {
     IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(DISTRIBUTED_SCHEDULE_SERVICE, DMSLITE_FEATURE);
     DmsProxy *dmsInterface = NULL;
-    if (iUnknown == NULL) {
+    if (iUnknown == nullptr) {
         return EC_INVALID;
     }
     int32 retVal = iUnknown->QueryInterface(iUnknown, DEFAULT_VERSION, (void**) &dmsInterface);

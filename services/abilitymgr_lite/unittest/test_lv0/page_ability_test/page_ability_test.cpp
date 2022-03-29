@@ -20,7 +20,7 @@
 using namespace testing::ext;
 
 namespace OHOS {
-    constexpr char BUNDLE_NAME[] = "com.huawei.setting";
+    constexpr char BUNDLE_NAME[] = "com.ohos.setting";
     constexpr char ABILITY_NAME[] = "SettingMainAbility";
 
     static Want g_want = {};
