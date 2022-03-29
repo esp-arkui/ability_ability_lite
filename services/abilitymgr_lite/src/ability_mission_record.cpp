@@ -119,7 +119,7 @@ void AbilityMissionRecord::RemovePageAbility(const PageAbilityRecord &target)
 {
     auto iterator = pageAbilityRecords_.begin();
     while (iterator != pageAbilityRecords_.end()) {
-        PageAbilityRecord *oldRecord = *iterator;
+        PageAbilityRecord* oldRecord = *iterator;
         if (oldRecord != nullptr && oldRecord->IsSamePageAbility(target)) {
             break;
         }
@@ -128,9 +128,9 @@ void AbilityMissionRecord::RemovePageAbility(const PageAbilityRecord &target)
 
     // remove from current to top of stack
     while (iterator != pageAbilityRecords_.end()) {
-        PageAbilityRecord* oldRecord = *iterator;
+        PageAbilityRecord* newRecord = *iterator;
         iterator = pageAbilityRecords_.erase(iterator);
-        delete oldRecord;
+        delete newRecord;
     }
 }
 

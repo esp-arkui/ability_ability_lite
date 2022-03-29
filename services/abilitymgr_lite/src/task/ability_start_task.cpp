@@ -71,12 +71,12 @@ AbilityMsStatus AbilityStartTask::Execute()
     }
     // step4: Start ability.
     PRINTD("AbilityStartTask", "topAbility is nullptr or not active");
-    AbilityMsStatus status = targetAbility->StartAbility();
-    if (status.IsProcessError() || status.IsTransactError()) {
+    AbilityMsStatus startStatus = targetAbility->StartAbility();
+    if (startStatus.IsProcessError() || startStatus.IsTransactError()) {
         // Clean page ability record if failure
         stackManager.RemovePageAbility(*targetAbility, *abilityMgrContext_);
     }
-    return status;
+    return startStatus;
 }
 
 AbilityMsStatus AbilityStartTask::StartService()
