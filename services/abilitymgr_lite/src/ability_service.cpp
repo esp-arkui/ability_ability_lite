@@ -14,6 +14,7 @@
  */
 
 #include "ability_service.h"
+#include "dmsfwk_interface.h"
 #include "aafwk_event_error_id.h"
 #include "aafwk_event_error_code.h"
 #include "ability_errors.h"
@@ -116,6 +117,14 @@ int32_t AbilityService::StartAbility(const Want *want)
         info->path = nullptr;
     } else {
         // JS APP
+        DmsProxy *dmsInterface = NULL;
+        CallerInfo callerInfo = {
+            .uid = uid
+        };
+        IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(DISTRIBUTED_SCHEDULE_SERVICE, DMSLITE_FEATURE);
+        int32 retVal = iUnknown->QueryInterface(iUnknown, DEFAULT_VERSION, (void**) &dmsInterface);
+        retVal = dmsInterface->StartRemoteAbility((Want *)want, &callerInfo, NULL);
+
 #ifdef OHOS_APPEXECFWK_BMS_BUNDLEMANAGER
         AbilityInfo abilityInfo = { nullptr, nullptr };
         QueryAbilityInfo(want, &abilityInfo);
@@ -135,7 +144,7 @@ int32_t AbilityService::StartAbility(const Want *want)
         info->path = Utils::Strdup((const char *)want->data);
 #endif
     }
-
+    
     info->data = OHOS::Utils::Memdup(want->data, want->dataLength);
     info->dataLength = want->dataLength;
     auto ret = StartAbility(info);
