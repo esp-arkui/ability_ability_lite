@@ -85,7 +85,6 @@ lite_library("abilityms") {
     "//base/startup/appspawn_lite/services/include",
     "//base/security/permission/interfaces/kits/permission_lite",
     "//base/security/permission/services/permission_lite/pms/include",
-    "//distributedschedule/dms_fwk_lite/interfaces/innerkits",
     "//third_party/bounds_checking_function/include",
     "//utils/native/lite/include",
     "include",
