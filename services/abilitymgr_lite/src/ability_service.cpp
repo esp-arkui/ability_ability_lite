@@ -16,6 +16,7 @@
 #include "ability_service.h"
 #include "aafwk_event_error_id.h"
 #include "aafwk_event_error_code.h"
+#include "dmsfwk_interface.h"
 #include "ability_errors.h"
 #include "ability_list.h"
 #include "ability_message_id.h"
@@ -101,6 +102,14 @@ int32_t AbilityService::StartAbility(const Want *want)
         info->path = nullptr;
     } else {
         // JS APP
+        DmsProxy *dmsInterface = NULL;
+        CallerInfo callerInfo = {
+            .uid = uid
+        };
+        IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(DISTRIBUTED_SCHEDULE_SERVICE, DMSLITE_FEATURE);
+        int32 retVal = iUnknown->QueryInterface(iUnknown, DEFAULT_VERSION, (void**) &dmsInterface);
+        retVal = dmsInterface->StartRemoteAbility((Want *)want, &callerInfo, NULL);
+        
         AbilityInfo abilityInfo = { nullptr, nullptr };
         QueryAbilityInfo(want, &abilityInfo);
         if ((abilityInfo.bundleName == nullptr) || (strlen(abilityInfo.bundleName) == 0) ||
