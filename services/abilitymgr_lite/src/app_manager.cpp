@@ -63,7 +63,7 @@ void AppManager::RemoveAppRecord(const AppRecord &appRecord)
 AbilityMsStatus AppManager::TerminateAppProcess(const char *bundleName)
 {
     AppRecord *current = GetAppRecordByBundleName(bundleName);
-    if (current == nullptr) {
+    if (!current) {
         PRINTI("AppManager", "app record is not find");
         return AbilityMsStatus::Ok();
     }

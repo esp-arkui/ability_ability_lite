@@ -31,7 +31,7 @@ const int MAX_BUNDLE_NAME_SIZE = 128;
 
 bool AbilityMsHelper::IsLauncherAbility(const char *bundleName)
 {
-    if (bundleName == nullptr) {
+    if (!bundleName) {
         PRINTW("AbilityMsHelper", "bundleName is null");
         return false;
     }
@@ -40,7 +40,7 @@ bool AbilityMsHelper::IsLauncherAbility(const char *bundleName)
 
 bool AbilityMsHelper::IsAceAbility(const char *abilityName)
 {
-    if (abilityName == nullptr) {
+    if (!abilityName) {
         PRINTW("AbilityMsHelper", "abilityName is null");
         return false;
     }
@@ -64,10 +64,10 @@ AbilityMsStatus AbilityMsHelper::SetKeepAliveWant(const BundleInfo &bundleInfo, 
         return AbilityMsStatus::HelpStatus("no ability exist");
     }
     ElementName elementName = {};
-    if (bundleInfo.abilityInfos[0].name == nullptr) {
+    if (!bundleInfo.abilityInfos[0].name) {
         return AbilityMsStatus::HelpStatus("abilityName is null");
     }
-    if (bundleInfo.bundleName == nullptr) {
+    if (!bundleInfo.bundleName) {
         return AbilityMsStatus::HelpStatus("bundleName is null");
     }
     SetElementAbilityName(&elementName, bundleInfo.abilityInfos[0].name);
@@ -107,7 +107,7 @@ std::string AbilityMsHelper::AbilityStateToString(State state)
 
 bool AbilityMsHelper::IsLegalBundleName(const char *bundleName)
 {
-    if (bundleName == nullptr) {
+    if (!bundleName) {
         return false;
     }
     int len = strlen(bundleName);
@@ -126,12 +126,12 @@ bool AbilityMsHelper::CheckVisiblePermission(pid_t callingUid, pid_t targetUid, 
         return true;
     }
     IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(BMS_SERVICE, BMS_FEATURE);
-    if (iUnknown == nullptr) {
+    if (!iUnknown) {
         return false;
     }
     BmsServerProxy *bmsServerProxy = nullptr;
     int result = iUnknown->QueryInterface(iUnknown, DEFAULT_VERSION, (void **) &bmsServerProxy);
-    if (result != 0 || bmsServerProxy == nullptr) {
+    if (result != 0 || !bmsServerProxy) {
         return false;
     }
     char *bundleName = nullptr;

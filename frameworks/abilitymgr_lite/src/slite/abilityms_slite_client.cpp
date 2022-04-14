@@ -35,14 +35,14 @@ bool AbilityMsClient::Initialize() const
     int retry = RETRY_TIMES;
     while (retry--) {
         IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(AMS_SERVICE, AMS_SLITE_FEATURE);
-        if (iUnknown == nullptr) {
+        if (!iUnknown) {
             HILOG_ERROR(HILOG_MODULE_APP, "iUnknown is null");
             osDelay(ERROR_SLEEP_TIMES); // sleep 300ms
             continue;
         }
 
         (void)iUnknown->QueryInterface(iUnknown, DEFAULT_VERSION, (void **)&amsProxy_);
-        if (amsProxy_ == nullptr) {
+        if (!amsProxy_) {
             HILOG_ERROR(HILOG_MODULE_APP, "ams proxy is null");
             osDelay(ERROR_SLEEP_TIMES); // sleep 300ms
             continue;
@@ -54,18 +54,18 @@ bool AbilityMsClient::Initialize() const
 
 int AbilityMsClient::StartAbility(const Want *want) const
 {
-    if (want == nullptr || want->element == nullptr || !Initialize()) {
+    if (!want || !(want->element) || !Initialize()) {
         return PARAM_CHECK_ERROR;
     }
 
     AbilityMgrService *service = AbilityMgrService::GetInstance();
-    if (service == nullptr) {
+    if (!service) {
         return PARAM_CHECK_ERROR;
     }
 
     // 申请want内存，在服务端用完释放
     Want *info = static_cast<Want *>(AdapterMalloc(sizeof(Want)));
-    if (info == nullptr) {
+    if (!info) {
         return MEMORY_MALLOC_ERROR;
     }
     info->element = nullptr;
@@ -86,7 +86,7 @@ int AbilityMsClient::StartAbility(const Want *want) const
 int AbilityMsClient::TerminateAbility(uint64_t token) const
 {
     AbilityMgrService *service = AbilityMgrService::GetInstance();
-    if (service == nullptr) {
+    if (!service) {
         return PARAM_CHECK_ERROR;
     }
     Request request = {
@@ -101,7 +101,7 @@ int AbilityMsClient::TerminateAbility(uint64_t token) const
 int AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int state) const
 {
     AbilityMgrService *service = AbilityMgrService::GetInstance();
-    if (service == nullptr) {
+    if (!service) {
         return PARAM_CHECK_ERROR;
     }
     Request request = {
@@ -116,7 +116,7 @@ int AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int state) const
 int AbilityMsClient::ForceStopBundle(uint64_t token) const
 {
     AbilityMgrService *service = AbilityMgrService::GetInstance();
-    if (service == nullptr) {
+    if (!service) {
         return PARAM_CHECK_ERROR;
     }
     Request request = {
@@ -139,7 +139,7 @@ ElementName *AbilityMsClient::GetTopAbility() const
 int AbilityMsClient::ForceStop(char *bundlename) const
 {
     AbilityMgrService *service = AbilityMgrService::GetInstance();
-    if (service == nullptr) {
+    if (!service) {
         return PARAM_CHECK_ERROR;
     }
     char* name = Utils::Strdup(bundlename);

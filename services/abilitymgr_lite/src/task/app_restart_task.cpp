@@ -28,7 +28,7 @@ AppRestartTask::AppRestartTask(AbilityMgrContext *context, const BundleInfo *bun
 AbilityMsStatus AppRestartTask::Execute()
 {
     PRINTD("AppRestartTask", "start");
-    if (abilityMgrContext_ == nullptr || bundleInfo_ == nullptr || bundleInfo_->bundleName == nullptr) {
+    if (!abilityMgrContext_ || !bundleInfo_ || !(bundleInfo_->bundleName)) {
         return AbilityMsStatus::TaskStatus("app terminate", "invalid argument");
     }
 
@@ -41,7 +41,7 @@ AbilityMsStatus AppRestartTask::Execute()
 
     // Step3: Get top page ability
     auto topRecord = const_cast<PageAbilityRecord *>(stackManager.GetTopPageAbility(*abilityMgrContext_));
-    if (topRecord == nullptr) {
+    if (!topRecord) {
         return AbilityMsStatus::NoActiveAbilityStatus("restart app", "start launcher");
     } else {
         // Step4: Active top ability
