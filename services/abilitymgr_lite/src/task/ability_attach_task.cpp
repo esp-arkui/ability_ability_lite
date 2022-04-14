@@ -31,13 +31,13 @@ AbilityAttachTask::~AbilityAttachTask()
 AbilityMsStatus AbilityAttachTask::Execute()
 {
     PRINTD("AbilityAttachTask", "start");
-    if (client_ == nullptr) {
+    if (!client_) {
         return AbilityMsStatus::TaskStatus("Attach", "invalid argument");
     }
     // step1: Get app record by token.
     auto appRecord = const_cast<AppRecord *>(AppManager::GetInstance().GetAppRecordByToken(
         client_->GetToken(), client_->GetPid()));
-    if (appRecord == nullptr) {
+    if (!appRecord) {
         return AbilityMsStatus::TaskStatus("Attach", "appRecord not found");
     }
     // step2: Save ability thread client.

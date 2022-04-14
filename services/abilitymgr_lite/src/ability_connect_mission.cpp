@@ -53,7 +53,7 @@ PageAbilityRecord *AbilityConnectMission::FindServiceRecord(const char *bundleNa
         if (record != nullptr) {
             const char *recordBundleName = record->GetAbilityInfo().bundleName;
             const char *recordAbilityName = record->GetAbilityInfo().name;
-            if (recordBundleName == nullptr || recordAbilityName == nullptr) {
+            if (!recordBundleName || !recordAbilityName) {
                 continue;
             }
             if (strcmp(recordBundleName, bundleName) == 0 && strcmp(recordAbilityName, abilityName) == 0) {
@@ -107,12 +107,12 @@ void AbilityConnectMission::RemoveServiceRecord(const char *bundleName)
 
 int32_t AbilityConnectMission::CountServiceInApp(const char *bundleName)
 {
-    if (bundleName == nullptr) {
+    if (!bundleName) {
         return 0;
     }
     int32_t retVal = 0;
     for (const auto record : serviceRecords_) {
-        if (record == nullptr) {
+        if (!record) {
             continue;
         }
         if (record->GetAbilityInfo().bundleName != nullptr &&

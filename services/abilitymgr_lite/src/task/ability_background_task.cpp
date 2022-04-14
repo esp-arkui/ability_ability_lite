@@ -24,12 +24,12 @@ AbilityBackgroundTask::AbilityBackgroundTask(AbilityMgrContext *context, uint64_
 AbilityMsStatus AbilityBackgroundTask::Execute()
 {
     PRINTD("AbilityBackgroundTask", "start");
-    if (abilityMgrContext_ == nullptr) {
+    if (!abilityMgrContext_) {
         return AbilityMsStatus::TaskStatus("background", "invalid argument");
     }
     AbilityStackManager &stackManager = AbilityStackManager::GetInstance();
     PageAbilityRecord *backgroundAbility = stackManager.FindPageAbility(*abilityMgrContext_, token_);
-    if (backgroundAbility == nullptr) {
+    if (!backgroundAbility) {
         return AbilityMsStatus::TaskStatus("background", "ability record not find");
     }
     backgroundAbility->SetCurrentState(STATE_BACKGROUND);

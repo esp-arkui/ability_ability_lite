@@ -24,7 +24,7 @@ AbilityDumpTask::AbilityDumpTask(AbilityMgrContext *context, const AbilityDumpCl
 AbilityMsStatus AbilityDumpTask::Execute()
 {
     PRINTD("AbilityDumpTask", "start");
-    if (abilityMgrContext_ == nullptr || client_ == nullptr) {
+    if (!abilityMgrContext_ || !client_) {
         return AbilityMsStatus::TaskStatus("dump", "invalid argument");
     }
     AbilityStackManager &stackManager = AbilityStackManager::GetInstance();
@@ -32,7 +32,7 @@ AbilityMsStatus AbilityDumpTask::Execute()
         // If query target ability
         const PageAbilityRecord *targetAbility =
             stackManager.FindPageAbility(*abilityMgrContext_, client_->GetWant());
-        if (targetAbility == nullptr) {
+        if (!targetAbility) {
             return client_->AbilityDumpTransaction("Ability not found\n");
         }
         return targetAbility->DumpAbilitySlice(client_->GetWant());

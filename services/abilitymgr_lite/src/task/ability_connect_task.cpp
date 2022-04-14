@@ -27,13 +27,13 @@ AbilityConnectTask::AbilityConnectTask(AbilityMgrContext *context, const Want &w
 AbilityMsStatus AbilityConnectTask::Execute()
 {
     PRINTD("AbilityConnectTask", "start");
-    if (abilityMgrContext_ == nullptr || want_.element == nullptr) {
+    if (!abilityMgrContext_ || !want_.element) {
         return AbilityMsStatus::TaskStatus("connectTask", "invalid argument");
     }
     AbilityStackManager &stackManager = AbilityStackManager::GetInstance();
     PageAbilityRecord *service = stackManager.FindServiceAbility(*abilityMgrContext_,
         want_.element->bundleName, want_.element->abilityName);
-    if (service == nullptr) {
+    if (!service) {
         return AbilityMsStatus::TaskStatus("connectTask", "service ability does not exists");
     }
     if (service->IsPerformStop()) {
@@ -51,7 +51,7 @@ AbilityMsStatus AbilityConnectTask::PerformConnectTask(PageAbilityRecord *servic
         return AbilityMsStatus::TaskStatus("AbilityConnectTask", "service status has disconnected");
     }
     auto connectRecord = service->GetConnectRecord(connectSid_);
-    if (connectRecord == nullptr) {
+    if (!connectRecord) {
         connectRecord = new AbilityConnectRecord(connectSid_, token_);
         connectRecord->SetStatus(ConnectStatus::CONNECTING);
         service->pushConnectRecord(connectRecord);
