@@ -132,8 +132,7 @@ private:
         AbilityLoader::GetInstance().RegisterAbilitySlice(#className, []()->AbilitySlice* {   \
             return new className;                                                             \
         });                                                                                   \
-    }\
-    }while(0)
+    }}while(0)
 #endif
 } // namespace OHOS
 #endif // OHOS_ABILITY_LOADER_H
