@@ -19,7 +19,7 @@
 namespace OHOS {
 void DeleteViewChildren(UIView *view)
 {
-    if (view == nullptr) {
+    if (!view) {
         return;
     }
     while (view != nullptr) {

@@ -24,12 +24,12 @@ AbilityActivateTask::AbilityActivateTask(AbilityMgrContext *context, uint64_t to
 AbilityMsStatus AbilityActivateTask::Execute()
 {
     PRINTD("AbilityActivateTask", "start");
-    if (abilityMgrContext_ == nullptr) {
+    if (!abilityMgrContext_) {
         return AbilityMsStatus::TaskStatus("activate", "invalid argument");
     }
     AbilityStackManager &stackManager = AbilityStackManager::GetInstance();
     PageAbilityRecord *activeAbility = stackManager.FindPageAbility(*abilityMgrContext_, token_);
-    if (activeAbility == nullptr) {
+    if (!activeAbility) {
         return AbilityMsStatus::TaskStatus("activate", "ability record not found");
     }
     activeAbility->SetCurrentState(STATE_ACTIVE);

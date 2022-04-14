@@ -61,7 +61,7 @@ const Identity *AbilityMgrService::GetIdentity()
 
 BOOL AbilityMgrService::ServiceInitialize(Service *service, Identity identity)
 {
-    if (service == nullptr) {
+    if (!service) {
         return FALSE;
     }
     AbilityMgrService *abilityManagerService = static_cast<AbilityMgrService *>(service);
@@ -71,7 +71,7 @@ BOOL AbilityMgrService::ServiceInitialize(Service *service, Identity identity)
 
 BOOL AbilityMgrService::ServiceMessageHandle(Service *service, Request *request)
 {
-    if (request == nullptr) {
+    if (!request) {
         return FALSE;
     }
 #ifdef __LITEOS_M__

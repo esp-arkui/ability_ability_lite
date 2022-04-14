@@ -79,10 +79,10 @@ void AbilityService::CleanWant()
 
 bool AbilityService::IsValidAbility(AbilityInfo *abilityInfo)
 {
-    if (abilityInfo == nullptr) {
+    if (!abilityInfo) {
         return false;
     }
-    if (abilityInfo->bundleName == nullptr || abilityInfo->srcPath == nullptr) {
+    if (!(abilityInfo->bundleName) || !(abilityInfo->srcPath)) {
         return false;
     }
     if (strlen(abilityInfo->bundleName) == 0 || strlen(abilityInfo->srcPath) == 0) {
@@ -93,19 +93,19 @@ bool AbilityService::IsValidAbility(AbilityInfo *abilityInfo)
 
 int32_t AbilityService::StartAbility(const Want *want)
 {
-    if (want == nullptr || want->element == nullptr) {
+    if (!want || !(want->element)) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability Service wanted element is null");
         return PARAM_NULL_ERROR;
     }
     char *bundleName = want->element->bundleName;
-    if (bundleName == nullptr) {
+    if (!bundleName) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability Service wanted bundleName is null");
         return PARAM_NULL_ERROR;
     }
 
     AbilitySvcInfo *info =
         static_cast<OHOS::AbilitySvcInfo *>(AdapterMalloc(sizeof(AbilitySvcInfo)));
-    if (info == nullptr) {
+    if (!info) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability Service AbilitySvcInfo is null");
         return PARAM_NULL_ERROR;
     }
@@ -148,11 +148,11 @@ int32_t AbilityService::StartAbility(const Want *want)
 
 void AbilityService::UpdataRecord(AbilitySvcInfo *info)
 {
-    if (info == nullptr) {
+    if (!info) {
         return;
     }
     AbilityRecord *record = abilityList_.Get(info->bundleName);
-    if (record == nullptr) {
+    if (!record) {
         return;
     }
     if (record->GetToken() != LAUNCHER_TOKEN) {
@@ -163,13 +163,13 @@ void AbilityService::UpdataRecord(AbilitySvcInfo *info)
 
 int32_t AbilityService::StartAbility(AbilitySvcInfo *info)
 {
-    if ((info == nullptr) || (info->bundleName == nullptr) || (strlen(info->bundleName) == 0)) {
+    if (!info || !(info->bundleName) || (strlen(info->bundleName) == 0)) {
         return PARAM_NULL_ERROR;
     }
     HILOG_INFO(HILOG_MODULE_AAFWK, "StartAbility");
 
     auto topRecord = abilityStack_.GetTopAbility();
-    if ((topRecord == nullptr) || (topRecord->GetAppName() == nullptr)) {
+    if (!topRecord || !(topRecord->GetAppName())) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "StartAbility top null.");
         return PARAM_NULL_ERROR;
     }
@@ -216,7 +216,7 @@ int32_t AbilityService::TerminateAbility(uint16_t token)
 {
     HILOG_INFO(HILOG_MODULE_AAFWK, "TerminateAbility [%{public}u]", token);
     AbilityRecord *topRecord = const_cast<AbilityRecord *>(abilityStack_.GetTopAbility());
-    if (topRecord == nullptr) {
+    if (!topRecord) {
         APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_STOP_NO_ABILITY_RUNNING);
         return PARAM_NULL_ERROR;
     }
@@ -256,7 +256,7 @@ int32_t AbilityService::ForceStopBundle(uint16_t token)
 
     // active the launcher
     AbilityRecord *launcherRecord = abilityList_.Get(LAUNCHER_TOKEN);
-    if (launcherRecord == nullptr) {
+    if (!launcherRecord) {
         return PARAM_NULL_ERROR;
     }
     if (launcherRecord->GetState() != SCHEDULE_ACTIVE) {
@@ -298,7 +298,7 @@ int32_t AbilityService::ForceStopBundleInner(uint16_t token)
 {
     // free js mem and delete the record 
     AbilityRecord *record = abilityList_.Get(token);
-    if (record == nullptr) {
+    if (!record) {
         return PARAM_NULL_ERROR;
     }
     auto jsAppHost = const_cast<JsAppHost *>(record->GetJsAppHost());
@@ -313,7 +313,7 @@ int32_t AbilityService::ForceStopBundleInner(uint16_t token)
 int32_t AbilityService::PreCheckStartAbility(
     const char *bundleName, const char *path, const void *data, uint16_t dataLength)
 {
-    if (path == nullptr) {
+    if (!path) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "PreCheckStartAbility path is null.");
         return PARAM_NULL_ERROR;
     }
@@ -349,7 +349,7 @@ int32_t AbilityService::PreCheckStartAbility(
 bool AbilityService::CheckResponse(const char *bundleName)
 {
     StartCheckFunc callBackFunc = getAbilityCallback();
-    if (callBackFunc == nullptr) {
+    if (!callBackFunc) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "calling ability callback failed: null");
         return true;
     }
@@ -363,7 +363,7 @@ bool AbilityService::CheckResponse(const char *bundleName)
 
 int32_t AbilityService::CreateAppTask(AbilityRecord *record)
 {
-    if ((record == nullptr) || (record->GetAppName() == nullptr)) {
+    if (!record || !(record->GetAppName())) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "CreateAppTask fail: null");
         return PARAM_NULL_ERROR;
     }
@@ -428,7 +428,7 @@ uint16_t AbilityService::GenerateToken()
 void AbilityService::DeleteRecordInfo(uint16_t token)
 {
     AbilityRecord *record = abilityList_.Get(token);
-    if (record == nullptr) {
+    if (!record) {
         return;
     }
     if (token != LAUNCHER_TOKEN) {
@@ -459,7 +459,7 @@ void AbilityService::OnActiveDone(uint16_t token)
     HILOG_INFO(HILOG_MODULE_AAFWK, "OnActiveDone [%{public}u]", token);
     SetAbilityState(token, SCHEDULE_ACTIVE);
     auto topRecord = const_cast<AbilityRecord *>(abilityStack_.GetTopAbility());
-    if (topRecord == nullptr) {
+    if (!topRecord) {
         return;
     }
 
@@ -492,7 +492,7 @@ void AbilityService::OnBackgroundDone(uint16_t token)
     HILOG_INFO(HILOG_MODULE_AAFWK, "OnBackgroundDone [%{public}u]", token);
     SetAbilityState(token, SCHEDULE_BACKGROUND);
     auto topRecord = const_cast<AbilityRecord *>(abilityStack_.GetTopAbility());
-    if (topRecord == nullptr) {
+    if (!topRecord) {
         return;
     }
     // the js background
@@ -526,7 +526,7 @@ void AbilityService::OnDestroyDone(uint16_t token)
         return;
     }
     auto topRecord = abilityStack_.GetTopAbility();
-    if ((topRecord == nullptr) || (topRecord->GetToken() != token)) {
+    if (!topRecord || (topRecord->GetToken() != token)) {
         SetAbilityState(token, SCHEDULE_STOP);
         DeleteRecordInfo(token);
         return;
@@ -555,7 +555,7 @@ void AbilityService::OnDestroyDone(uint16_t token)
 int32_t AbilityService::SchedulerLifecycle(uint64_t token, int32_t state)
 {
     AbilityRecord *record = abilityList_.Get(token);
-    if (record == nullptr) {
+    if (!record) {
         return PARAM_NULL_ERROR;
     }
     return SchedulerLifecycleInner(record, state);
@@ -564,7 +564,7 @@ int32_t AbilityService::SchedulerLifecycle(uint64_t token, int32_t state)
 void AbilityService::SetAbilityState(uint64_t token, int32_t state)
 {
     AbilityRecord *record = abilityList_.Get(token);
-    if (record == nullptr) {
+    if (!record) {
         return;
     }
     record->SetState((AbilityState) state);
@@ -572,7 +572,7 @@ void AbilityService::SetAbilityState(uint64_t token, int32_t state)
 
 int32_t AbilityService::SchedulerLifecycleInner(const AbilityRecord *record, int32_t state)
 {
-    if (record == nullptr) {
+    if (!record) {
         return PARAM_NULL_ERROR;
     }
     // dispatch js life cycle
@@ -581,12 +581,12 @@ int32_t AbilityService::SchedulerLifecycleInner(const AbilityRecord *record, int
         return ERR_OK;
     }
     // dispatch native life cycle
-    if (nativeAbility_ == nullptr) {
+    if (!nativeAbility_) {
         return PARAM_NULL_ERROR;
     }
     // malloc want memory and release after use
     Want *info = static_cast<Want *>(AdapterMalloc(sizeof(Want)));
-    if (info == nullptr) {
+    if (!info) {
         return MEMORY_MALLOC_ERROR;
     }
     info->element = nullptr;
@@ -605,7 +605,7 @@ int32_t AbilityService::SchedulerLifecycleInner(const AbilityRecord *record, int
 
 void AbilityService::SchedulerAbilityLifecycle(SliteAbility *ability, const Want &want, int32_t state)
 {
-    if (ability == nullptr) {
+    if (!ability) {
         return;
     }
     switch (state) {
@@ -636,7 +636,7 @@ int32_t AbilityService::SchedulerLifecycleDone(uint64_t token, int32_t state)
 
 bool AbilityService::SendMsgToJsAbility(int32_t state, const AbilityRecord *record)
 {
-    if (record == nullptr) {
+    if (!record) {
         return false;
     }
 
@@ -664,11 +664,11 @@ ElementName *AbilityService::GetTopAbility()
 {
     auto topRecord = const_cast<AbilityRecord *>(abilityStack_.GetTopAbility());
     AbilityRecord *launcherRecord = abilityList_.Get(LAUNCHER_TOKEN);
-    if (topRecord == nullptr || launcherRecord == nullptr) {
+    if (!topRecord || !launcherRecord) {
         return nullptr;
     }
     ElementName *element = reinterpret_cast<ElementName *>(AdapterMalloc(sizeof(ElementName)));
-    if (element == nullptr || memset_s(element, sizeof(ElementName), 0, sizeof(ElementName)) != EOK) {
+    if (!elementr || memset_s(element, sizeof(ElementName), 0, sizeof(ElementName)) != EOK) {
         AdapterFree(element);
         return nullptr;
     }

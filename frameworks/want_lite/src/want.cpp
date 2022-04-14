@@ -60,7 +60,7 @@ constexpr uint8_t KEY_VALUE_PAIR_TYPE = 97;
 
 void ClearWant(Want *want)
 {
-    if (want == nullptr) {
+    if (!want) {
         return;
     }
 
@@ -74,14 +74,14 @@ void ClearWant(Want *want)
 
 bool SetWantElement(Want *want, ElementName element)
 {
-    if (want == nullptr) {
+    if (!want) {
         return false;
     }
 
     ClearElement(want->element);
     AdapterFree(want->element);
     want->element = reinterpret_cast<ElementName *>(AdapterMalloc(sizeof(ElementName)));
-    if (want->element == nullptr) {
+    if (!(want->element)) {
         return false;
     }
     want->element->deviceId = OHOS::Utils::Strdup(element.deviceId);
@@ -97,7 +97,7 @@ Tlv *EncapTlv(uint8_t type, uint8_t length, const void *value, uint8_t valueLen)
     // Tlv header can only has 2 bytes.
     uint8_t totalLen = valueLen + 2;
     entity = calloc(1, totalLen);
-    if (entity == nullptr) {
+    if (!entity) {
         return nullptr;
     }
 
@@ -125,7 +125,7 @@ Tlv *CombineKeyValueTlv(Tlv *keyTlv, Tlv *valueTlv)
 {
     uint8_t newTlvValueLen = keyTlv->totalLen + valueTlv->totalLen;
     void *newTlvValue = calloc(1, newTlvValueLen);
-    if (newTlvValue == nullptr) {
+    if (!newTlvValue) {
         return nullptr;
     }
     if (memcpy_s((unsigned char *)newTlvValue, keyTlv->totalLen, keyTlv->entity, keyTlv->totalLen) != 0 ||
@@ -145,7 +145,7 @@ bool UpdateWantData(Want *want, Tlv *tlv)
     bool result = false;
     if (want->data != nullptr) {
         void *newWantData = calloc(1, tlv->totalLen + want->dataLength);
-        if (newWantData == nullptr) {
+        if (!newWantData) {
             return result;
         }
         if (memcpy_s(newWantData, want->dataLength, want->data, want->dataLength) != 0 ||
@@ -171,7 +171,7 @@ bool SetIntParam(Want *want, const char *key, uint8_t keyLen, int32_t value)
     }
 
     Tlv *keyTlv = EncapTlv(STRING_VALUE_TYPE, keyLen, (void *)key, keyLen);
-    if (keyTlv == nullptr) {
+    if (!keyTlv) {
         return result;
     }
     if (value < 0) {
@@ -185,14 +185,14 @@ bool SetIntParam(Want *want, const char *key, uint8_t keyLen, int32_t value)
         intBuffer[i] = value >> (8 * (3- i));
     }
     Tlv *valueTlv = EncapTlv(INT_VALUE_TYPE, sizeof(int), (void *)intBuffer, sizeof(int));
-    if (valueTlv == nullptr) {
+    if (!valueTlv) {
         FreeTlvStruct(keyTlv);
         return result;
     }
     Tlv *newTlv = CombineKeyValueTlv(keyTlv, valueTlv);
     FreeTlvStruct(keyTlv);
     FreeTlvStruct(valueTlv);
-    if (newTlv == nullptr) {
+    if (!newTlv) {
         return result;
     }
     if (UpdateWantData(want, newTlv)) {
@@ -211,19 +211,19 @@ bool SetStrParam(Want *want, const char *key, uint8_t keyLen, const char *value,
     }
 
     Tlv *keyTlv = EncapTlv(STRING_VALUE_TYPE, keyLen, (void *)key, keyLen);
-    if (keyTlv == nullptr) {
+    if (!keyTlv) {
         return result;
     }
 
     Tlv *valueTlv = EncapTlv(STRING_VALUE_TYPE, valueLen, (void *)value, valueLen);
-    if (valueTlv == nullptr) {
+    if (!valueTlv) {
         FreeTlvStruct(keyTlv);
         return result;
     }
     Tlv *newTlv = CombineKeyValueTlv(keyTlv, valueTlv);
     FreeTlvStruct(keyTlv);
     FreeTlvStruct(valueTlv);
-    if (newTlv == nullptr) {
+    if (!newTlv) {
         return result;
     }
     if (UpdateWantData(want, newTlv)) {
@@ -237,13 +237,13 @@ bool SetStrParam(Want *want, const char *key, uint8_t keyLen, const char *value,
 #ifdef OHOS_APPEXECFWK_BMS_BUNDLEMANAGER
 bool SetWantSvcIdentity(Want *want, SvcIdentity sid)
 {
-    if (want == nullptr) {
+    if (!want) {
         return false;
     }
 
     AdapterFree(want->sid);
     want->sid = reinterpret_cast<SvcIdentity *>(AdapterMalloc(sizeof(SvcIdentity)));
-    if (want->sid == nullptr) {
+    if (!(want->sid)) {
         return false;
     }
     if (memcpy_s(want->sid, sizeof(SvcIdentity), &sid, sizeof(SvcIdentity)) != EOK) {
@@ -257,13 +257,13 @@ bool SetWantSvcIdentity(Want *want, SvcIdentity sid)
 
 bool SetWantData(Want *want, const void *data, uint16_t dataLength)
 {
-    if (want == nullptr) {
+    if (!want) {
         return false;
     }
 
     AdapterFree(want->data);
     want->data = OHOS::Utils::Memdup(data, dataLength);
-    if (want->data == nullptr) {
+    if (!(want->data)) {
         want->dataLength = 0;
         return false;
     }
@@ -275,11 +275,11 @@ bool SetWantData(Want *want, const void *data, uint16_t dataLength)
 #ifdef OHOS_APPEXECFWK_BMS_BUNDLEMANAGER
 bool SerializeWant(IpcIo *io, const Want *want)
 {
-    if ((io == nullptr) || (want == nullptr) || (want->dataLength > DATA_LENGTH)) {
+    if ((!io) || (!want) || (want->dataLength > DATA_LENGTH)) {
         return false;
     }
 
-    if (want->element == nullptr) {
+    if (!(want->element)) {
         IpcIoPushInt32(io, VALUE_NULL);
     } else {
         IpcIoPushInt32(io, VALUE_OBJECT);
@@ -299,7 +299,7 @@ bool SerializeWant(IpcIo *io, const Want *want)
         IpcIoPushDataBuff(io, &buff);
 #endif
     }
-    if (want->sid == nullptr) {
+    if (!(want->sid)) {
         IpcIoPushInt32(io, VALUE_NULL);
     } else {
         IpcIoPushInt32(io, VALUE_OBJECT);
@@ -311,13 +311,13 @@ bool SerializeWant(IpcIo *io, const Want *want)
 
 bool DeserializeWant(Want *want, IpcIo *io)
 {
-    if ((want == nullptr) || (io == nullptr)) {
+    if ((!want) || (!io)) {
         return false;
     }
 
     if (IpcIoPopInt32(io) == VALUE_OBJECT) {
         want->element = reinterpret_cast<ElementName *>(AdapterMalloc(sizeof(ElementName)));
-        if (want->element == nullptr ||
+        if (!(want->element) ||
             memset_s(want->element, sizeof(ElementName), 0, sizeof(ElementName)) != EOK ||
             !DeserializeElement(want->element, io)) {
             AdapterFree(want->element);
@@ -334,7 +334,7 @@ bool DeserializeWant(Want *want, IpcIo *io)
         }
 #else
         BuffPtr *buff = IpcIoPopDataBuff(io);
-        if (buff == nullptr) {
+        if (!buff) {
             ClearWant(want);
             return false;
         }
@@ -348,7 +348,7 @@ bool DeserializeWant(Want *want, IpcIo *io)
     }
     if (IpcIoPopInt32(io) == VALUE_OBJECT) {
         auto sid = IpcIoPopSvc(io);
-        if ((sid == nullptr) || !SetWantSvcIdentity(want, *sid)) {
+        if ((!sid) || !SetWantSvcIdentity(want, *sid)) {
 #ifdef __LINUX__
             AdapterFree(sid);
             sid = nullptr;
@@ -367,11 +367,11 @@ bool DeserializeWant(Want *want, IpcIo *io)
 
 Want *WantParseUri(const char *uri)
 {
-    if (uri == nullptr) {
+    if (!uri) {
         return nullptr;
     }
     char *parseUri = OHOS::Utils::Strdup(uri);
-    if (parseUri == nullptr) {
+    if (!parseUri) {
         return nullptr;
     }
     ElementName element = { nullptr, nullptr, nullptr };
@@ -385,7 +385,7 @@ Want *WantParseUri(const char *uri)
             break;
         }
         char *endIndex = strchr(beginIndex, URI_SEPARATOR);
-        if ((endIndex == nullptr) || (endIndex <= beginIndex)) {
+        if ((!endIndex) || (endIndex <= beginIndex)) {
             AdapterFree(parseUri);
             return nullptr;
         }
@@ -461,7 +461,7 @@ const char *WantToUri(Want want)
 
     uint16_t len = uriString.size();
     char *uri = reinterpret_cast<char *>(AdapterMalloc(len + 1));
-    if (uri == nullptr) {
+    if (!uri) {
         return nullptr;
     }
     if (strncpy_s(uri, len + 1, uriString.c_str(), len) < 0) {

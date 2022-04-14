@@ -39,8 +39,8 @@ void AbilityStartTask::SetWaitConnect(bool waitConnect)
 AbilityMsStatus AbilityStartTask::Execute()
 {
     PRINTD("AbilityStartTask", "start");
-    if (abilityMgrContext_ == nullptr || want_ == nullptr ||
-        target_ == nullptr || bundleInfo_ == nullptr) {
+    if (!abilityMgrContext_ || !want_ ||
+        !target_ || !bundleInfo_) {
         return AbilityMsStatus::TaskStatus("start", "invalid argument");
     }
     if (target_->abilityType == AbilityType::SERVICE) {
@@ -53,7 +53,7 @@ AbilityMsStatus AbilityStartTask::Execute()
     // Step2: Generate target ability record.
     PageAbilityRecord *targetAbility = stackManager.GeneratePageAbility(
         *target_, *want_, topAbility, *abilityMgrContext_);
-    if (targetAbility == nullptr || targetAbility == topAbility) {
+    if (!targetAbility || targetAbility == topAbility) {
         return AbilityMsStatus::TaskStatus("start", "generate ability record failure");
     }
     targetAbility->SetBundleInfo(*bundleInfo_);
@@ -83,7 +83,7 @@ AbilityMsStatus AbilityStartTask::StartService()
 {
     PRINTD("AbilityStartTask", "start service");
     auto connectMission = const_cast<AbilityConnectMission *>(abilityMgrContext_->GetServiceConnects());
-    if (connectMission == nullptr) {
+    if (!connectMission) {
         return AbilityMsStatus::TaskStatus("start", "invalid argument");
     }
     auto service = connectMission->FindServiceRecord(target_->bundleName, target_->name);

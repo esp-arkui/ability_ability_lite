@@ -26,13 +26,13 @@ AbilityTerminateTask::AbilityTerminateTask(AbilityMgrContext *context, uint64_t 
 AbilityMsStatus AbilityTerminateTask::Execute()
 {
     PRINTD("AbilityTerminateTask", "start");
-    if (abilityMgrContext_ == nullptr) {
+    if (!abilityMgrContext_) {
         return AbilityMsStatus::TaskStatus("ability terminate", "invalid argument");
     }
     // Step1: Get ability record from stack
     AbilityStackManager &stackManager = AbilityStackManager::GetInstance();
     PageAbilityRecord *terminateAbility = stackManager.FindPageAbility(*abilityMgrContext_, token_);
-    if (terminateAbility == nullptr) {
+    if (!terminateAbility) {
         return AbilityMsStatus::TaskStatus("ability terminate", "ability record not find");
     }
     if (terminateAbility->GetAbilityInfo().abilityType == AbilityType::SERVICE) {

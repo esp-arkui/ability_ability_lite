@@ -27,11 +27,11 @@ BundleMsClient::~BundleMsClient()
 AbilityMsStatus BundleMsClient::Initialize()
 {
     IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(BMS_SERVICE, BMS_FEATURE);
-    if (iUnknown == nullptr) {
+    if (!iUnknown) {
         return AbilityMsStatus::BmsQueryStatus("get bms feature api failure");
     }
     int result = iUnknown->QueryInterface(iUnknown, DEFAULT_VERSION, (void **) &bmsServerProxy_);
-    if (result != 0 || bmsServerProxy_ == nullptr) {
+    if (result != 0 || !bmsServerProxy_) {
         return AbilityMsStatus::BmsQueryStatus("get bms interface failure");
     }
     return AbilityMsStatus::Ok();
@@ -39,7 +39,7 @@ AbilityMsStatus BundleMsClient::Initialize()
 
 AbilityMsStatus BundleMsClient::QueryAbilityInfo(const Want *want, AbilityInfo *result) const
 {
-    if (bmsServerProxy_ == nullptr) {
+    if (!bmsServerProxy_) {
         return AbilityMsStatus::BmsQueryStatus("bms server proxy is nullptr");
     }
     if (bmsServerProxy_->QueryAbilityInfo(want, result) != ERR_OK) {
@@ -51,7 +51,7 @@ AbilityMsStatus BundleMsClient::QueryAbilityInfo(const Want *want, AbilityInfo *
 
 AbilityMsStatus BundleMsClient::QueryBundleInfo(const char* bundleName, BundleInfo *bundleInfo) const
 {
-    if (bmsServerProxy_ == nullptr) {
+    if (!bmsServerProxy_) {
         return AbilityMsStatus::BmsQueryStatus("bms service proxy is nullptr");
     }
     if (bmsServerProxy_->GetBundleInfo(bundleName, 1, bundleInfo) != ERR_OK) {
@@ -62,7 +62,7 @@ AbilityMsStatus BundleMsClient::QueryBundleInfo(const char* bundleName, BundleIn
 
 AbilityMsStatus BundleMsClient::QueryKeepAliveBundleInfos(BundleInfo **bundleInfos, int32_t *len) const
 {
-    if (bmsServerProxy_ == nullptr) {
+    if (!bmsServerProxy_) {
         return AbilityMsStatus::BmsQueryStatus("bms service proxy is nullptr");
     }
     if (bmsServerProxy_->QueryKeepAliveBundleInfos(bundleInfos, len) != ERR_OK) {

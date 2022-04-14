@@ -34,14 +34,14 @@ void WMSClient::WaitUntilWmsReady()
 {
     PRINTI("WMSClient", "wait for window manager service start");
     IClientProxy *wmsProxy = nullptr;
-    while (wmsProxy == nullptr) {
+    while (!wmsProxy) {
         IUnknown *iUnknown = SAMGR_GetInstance()->GetDefaultFeatureApi(SERVICE_NAME);
-        if (iUnknown == nullptr) {
+        if (!iUnknown) {
             usleep(RETRY_SLEEP_TIMES);
             continue;
         }
         int result = iUnknown->QueryInterface(iUnknown, CLIENT_PROXY_VER, (void **)(&wmsProxy));
-        if (result != EC_SUCCESS || wmsProxy == nullptr) {
+        if (result != EC_SUCCESS || !wmsProxy) {
             usleep(RETRY_SLEEP_TIMES);
             continue;
         }

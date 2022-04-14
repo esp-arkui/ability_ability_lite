@@ -37,7 +37,7 @@ int AbilityStack::GetAllAbilities(AbilityRecord **abilityRecords)
     auto ars = new AbilityRecord[size];
     *abilityRecords = ars;
     for (auto node = abilityStack_.Begin(); node != abilityStack_.End(); node = node->next_) {
-        if (node->value_ == nullptr) {
+        if (!(node->value_)) {
             continue;
         }
         AbilityRecord::CopyAbilityRecord(*(node->value_), *ars);

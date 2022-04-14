@@ -31,15 +31,15 @@ AbilityTerminateServiceTask::~AbilityTerminateServiceTask()
 AbilityMsStatus AbilityTerminateServiceTask::Execute()
 {
     PRINTD("AbilityTerminateServiceTask", "start");
-    if (abilityMgrContext_ == nullptr || target_ == nullptr) {
+    if (!abilityMgrContext_ || !target_) {
         return AbilityMsStatus::TaskStatus("terminateService", "invalid argument");
     }
     auto serviceConnects = abilityMgrContext_->GetServiceConnects();
-    if (serviceConnects == nullptr) {
+    if (!serviceConnects) {
         return AbilityMsStatus::TaskStatus("terminateService", "invalid argument");
     }
     auto service = serviceConnects->FindServiceRecord(target_->bundleName, target_->name);
-    if (service == nullptr) {
+    if (!service) {
         return AbilityMsStatus::TaskStatus("terminateService", "service does not exists");
     }
     if (service->GetCurrentState() == STATE_UNINITIALIZED) {

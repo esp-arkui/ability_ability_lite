@@ -24,15 +24,15 @@ AbilityDisconnectTask::AbilityDisconnectTask(AbilityMgrContext *context, const S
 AbilityMsStatus AbilityDisconnectTask::Execute()
 {
     PRINTD("AbilityDisconnectTask", "start");
-    if (abilityMgrContext_ == nullptr) {
+    if (!abilityMgrContext_) {
         return AbilityMsStatus::TaskStatus("disconnectTask", "invalid argument");
     }
     auto serviceConnects = abilityMgrContext_->GetServiceConnects();
-    if (serviceConnects == nullptr) {
+    if (!serviceConnects) {
         return AbilityMsStatus::TaskStatus("disconnectTask", "invalid argument");
     }
     auto service = serviceConnects->FindServiceRecord(identity_, token_);
-    if (service == nullptr) {
+    if (!service) {
         return AbilityMsStatus::TaskStatus("disconnectTask", "service is not exists");
     }
     return service->DisconnectAbility(identity_);

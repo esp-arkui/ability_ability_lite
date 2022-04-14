@@ -120,7 +120,7 @@ const SvcIdentity *Ability::OnConnect(const Want &want)
 {
     HILOG_INFO(HILOG_MODULE_APP, "Ability Connect");
     sid_ = static_cast<SvcIdentity *>(AdapterMalloc(sizeof(SvcIdentity)));
-    if (sid_ == nullptr) {
+    if (!sid_) {
         HILOG_ERROR(HILOG_MODULE_APP, "malloc memory error, sid_ is null");
         return nullptr;
     }
@@ -147,7 +147,7 @@ void Ability::OnDisconnect(const Want &want)
 #ifdef ABILITY_WINDOW_SUPPORT
 void Ability::SetMainRoute(const std::string &entry)
 {
-    if (abilitySliceManager_ == nullptr) {
+    if (!abilitySliceManager_) {
         HILOG_ERROR(HILOG_MODULE_APP, "AbilitySliceManager is null, fail to set main route");
         exit(-1);
     }
@@ -157,7 +157,7 @@ void Ability::SetMainRoute(const std::string &entry)
 
 void Ability::SetUIContent(RootView *rootView)
 {
-    if (abilityWindow_ == nullptr) {
+    if (!abilityWindow_) {
         HILOG_ERROR(HILOG_MODULE_APP, "AbilityWindow is null, fail to SetUIContent");
         exit(-1);
     }
@@ -218,12 +218,12 @@ std::string Ability::GetDumpInfo() const
 #ifdef ABILITY_WINDOW_SUPPORT
 void Ability::DeliverAbilityLifecycle(Action action, const Want *want)
 {
-    if (abilitySliceManager_ == nullptr) {
+    if (!abilitySliceManager_) {
         HILOG_WARN(HILOG_MODULE_APP, "AbilitySliceManager is null, no need to dispatch lifecycle state change");
         return;
     }
 
-    if ((action == START || action == ACTIVE) && want == nullptr) {
+    if ((action == START || action == ACTIVE) && !want) {
         HILOG_ERROR(HILOG_MODULE_APP, "want is null");
         return;
     }
@@ -254,7 +254,7 @@ void Ability::DeliverAbilityLifecycle(Action action, const Want *want)
 int32_t Ability::MsgHandleInner(const IpcContext* context, void *ipcMsg, IpcIo *data, void *arg)
 {
     auto ability = static_cast<Ability *>(arg);
-    if (ability == nullptr) {
+    if (!ability) {
         HILOG_INFO(HILOG_MODULE_APP, "handle message error, ability is null");
         FreeBuffer(nullptr, ipcMsg);
         return LITEIPC_EINVAL;

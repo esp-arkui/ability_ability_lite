@@ -20,16 +20,16 @@
 namespace OHOS {
 void AbilityWindow::SetRootView(RootView *rootView, int16_t x, int16_t y)
 {
-    if (rootView == nullptr) {
+    if (!rootView) {
         return;
     }
 
-    if (window_ == nullptr) {
+    if (!window_) {
         WindowConfig config = {};
         config.rect = rootView->GetRect();
         config.rect.SetPosition(x, y);
         window_ = Window::CreateWindow(config);
-        if (window_ == nullptr) {
+        if (!window_) {
             return;
         }
     } else {
@@ -47,7 +47,7 @@ void AbilityWindow::SetRootView(RootView *rootView, int16_t x, int16_t y)
 
 void AbilityWindow::EnsureLatestUIAttached() const
 {
-    if (!isWindowAttached_ || (window_ == nullptr)) {
+    if (!isWindowAttached_ || (!window_)) {
         HILOG_ERROR(HILOG_MODULE_APP, "Should SetUIContent before slice active");
         exit(-1);
     }

@@ -45,11 +45,11 @@ const Want &AbilityDumpClient::GetWant() const
 
 AbilityMsStatus AbilityDumpClient::AbilityDumpTransaction(const char *info) const
 {
-    if (want_.sid == nullptr) {
+    if (!(want_.sid)) {
         return AbilityMsStatus::DumpStatus("null SvcIdentity");
     }
     PRINTD("AbilityThreadClient", "start");
-    if (info == nullptr) {
+    if (!info) {
         info = "";
     }
     IpcIo req;

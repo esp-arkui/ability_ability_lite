@@ -48,7 +48,7 @@ void AbilityRecord::SetAppData(const void *appData, uint16_t dataLength)
 {
     AdapterFree(appData_);
     appData_ = Utils::Memdup(appData, dataLength);
-    if (appData == nullptr) {
+    if (!appData) {
         dataLength_ = 0;
         return;
     }

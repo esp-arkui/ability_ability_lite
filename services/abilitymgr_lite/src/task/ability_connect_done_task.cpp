@@ -24,12 +24,12 @@ AbilityConnectDoneTask::AbilityConnectDoneTask(AbilityMgrContext *context, const
 AbilityMsStatus AbilityConnectDoneTask::Execute()
 {
     PRINTD("AbilityConnectDoneTask", "start");
-    if (abilityMgrContext_ == nullptr) {
+    if (!abilityMgrContext_) {
         return AbilityMsStatus::TaskStatus("connectTaskDone", "invalid argument");
     }
     AbilityStackManager &stackManager = AbilityStackManager::GetInstance();
     PageAbilityRecord *service = stackManager.FindServiceAbility(*abilityMgrContext_, token_);
-    if (service == nullptr) {
+    if (!service) {
         return AbilityMsStatus::TaskStatus("connectTaskDone", "service ability dose not exists");
     }
     if (service->IsPerformStop()) {

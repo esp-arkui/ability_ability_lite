@@ -50,12 +50,12 @@ AbilityThreadClient::~AbilityThreadClient()
 
 AbilityMsStatus AbilityThreadClient::Initialize(const char *bundleName)
 {
-    if (bundleName == nullptr) {
+    if (!bundleName) {
         return AbilityMsStatus::AppTransanctStatus("bundleName is null");
     }
     AppInfo *appInfo = new AppInfo();
     appInfo->bundleName = Utils::Strdup(bundleName);
-    if (appInfo->bundleName == nullptr) {
+    if (!(appInfo->bundleName)) {
         delete appInfo;
         return AbilityMsStatus::AppTransanctStatus("memory alloc fail");
     }
@@ -109,7 +109,7 @@ AbilityMsStatus AbilityThreadClient::AbilityTransaction(const TransactionState &
 AbilityMsStatus AbilityThreadClient::AppInitTransaction(const BundleInfo &bundleInfo)
 {
     PRINTD("AbilityThreadClient", "start");
-    if (bundleInfo.bundleName == nullptr || bundleInfo.codePath == nullptr ||
+    if (!(bundleInfo.bundleName) || !(bundleInfo.codePath) ||
         bundleInfo.numOfModule > MAX_MODULE_SIZE) {
         return AbilityMsStatus::AppTransanctStatus("app init invalid argument");
     }

@@ -87,7 +87,7 @@ AbilityMgrFeature::AbilityMgrFeature() : Feature(), identity_()
 int32 AbilityMgrFeature::Invoke(IServerProxy *iProxy, int funcId, void *origin, IpcIo *req, IpcIo *reply)
 {
     PRINTI("AbilityMgrFeature", "ams invoke called");
-    if (req == nullptr) {
+    if (!req) {
         return EC_INVALID;
     }
     if (funcId >= START_ABILITY && funcId < INNER_BEGIN) {
@@ -118,7 +118,7 @@ void AbilityMgrFeature::OnFeatureStop(Feature *feature, Identity identity)
 
 BOOL AbilityMgrFeature::OnFeatureMessage(Feature *feature, Request *request)
 {
-    if (feature == nullptr || request == nullptr) {
+    if (!feature || !request) {
         return FALSE;
     }
 
@@ -153,7 +153,7 @@ int32 AbilityMgrFeature::StartAbilityInvoke(const void *origin, IpcIo *req)
     if (!DeserializeWant(&want, req)) {
         return EC_FAILURE;
     }
-    if (want.element == nullptr) {
+    if (!(want.element)) {
         PRINTE("AbilityMgrFeature", "invalid argument");
         return EC_INVALID;
     }
@@ -177,7 +177,7 @@ int32 AbilityMgrFeature::StartAbilityWithCbInvoke(const void *origin, IpcIo *req
         return EC_INVALID;
     }
     SvcIdentity *svcIdentity = IpcIoPopSvc(req);
-    if (svcIdentity == nullptr) {
+    if (!svcIdentity) {
         svc_ = {0};
         return EC_INVALID;
     }
@@ -191,7 +191,7 @@ int32 AbilityMgrFeature::StartAbilityWithCbInvoke(const void *origin, IpcIo *req
     if (!DeserializeWant(&want, req)) {
         return EC_FAILURE;
     }
-    if (want.element == nullptr) {
+    if (!want.element) {
         PRINTE("AbilityMgrFeature", "invalid argument");
         return EC_INVALID;
     }
@@ -215,7 +215,7 @@ int32 AbilityMgrFeature::StartRemoteAbilityInner(const Want *want, const char *d
 {
     IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(DISTRIBUTED_SCHEDULE_SERVICE, DMSLITE_FEATURE);
     DmsProxy *dmsInterface = NULL;
-    if (iUnknown == NULL) {
+    if (!iUnknown) {
         return EC_INVALID;
     }
     int32 retVal = iUnknown->QueryInterface(iUnknown, DEFAULT_VERSION, (void**) &dmsInterface);
@@ -227,7 +227,7 @@ int32 AbilityMgrFeature::StartRemoteAbilityInner(const Want *want, const char *d
     };
 
     if (callback != nullptr) {
-        if (myCallback_ == nullptr) {
+        if (!myCallback_) {
             myCallback_ = new IDmsListener();
         }
         myCallback_ -> OnResultCallback = callback;
@@ -240,7 +240,7 @@ int32 AbilityMgrFeature::StartRemoteAbilityInner(const Want *want, const char *d
 
 int32 AbilityMgrFeature::StartAbilityInner(const Want *want, pid_t callingUid)
 {
-    if (want == nullptr || want->element == nullptr) {
+    if (!want || !(want->element)) {
         PRINTE("AbilityMgrFeature", "invalid argument");
         return EC_INVALID;
     }
@@ -320,7 +320,7 @@ int32 AbilityMgrFeature::AttachBundleInvoke(const void *origin, IpcIo *req)
 {
     uint64_t token = IpcIoPopUint64(req);
     SvcIdentity *svcIdentity = IpcIoPopSvc(req);
-    if (svcIdentity == nullptr) {
+    if (!svcIdentity) {
         return EC_INVALID;
     }
 #ifdef __LINUX__
@@ -391,7 +391,7 @@ int32 AbilityMgrFeature::ConnectAbility(const Want *want, SvcIdentity *svc, uint
 
 int32 AbilityMgrFeature::ConnectAbilityInner(const Want *want, SvcIdentity *svc, uint64_t token, pid_t callingUid)
 {
-    if (want == nullptr || want->element == nullptr || svc == nullptr) {
+    if (!want || !(want->element) || !svc) {
         return EC_INVALID;
     }
     Want *data = new Want();
@@ -433,7 +433,7 @@ int32 AbilityMgrFeature::DisconnectAbilityInvoke(const void *origin, IpcIo *req)
 
 int32 AbilityMgrFeature::DisconnectAbility(SvcIdentity *svc, uint64_t token)
 {
-    if (svc == nullptr) {
+    if (!svc) {
         return EC_INVALID;
     }
     auto transParam = new AbilityConnectTransParam(nullptr, *svc, token);
@@ -459,7 +459,7 @@ int32 AbilityMgrFeature::ConnectAbilityDoneInvoke(const void *origin, IpcIo *req
 {
     uint64_t token = IpcIoPopUint64(req);
     SvcIdentity *sid = IpcIoPopSvc(req);
-    if (sid == nullptr) {
+    if (!sid) {
         return EC_INVALID;
     }
     auto transParam = new AbilityConnectTransParam(nullptr, *sid, token);
@@ -523,7 +523,7 @@ int32 AbilityMgrFeature::StopAbility(const Want *want)
 
 int32 AbilityMgrFeature::StopAbilityInner(const Want *want, pid_t callingUid)
 {
-    if (want == nullptr || want->element == nullptr) {
+    if (!want || !(want->element)) {
         PRINTE("AbilityMgrFeature", "invalid argument");
         return EC_INVALID;
     }
@@ -560,7 +560,7 @@ int32 AbilityMgrFeature::RestartApp(const char *bundleName)
         return EC_INVALID;
     }
     char *name = Utils::Strdup(bundleName);
-    if (name == nullptr) {
+    if (!name) {
         return EC_NOMEMORY;
     }
     Request request = {
@@ -580,7 +580,7 @@ int32 AbilityMgrFeature::RestartApp(const char *bundleName)
 int32 AbilityMgrFeature::AppDeathNotify(const IpcContext* context, void *ipcMsg, IpcIo *data, void *arg)
 {
     AppInfo *appInfo = reinterpret_cast<AppInfo *>(arg);
-    if (appInfo == nullptr) {
+    if (!appInfo) {
         return EC_INVALID;
     }
 #ifdef __LINUX__

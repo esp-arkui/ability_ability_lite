@@ -84,7 +84,7 @@ void AbilityMgrSliteFeature::OnFeatureStop(Feature *feature, Identity identity)
 
 BOOL AbilityMgrSliteFeature::OnFeatureMessage(Feature *feature, Request *request)
 {
-    if (feature == nullptr || request == nullptr) {
+    if (!feature || !request) {
         return FALSE;
     }
     return TRUE;

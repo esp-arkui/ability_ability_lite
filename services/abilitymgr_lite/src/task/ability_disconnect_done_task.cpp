@@ -24,12 +24,12 @@ AbilityDisconnectDoneTask::AbilityDisconnectDoneTask(AbilityMgrContext *context,
 AbilityMsStatus AbilityDisconnectDoneTask::Execute()
 {
     PRINTD("AbilityDisconnectDoneTask", "start");
-    if (abilityMgrContext_ == nullptr) {
+    if (!abilityMgrContext_) {
         return AbilityMsStatus::TaskStatus("disconnectTaskDone", "invalid argument");
     }
     AbilityStackManager &stackManager = AbilityStackManager::GetInstance();
     PageAbilityRecord *service = stackManager.FindServiceAbility(*abilityMgrContext_, token_);
-    if (service == nullptr) {
+    if (!service) {
         return AbilityMsStatus::TaskStatus("disconnectTaskDone", "service ability does not exists");
     }
     if (service->IsPerformStop()) {

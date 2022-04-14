@@ -333,7 +333,7 @@ void AbilityMgrHandler::TerminateService(Want *want, pid_t callingUid)
 
 void AbilityMgrHandler::StartAbilityCallback(const Want *want, int code)
 {
-    if ((want == nullptr) || (want->sid == nullptr) || (code == EC_SUCCESS)) {
+    if (!want || !(want->sid) || (code == EC_SUCCESS)) {
         return;
     }
     PRINTI("AbilityMgrHandler", "start ability failed callback");
@@ -363,7 +363,7 @@ void AbilityMgrHandler::DumpAbility(const AbilityDumpClient *client)
 
 void AbilityMgrHandler::ConnectAbilityCallback(AbilityConnectTransParam *transParam, int code)
 {
-    if (transParam == nullptr || code == EC_SUCCESS) {
+    if (!transParam || code == EC_SUCCESS) {
         return;
     }
     PRINTI("AbilityMgrHandler", "connect ability failed");

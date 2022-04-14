@@ -32,7 +32,7 @@ void AbilitySlice::Init(AbilitySliceManager &abilitySliceManager)
 
 void AbilitySlice::Present(AbilitySlice &abilitySlice, const Want &want)
 {
-    if (abilitySliceManager_ == nullptr) {
+    if (!abilitySliceManager_) {
         HILOG_ERROR(HILOG_MODULE_APP, "AbilitySlice Present failed");
         return;
     }
@@ -41,7 +41,7 @@ void AbilitySlice::Present(AbilitySlice &abilitySlice, const Want &want)
 
 void AbilitySlice::Terminate()
 {
-    if (abilitySliceManager_ == nullptr) {
+    if (!abilitySliceManager_) {
         HILOG_ERROR(HILOG_MODULE_APP, "AbilitySlice Terminate failed");
         return;
     }
@@ -50,7 +50,7 @@ void AbilitySlice::Terminate()
 
 void AbilitySlice::SetUIContent(RootView *rootView)
 {
-    if (abilitySliceManager_ == nullptr) {
+    if (!abilitySliceManager_) {
         HILOG_ERROR(HILOG_MODULE_APP, "AbilitySlice SetUIContent failed");
         return;
     }

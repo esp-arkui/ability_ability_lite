@@ -29,12 +29,12 @@ PageAbilityRecord *AbilityStackManager::GeneratePageAbility(const AbilityInfo &t
     AbilityMissionRecord *targetMission = stack->GetTargetMissionRecord(target.bundleName);
     auto topMissionRecord = stack->GetTopMissionRecord();
     /* launcher -> default or default -> launcher */
-    if (topAbility == nullptr || AbilityMsHelper::IsAceAbility(target.name) ||
+    if (!topAbility || AbilityMsHelper::IsAceAbility(target.name) ||
         (!topAbility->IsLauncherAbility() && AbilityMsHelper::IsLauncherAbility(target.bundleName)) ||
         (topAbility->IsLauncherAbility() && !AbilityMsHelper::IsLauncherAbility(target.bundleName))) {
         // Get the mission record of the current bundleName
         PRINTD("AbilityStackManager", "launcher jumps to default or default jumps to launcher");
-        if (targetMission == nullptr) {
+        if (!targetMission) {
             targetMission = new AbilityMissionRecord(stack, target.bundleName);
             targetAbility = new PageAbilityRecord(target, want);
             targetMission->PushPageAbility(*targetAbility);
@@ -45,7 +45,7 @@ PageAbilityRecord *AbilityStackManager::GeneratePageAbility(const AbilityInfo &t
         }
     } else {
         PRINTD("AbilityStackManager", "default application jumps to another default");
-        if (targetMission == nullptr) {
+        if (!targetMission) {
             targetMission = new AbilityMissionRecord(stack, target.bundleName);
             stack->PushTopMissionRecord(*targetMission);
             targetAbility = new PageAbilityRecord(target, want);
@@ -146,7 +146,7 @@ PageAbilityRecord *AbilityStackManager::FindPageAbility(const AbilityMgrContext 
     }
 
     // find service ability
-    if (record == nullptr) {
+    if (!record) {
         auto serviceConnects = amsContext.GetServiceConnects();
         if (serviceConnects != nullptr) {
             record = serviceConnects->FindServiceRecord(token);
@@ -193,7 +193,7 @@ const PageAbilityRecord *AbilityStackManager::GetPrevPageAbility(const AbilityMg
 bool AbilityStackManager::ExistAppInStack(const AbilityInfo &target, AbilityMgrContext &amsContext) const
 {
     auto stack = amsContext.GetTargetMissionStack(target.bundleName);
-    if (stack == nullptr) {
+    if (!stack) {
         return false;
     }
     AbilityMissionRecord *targetMission = stack->GetTargetMissionRecord(target.bundleName);
