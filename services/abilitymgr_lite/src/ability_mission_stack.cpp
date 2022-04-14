@@ -73,7 +73,7 @@ void AbilityMissionStack::RemoveMissionRecord(AbilityConnectMission *connectMiss
 
 bool AbilityMissionStack::IsTopMissionRecord(const char *bundleName) const
 {
-    if (bundleName == nullptr) {
+    if (!bundleName) {
         return false;
     }
     AbilityMissionRecord *topMissionRecord = missionRecords_.back();
@@ -102,7 +102,7 @@ const AbilityMissionRecord *AbilityMissionStack::GetTopMissionRecord() const
 PageAbilityRecord *AbilityMissionStack::FindPageAbility(uint64_t token) const
 {
     for (const auto missionRecord : missionRecords_) {
-        if (missionRecord == nullptr) {
+        if (!missionRecord) {
             continue;
         }
         PageAbilityRecord *record = missionRecord->FindPageAbility(token);

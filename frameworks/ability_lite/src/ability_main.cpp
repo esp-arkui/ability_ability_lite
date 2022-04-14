@@ -28,7 +28,7 @@ namespace {
 
 int AbilityMain(const char *token)
 {
-    if (token == nullptr) {
+    if (!token) {
         return -1;
     }
 
@@ -37,7 +37,7 @@ int AbilityMain(const char *token)
     errno = 0;
     uint64_t tokenId = std::strtoull(token, &endPtr, HEX);
     if ((errno == ERANGE && tokenId == ULLONG_MAX) || (errno != 0 && tokenId == 0) ||
-        endPtr == nullptr || *endPtr != '\0') {
+        !endPtr || *endPtr != '\0') {
         HILOG_ERROR(HILOG_MODULE_APP, "token is invalid");
         return -1;
     }

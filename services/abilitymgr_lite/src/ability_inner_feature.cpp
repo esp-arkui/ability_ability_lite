@@ -72,7 +72,7 @@ AbilityInnerFeature::AbilityInnerFeature() : Feature(), identity_()
 int32 AbilityInnerFeature::Invoke(IServerProxy *iProxy, int funcId, void *origin, IpcIo *req, IpcIo *reply)
 {
     PRINTI("AbilityInnerFeature", "ams invoke called");
-    if (req == nullptr) {
+    if (!req) {
         return EC_INVALID;
     }
     if (funcId >= INNER_BEGIN && funcId < COMMAND_END) {
@@ -101,7 +101,7 @@ void AbilityInnerFeature::OnFeatureStop(Feature *feature, Identity identity)
 
 BOOL AbilityInnerFeature::OnFeatureMessage(Feature *feature, Request *request)
 {
-    if (feature == nullptr || request == nullptr) {
+    if (!feature || !request) {
         return FALSE;
     }
 
@@ -113,7 +113,7 @@ int32 AbilityInnerFeature::TerminateAppInvoke(const void *origin, IpcIo *req)
 {
     size_t len = 0;
     char *bundleName = reinterpret_cast<char *>(IpcIoPopString(req, &len));
-    if (bundleName == nullptr || len == 0) {
+    if (!bundleName || len == 0) {
         PRINTE("AbilityInnerFeature", "bundleName is null");
         return EC_INVALID;
     }
@@ -135,7 +135,7 @@ int32 AbilityInnerFeature::TerminateApp(const char *bundleName)
     }
 
     char *name = Utils::Strdup(bundleName);
-    if (name == nullptr) {
+    if (!name) {
         return EC_NOMEMORY;
     }
     Request request = {
@@ -155,7 +155,7 @@ int32 AbilityInnerFeature::TerminateApp(const char *bundleName)
 int32 AbilityInnerFeature::DumpAbilityInvoke(const void *origin, IpcIo *req)
 {
     Want want = { nullptr, nullptr, nullptr, 0 };
-    if (!DeserializeWant(&want, req) || (want.sid == nullptr)) {
+    if (!DeserializeWant(&want, req) || !(want.sid)) {
         ClearWant(&want);
         return EC_FAILURE;
     }

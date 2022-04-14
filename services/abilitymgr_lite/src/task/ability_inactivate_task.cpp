@@ -24,12 +24,12 @@ AbilityInactivateTask::AbilityInactivateTask(AbilityMgrContext *context, uint64_
 AbilityMsStatus AbilityInactivateTask::Execute()
 {
     PRINTD("AbilityInactivateTask", "start");
-    if (abilityMgrContext_ == nullptr) {
+    if (!abilityMgrContext_) {
         return AbilityMsStatus::TaskStatus("inactivate", "invalid argument");
     }
     AbilityStackManager &stackManager = AbilityStackManager::GetInstance();
     PageAbilityRecord *inactiveAbility = stackManager.FindPageAbility(*abilityMgrContext_, token_);
-    if (inactiveAbility == nullptr) {
+    if (!inactiveAbility) {
         return AbilityMsStatus::TaskStatus("inactivate", "ability record not found");
     }
     inactiveAbility->SetCurrentState(STATE_INACTIVE);

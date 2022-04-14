@@ -21,11 +21,11 @@
 namespace OHOS {
 void AbilityList::Add(AbilityRecord *abilityRecord)
 {
-    if (abilityRecord == nullptr) {
+    if (!abilityRecord) {
         return;
     }
 
-    if (Get(abilityRecord->GetToken()) == nullptr) {
+    if (!Get(abilityRecord->GetToken())) {
         abilityList_.PushBack(abilityRecord);
     }
 }
@@ -34,7 +34,7 @@ AbilityRecord *AbilityList::Get(uint16_t token) const
 {
     for (auto node = abilityList_.Begin(); node != abilityList_.End(); node = node->next_) {
         AbilityRecord *record = node->value_;
-        if (record == nullptr) {
+        if (!record) {
             continue;
         }
         if (record->GetToken() == token) {
@@ -47,13 +47,13 @@ AbilityRecord *AbilityList::Get(uint16_t token) const
 
 AbilityRecord *AbilityList::Get(const char *bundleName) const
 {
-    if (bundleName == nullptr) {
+    if (!bundleName) {
         return nullptr;
     }
 
     for (auto node = abilityList_.Begin(); node != abilityList_.End(); node = node->next_) {
         AbilityRecord *record = node->value_;
-        if (record == nullptr || record->GetAppName() == nullptr) {
+        if (!record || !record->GetAppName()) {
             continue;
         }
         if (strcmp(bundleName, record->GetAppName()) == 0) {
@@ -68,7 +68,7 @@ void AbilityList::Erase(uint16_t token)
 {
     for (auto node = abilityList_.Begin(); node != abilityList_.End(); node = node->next_) {
         AbilityRecord *record = node->value_;
-        if (record == nullptr) {
+        if (!record) {
             continue;
         }
         if (record->GetToken() == token) {

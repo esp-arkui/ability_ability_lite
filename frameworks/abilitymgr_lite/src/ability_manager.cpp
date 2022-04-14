@@ -26,7 +26,7 @@ extern "C" {
 const int DEFAULT_TOKEN = 1;
 int StartAbility(const Want *want)
 {
-    if (want == nullptr) {
+    if (!want) {
         HILOG_ERROR(HILOG_MODULE_APP, "want is null, StartAbility failed");
         return -1;
     }
@@ -37,13 +37,13 @@ int StartAbility(const Want *want)
 
 int StartAbilityWithCallback(const Want *want, IAbilityStartCallback iAbilityStartCallback)
 {
-    if (want == nullptr || iAbilityStartCallback == nullptr) {
+    if (!want || !iAbilityStartCallback) {
         HILOG_ERROR(HILOG_MODULE_APP, "want or callback is null, StartAbilityWithCallback failed!");
         return -1;
     }
     const SvcIdentity *svc = OHOS::AbilitySelfCallback::GetInstance()
                              .RegisterAbilitySelfCallback(iAbilityStartCallback);
-    if (svc == nullptr) {
+    if (!svc) {
         HILOG_ERROR(HILOG_MODULE_APP, "Register svc failed");
         return -1;
     }
@@ -53,7 +53,7 @@ int StartAbilityWithCallback(const Want *want, IAbilityStartCallback iAbilitySta
 
 int StopAbility(const Want *want)
 {
-    if (want == nullptr) {
+    if (!want) {
         HILOG_ERROR(HILOG_MODULE_APP, "want is null, StopAbility failed");
         return -1;
     }
@@ -63,11 +63,11 @@ int StopAbility(const Want *want)
 
 int ConnectAbility(const Want *want, const IAbilityConnection *conn, void *data)
 {
-    if (want == nullptr) {
+    if (!want) {
         HILOG_ERROR(HILOG_MODULE_APP, "want is null, ConnectAbility failed");
         return -1;
     }
-    if (conn == nullptr) {
+    if (!conn) {
         HILOG_ERROR(HILOG_MODULE_APP, "conn is null, ConnectAbility failed");
         return -1;
     }
@@ -77,7 +77,7 @@ int ConnectAbility(const Want *want, const IAbilityConnection *conn, void *data)
 
 int DisconnectAbility(const IAbilityConnection *conn)
 {
-    if (conn == nullptr) {
+    if (!conn) {
         HILOG_ERROR(HILOG_MODULE_APP, "conn is null, DisconnectAbility failed");
         return LITEIPC_EINVAL;
     }
