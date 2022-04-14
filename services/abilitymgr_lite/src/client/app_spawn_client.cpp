@@ -29,7 +29,7 @@ const int RETRY_TIMES_MAX = 30;
 
 static int Notify(IOwner owner, int code, IpcIo *reply)
 {
-    if (reply == nullptr || owner == nullptr) {
+    if (!reply || !owner) {
         return EC_INVALID;
     }
     int64_t *result = reinterpret_cast<int64_t *>(owner);
@@ -39,15 +39,15 @@ static int Notify(IOwner owner, int code, IpcIo *reply)
 
 AbilityMsStatus AppSpawnClient::Initialize()
 {
-    while (spawnClient_ == nullptr) {
+    while (!spawnClient_) {
         IUnknown *iUnknown = SAMGR_GetInstance()->GetDefaultFeatureApi(APPSPAWN_SERVICE_NAME);
-        if (iUnknown == nullptr) {
+        if (!iUnknown) {
             PRINTW("AppSpawnClient", "get default feature api fail, again try");
             usleep(SLEEP_TIMES); // sleep 200ms
             continue;
         }
         int result = iUnknown->QueryInterface(iUnknown, CLIENT_PROXY_VER, (void **)(&spawnClient_));
-        if (result != EC_SUCCESS || spawnClient_ == nullptr) {
+        if (result != EC_SUCCESS || !spawnClient_) {
             PRINTW("AppSpawnClient", "get app spawn client fail");
             usleep(SLEEP_TIMES); // sleep 200ms
             continue;
@@ -65,10 +65,10 @@ static void  InnerFreeDataBuff(void *ptr)
 
 AbilityMsStatus AppSpawnClient::CallingInnerSpawnProcess(char *spawnMessage, AppRecord &appRecord)
 {
-    if (spawnMessage == nullptr) {
+    if (!spawnMessage) {
         return AbilityMsStatus::ProcessStatus("CallingInnerSpawnProcess spawnMessage is nullptr");
     }
-    if (spawnClient_ == nullptr) {
+    if (!spawnClient_) {
         AbilityMsStatus status = Initialize();
         if (!status.IsOk()) {
             cJSON_free(spawnMessage);
@@ -108,12 +108,12 @@ AbilityMsStatus AppSpawnClient::CallingInnerSpawnProcess(char *spawnMessage, App
 AbilityMsStatus AppSpawnClient::SpawnProcess(AppRecord &appRecord)
 {
     char *innerBundleName = appRecord.GetBundleInfo().bundleName;
-    if (innerBundleName == nullptr) {
+    if (!innerBundleName) {
         return AbilityMsStatus::ProcessStatus("invalid argument");
     }
 
     cJSON *root = cJSON_CreateObject();
-    if (root == nullptr) {
+    if (!root) {
         return AbilityMsStatus::ProcessStatus("SpawnProcess create fail");
     }
     cJSON_AddStringToObject(root, "bundleName", innerBundleName);
@@ -123,7 +123,7 @@ AbilityMsStatus AppSpawnClient::SpawnProcess(AppRecord &appRecord)
     cJSON_AddNumberToObject(root, "gID", appRecord.GetBundleInfo().gid);
 
     cJSON *caps = cJSON_AddArrayToObject(root, "capability");
-    if (caps == nullptr) {
+    if (!caps) {
         cJSON_Delete(root);
         return AbilityMsStatus::ProcessStatus("SpawnProcess create array unsuccessfully");
     }
@@ -138,7 +138,7 @@ AbilityMsStatus AppSpawnClient::SpawnProcess(AppRecord &appRecord)
     if ((capabilities != nullptr) && (capNums != 0)) {
         for (int32_t i = 0; i < capNums; ++i) {
             cJSON *item = cJSON_CreateNumber(capabilities[i]);
-            if ((item == nullptr) || !cJSON_AddItemToArray(caps, item)) {
+            if (!item || !cJSON_AddItemToArray(caps, item)) {
                 free(capabilities);
                 capabilities = nullptr;
                 cJSON_Delete(item);

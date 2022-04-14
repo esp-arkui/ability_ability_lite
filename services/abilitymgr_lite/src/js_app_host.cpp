@@ -37,12 +37,12 @@ JsAppHost::~JsAppHost()
 void JsAppHost::JsAppTaskHandler(uint32_t uwArg)
 {
     auto jsappHost = reinterpret_cast<JsAppHost *>((uintptr_t)uwArg);
-    if (jsappHost == nullptr) {
+    if (!jsappHost) {
         return;
     }
 
     osMessageQueueId_t appQueueId = jsappHost->GetMessageQueueId();
-    if (appQueueId == nullptr) {
+    if (!appQueueId) {
         return;
     }
 
@@ -87,9 +87,9 @@ void JsAppHost::JsAppTaskHandler(uint32_t uwArg)
 
 void JsAppHost::OnActive(uint16_t token, const char *bundleName, const char *path)
 {
-    if (jsAbility_ == nullptr) {
+    if (!jsAbility_) {
         jsAbility_ = new ACELite::JSAbility();
-        if (jsAbility_ == nullptr) {
+        if (!jsAbility_) {
             return;
         }
         jsAbility_->Launch(const_cast<char *>(path), bundleName, token);

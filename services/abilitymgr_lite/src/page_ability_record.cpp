@@ -93,10 +93,10 @@ bool PageAbilityRecord::IsSamePageAbility(const PageAbilityRecord &target) const
 
 bool PageAbilityRecord::IsSamePageAbility(const Want &want) const
 {
-    if (want.element == nullptr || want.element->bundleName == nullptr || want.element->abilityName == nullptr) {
+    if (!(want.element) || !(want.element->bundleName) || !(want.element->abilityName)) {
         return false;
     }
-    if (abilityInfo_.bundleName == nullptr || abilityInfo_.name == nullptr) {
+    if (!(abilityInfo_.bundleName) || !(abilityInfo_.name)) {
         return false;
     }
     if (strcmp(abilityInfo_.bundleName, want.element->bundleName) == 0 &&
@@ -108,7 +108,7 @@ bool PageAbilityRecord::IsSamePageAbility(const Want &want) const
 
 bool PageAbilityRecord::IsSamePageAbility(const char *bundleName) const
 {
-    if (bundleName == nullptr || abilityInfo_.bundleName == nullptr) {
+    if (!bundleName || !(abilityInfo_.bundleName)) {
         return false;
     }
     return strcmp(bundleName, abilityInfo_.bundleName) == 0;
@@ -246,10 +246,10 @@ bool PageAbilityRecord::IsLauncherAbility() const
 
 AbilityMsStatus PageAbilityRecord::StartAbility()
 {
-    if (appRecord_ == nullptr) {
+    if (!appRecord_) {
         // If process is not exist, start process.
         appRecord_ = AppManager::GetInstance().StartAppProcess(bundleInfo_);
-        if (appRecord_ == nullptr) {
+        if (!appRecord_) {
             return AbilityMsStatus::ProcessStatus("start app process fail");
         }
         appRecord_->SetPendingAbility(this);
@@ -260,10 +260,10 @@ AbilityMsStatus PageAbilityRecord::StartAbility()
 
 AbilityMsStatus PageAbilityRecord::StartService()
 {
-    if (appRecord_ == nullptr) {
+    if (!appRecord_) {
         // If process is not exist, start process.
         appRecord_ = AppManager::GetInstance().StartAppProcess(bundleInfo_);
-        if (appRecord_ == nullptr) {
+        if (!appRecord_) {
             return AbilityMsStatus::ProcessStatus("start app process fail");
         }
         appRecord_->SetPendingAbility(this);
@@ -277,7 +277,7 @@ AbilityMsStatus PageAbilityRecord::ActiveAbility()
     if (currentState_ == STATE_ACTIVE) {
         return AbilityMsStatus::LifeCycleStatus("current state is already active when active");
     }
-    if (appRecord_ == nullptr) {
+    if (!appRecord_) {
         return AbilityMsStatus::AppTransanctStatus("app record not exsit");
     }
     TransactionState state = {token_, STATE_ACTIVE};
@@ -291,7 +291,7 @@ AbilityMsStatus PageAbilityRecord::InactiveAbility() const
     if (currentState_ != STATE_ACTIVE && abilityInfo_.abilityType != AbilityType::SERVICE) {
         return AbilityMsStatus::LifeCycleStatus("current state is not active when inactive");
     }
-    if (appRecord_ == nullptr) {
+    if (!appRecord_) {
         return AbilityMsStatus::AppTransanctStatus("app record not exsit");
     }
     TransactionState state = {token_, STATE_INACTIVE};
@@ -303,7 +303,7 @@ AbilityMsStatus PageAbilityRecord::ToBackgroundAbility() const
     if (currentState_ != STATE_INACTIVE) {
         return AbilityMsStatus::LifeCycleStatus("current state is not inactive when background");
     }
-    if (appRecord_ == nullptr) {
+    if (!appRecord_) {
         return AbilityMsStatus::AppTransanctStatus("app record not exsit");
     }
     TransactionState state = {token_, STATE_BACKGROUND};
@@ -315,7 +315,7 @@ AbilityMsStatus PageAbilityRecord::StopAbility() const
     if (currentState_ != STATE_INACTIVE) {
         return AbilityMsStatus::LifeCycleStatus("current state is not inactive when stop");
     }
-    if (appRecord_ == nullptr) {
+    if (!appRecord_) {
         return AbilityMsStatus::AppTransanctStatus("app record not exsit");
     }
     TransactionState state = {token_, STATE_INITIAL};
@@ -324,7 +324,7 @@ AbilityMsStatus PageAbilityRecord::StopAbility() const
 
 AbilityMsStatus PageAbilityRecord::ExitApp()
 {
-    if (appRecord_ == nullptr) {
+    if (!appRecord_) {
         return AbilityMsStatus::AppTransanctStatus("app record not exsit");
     }
     AbilityMsStatus status = appRecord_->AppExitTransaction();
@@ -337,7 +337,7 @@ AbilityMsStatus PageAbilityRecord::ExitApp()
 
 AbilityMsStatus PageAbilityRecord::ConnectAbility()
 {
-    if (appRecord_ == nullptr) {
+    if (!appRecord_) {
         return AbilityMsStatus::TaskStatus("connectAbility, ", "app record not exsit");
     }
     return appRecord_->ConnectTransaction(want_, token_);
@@ -345,7 +345,7 @@ AbilityMsStatus PageAbilityRecord::ConnectAbility()
 
 AbilityMsStatus PageAbilityRecord::DisconnectAbility(const SvcIdentity &connectSid)
 {
-    if (appRecord_ == nullptr) {
+    if (!appRecord_) {
         return AbilityMsStatus::TaskStatus("disconnectAbility, ", "app record not exsit");
     }
     RemoveConnectRecord(connectSid);
@@ -367,7 +367,7 @@ AbilityMsStatus PageAbilityRecord::DisconnectAbility(const SvcIdentity &connectS
 
 AbilityMsStatus PageAbilityRecord::ConnectAbilityDone()
 {
-    if (appRecord_ == nullptr) {
+    if (!appRecord_) {
         return AbilityMsStatus::TaskStatus("connectAbilityDone, ", "app record not exsit");
     }
     for (auto record : connectRecords_) {
@@ -381,7 +381,7 @@ AbilityMsStatus PageAbilityRecord::ConnectAbilityDone()
 
 AbilityMsStatus PageAbilityRecord::DisconnectAbilityDone()
 {
-    if (appRecord_ == nullptr) {
+    if (!appRecord_) {
         return AbilityMsStatus::TaskStatus("disconnectAbilityDone, ", "app record not exsit");
     }
     if (startDone_) {
@@ -399,7 +399,7 @@ AbilityMsStatus PageAbilityRecord::DisconnectAbilityDone()
 
 AbilityMsStatus PageAbilityRecord::ForceStopServiceAbility()
 {
-    if (appRecord_ == nullptr) {
+    if (!appRecord_) {
         return AbilityMsStatus::TaskStatus("terminateService, ", "app record not exsit");
     }
     forceStop_ = true;
@@ -421,7 +421,7 @@ AbilityMsStatus PageAbilityRecord::ForceStopServiceAbility()
 
 AbilityMsStatus PageAbilityRecord::StopAbilityDone()
 {
-    if (appRecord_ == nullptr) {
+    if (!appRecord_) {
         return AbilityMsStatus::TaskStatus("disconnectAbilityDone, ", "app record not exsit");
     }
     SetConnectStatus(ConnectStatus::STOPPED);
@@ -447,7 +447,7 @@ AbilityMsStatus PageAbilityRecord::DumpAbilityRecord() const
 
 AbilityMsStatus PageAbilityRecord::DumpAbilitySlice(const Want &want) const
 {
-    if (appRecord_ == nullptr) {
+    if (!appRecord_) {
         return AbilityMsStatus::TaskStatus("DumpAbility, ", "app record not exsit");
     }
     return appRecord_->DumpAbilityTransaction(want, token_);

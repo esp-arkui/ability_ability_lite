@@ -27,7 +27,7 @@ AppTerminateTask::AppTerminateTask(AbilityMgrContext *context, const char *bundl
 AbilityMsStatus AppTerminateTask::Execute()
 {
     PRINTD("AppTerminateTask", "start");
-    if (abilityMgrContext_ == nullptr || bundleName_ == nullptr) {
+    if (!abilityMgrContext_ || !bundleName_) {
         return AbilityMsStatus::TaskStatus("app terminate", "invalid argument");
     }
 
