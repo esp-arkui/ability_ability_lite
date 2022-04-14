@@ -48,7 +48,7 @@ namespace OHOS {
             exit(-1);
         }
         proxy_ = GetAbilityInnerFeature();
-        if (proxy_ == nullptr) {
+        if (!proxy_) {
             exit(-1);
         }
         sleep(1);
@@ -84,7 +84,7 @@ namespace OHOS {
 
     int32_t AbilityTestHelper::AbilityCallback(const IpcContext* context, void *ipcMsg, IpcIo *data, void *arg)
     {
-        if (ipcMsg == nullptr) {
+        if (!ipcMsg) {
             printf("ams call back error, ipcMsg is null\n");
             return -1;
         }
@@ -109,7 +109,7 @@ namespace OHOS {
             }
             case SCHEDULER_DUMP_ABILITY: {
                 BuffPtr *buff = IpcIoPopDataBuff(data);
-                if ((buff == nullptr) || (buff->buff == nullptr))
+                if (!buff || !(buff->buff))
                 {
                     printf("ams call back error, buff is empty\n");
                     return false;
@@ -212,13 +212,13 @@ namespace OHOS {
     IClientProxy *AbilityTestHelper::GetAbilityInnerFeature()
     {
         IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(AMS_SERVICE, AMS_INNER_FEATURE);
-        if (iUnknown == nullptr) {
+        if (!iUnknown) {
             printf("ams inner unknown is null\n");
             return nullptr;
         }
         IClientProxy *innerProxy = nullptr;
         (void)iUnknown->QueryInterface(iUnknown, CLIENT_PROXY_VER, (void **)&innerProxy);
-        if (innerProxy == nullptr) {
+        if (!innerProxy) {
             printf("ams inner feature is null\n");
             return nullptr;
         }

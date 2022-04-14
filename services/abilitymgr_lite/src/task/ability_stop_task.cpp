@@ -24,17 +24,17 @@ AbilityStopTask::AbilityStopTask(AbilityMgrContext *context, uint64_t token)
 AbilityMsStatus AbilityStopTask::Execute()
 {
     PRINTD("AbilityStopTask", "start");
-    if (abilityMgrContext_ == nullptr) {
+    if (!abilityMgrContext_) {
         return AbilityMsStatus::TaskStatus("stop", "invalid argument");
     }
     AbilityStackManager &stackManager = AbilityStackManager::GetInstance();
     // Step 1: Find stop ability record.
     PageAbilityRecord *stopAbility = stackManager.FindPageAbility(*abilityMgrContext_, token_);
-    if (stopAbility == nullptr) {
+    if (!stopAbility) {
         return AbilityMsStatus::TaskStatus("stop", "ability record not found");
     }
     auto serviceConnects = const_cast<AbilityConnectMission *>(abilityMgrContext_->GetServiceConnects());
-    if (serviceConnects == nullptr) {
+    if (!serviceConnects) {
         return AbilityMsStatus::TaskStatus("stop", "invalid argument");
     }
     stopAbility->SetCurrentState(STATE_INITIAL);

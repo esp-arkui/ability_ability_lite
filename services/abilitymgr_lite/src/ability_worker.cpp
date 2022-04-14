@@ -124,20 +124,20 @@ AbilityMsStatus AbilityWorker::ConnectAbility(const AbilityConnectTransParam &co
     if (!AbilityMsHelper::CheckVisiblePermission(connectParam.GetCallingUid(), bundleInfo.uid, target.isVisible)) {
         return AbilityMsStatus::PermissionStatus("connect ability visibale is false");
     }
-    if (abilityMgrContext_ == nullptr) {
+    if (!abilityMgrContext_) {
         return AbilityMsStatus::TaskStatus("connect", "invalid argument");
     }
     auto serviceConnects = abilityMgrContext_->GetServiceConnects();
-    if (serviceConnects == nullptr) {
+    if (!serviceConnects) {
         return AbilityMsStatus::TaskStatus("connect", "invalid argument");
     }
-    if (connectParam.GetWant() == nullptr || connectParam.GetWant()->element == nullptr) {
+    if (!(connectParam.GetWant()) || !(connectParam.GetWant()->element)) {
         return AbilityMsStatus::TaskStatus("connect", "invalid argument");
     }
     char *bundleName = connectParam.GetWant()->element->bundleName;
     char *abilityName = connectParam.GetWant()->element->abilityName;
     auto abilityRecord = serviceConnects->FindServiceRecord(bundleName, abilityName);
-    if (abilityRecord == nullptr) {
+    if (!abilityRecord) {
         PRINTD("AbilityWorker", "ability start first");
         AbilityStartTask startTask(abilityMgrContext_, connectParam.GetWant(), &target, &bundleInfo);
         startTask.SetWaitConnect(true);
@@ -149,7 +149,7 @@ AbilityMsStatus AbilityWorker::ConnectAbility(const AbilityConnectTransParam &co
         PRINTD("AbilityWorker", "ability has started");
     }
     abilityRecord = serviceConnects->FindServiceRecord(bundleName, abilityName);
-    if (abilityRecord == nullptr) {
+    if (!abilityRecord) {
         return AbilityMsStatus::TaskStatus("connect", "generate ability record failure");
     }
     AbilityConnectTask connectTask(abilityMgrContext_, *connectParam.GetWant(),

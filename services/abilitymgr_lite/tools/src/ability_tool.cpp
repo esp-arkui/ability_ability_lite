@@ -50,7 +50,7 @@ AbilityTool::~AbilityTool()
 
 bool AbilityTool::SetBundleName(const char *bundleName)
 {
-    if (bundleName == nullptr || strlen(bundleName) == 0) {
+    if (!bundleName || strlen(bundleName) == 0) {
         return false;
     }
     SetElementBundleName(&elementName_, bundleName);
@@ -59,7 +59,7 @@ bool AbilityTool::SetBundleName(const char *bundleName)
 
 bool AbilityTool::SetAbilityName(const char *abilityName)
 {
-    if (abilityName == nullptr || strlen(abilityName) == 0) {
+    if (!abilityName || strlen(abilityName) == 0) {
         return false;
     }
     SetElementAbilityName(&elementName_, abilityName);
@@ -73,7 +73,7 @@ void AbilityTool::SetExtra(const char *extra)
 
 bool AbilityTool::SetCommand(const char *command)
 {
-    if (command == nullptr) {
+    if (!command) {
         return false;
     }
     if (strcmp(command, CMD_START_ABILITY) != 0 &&
@@ -94,18 +94,18 @@ void AbilityTool::SetDumpAll()
 
 bool AbilityTool::RunCommand()
 {
-    if (command_ == nullptr) {
+    if (!command_) {
         printf("unknown command\n");
         return false;
     }
     IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(AMS_SERVICE, AMS_INNER_FEATURE);
-    if (iUnknown == nullptr) {
+    if (!iUnknown) {
         printf("ams inner unknown is null\n");
         return false;
     }
     IClientProxy *innerProxy = nullptr;
     (void)iUnknown->QueryInterface(iUnknown, CLIENT_PROXY_VER, (void **)&innerProxy);
-    if (innerProxy == nullptr) {
+    if (!innerProxy) {
         printf("ams inner feature is null\n");
         return false;
     }
@@ -137,8 +137,8 @@ Want* AbilityTool::BuildWant()
         return nullptr;
     }
     if (!dumpAll_) {
-        if (elementName_.abilityName == nullptr || strlen(elementName_.abilityName) == 0 ||
-            elementName_.bundleName == nullptr || strlen(elementName_.bundleName) == 0) {
+        if (!(elementName_.abilityName) || strlen(elementName_.abilityName) == 0 ||
+            !(elementName_.bundleName) || strlen(elementName_.bundleName) == 0) {
             printf("ability name or bundle name is not entered\n");
             delete want;
             return nullptr;
@@ -157,7 +157,7 @@ Want* AbilityTool::BuildWant()
 bool AbilityTool::InnerStartAbility()
 {
     Want *want = BuildWant();
-    if (want == nullptr) {
+    if (!want) {
         return false;
     }
     int ret = StartAbility(want);
@@ -169,7 +169,7 @@ bool AbilityTool::InnerStartAbility()
 bool AbilityTool::InnerStopAbility()
 {
     Want *want = BuildWant();
-    if (want == nullptr) {
+    if (!want) {
         return false;
     }
     int ret = StopAbility(want);
@@ -180,10 +180,10 @@ bool AbilityTool::InnerStopAbility()
 
 bool AbilityTool::TerminateApp(IClientProxy *proxy) const
 {
-    if (proxy == nullptr) {
+    if (!proxy) {
         return false;
     }
-    if (elementName_.bundleName == nullptr || strlen(elementName_.bundleName) == 0) {
+    if (!elementName_.bundleName || strlen(elementName_.bundleName) == 0) {
         printf("invalid argument\n");
         return false;
     }
@@ -196,11 +196,11 @@ bool AbilityTool::TerminateApp(IClientProxy *proxy) const
 
 bool AbilityTool::Dump(IClientProxy *proxy)
 {
-    if (proxy == nullptr) {
+    if (!proxy) {
         return false;
     }
     Want *want = BuildWant();
-    if (want == nullptr) {
+    if (!want) {
         return false;
     }
 
@@ -235,12 +235,12 @@ bool AbilityTool::Dump(IClientProxy *proxy)
 int32_t AbilityTool::AaCallback(const IpcContext* context, void *ipcMsg, IpcIo *data, void *arg)
 {
     printf("get ability info\n");
-    if (ipcMsg == nullptr) {
+    if (!ipcMsg) {
         printf("ams call back error, ipcMsg is null\n");
         return -1;
     }
     auto abilityTool = static_cast<AbilityTool *>(arg);
-    if (abilityTool == nullptr) {
+    if (!abilityTool) {
         printf("ams call back error, abilityTool is null\n");
         FreeBuffer(nullptr, ipcMsg);
         return -1;
@@ -265,7 +265,7 @@ int32_t AbilityTool::AaCallback(const IpcContext* context, void *ipcMsg, IpcIo *
             char *result = reinterpret_cast<char *>(IpcIoPopString(data, &len));
 #else
             BuffPtr *buff = IpcIoPopDataBuff(data);
-            if ((buff == nullptr) || (buff->buff == nullptr)) {
+            if (!buff || !(buff->buff)) {
                 printf("ams call back error, buff is empty\n");
                 if (flag == LITEIPC_FLAG_ONEWAY) {
                     FreeBuffer(nullptr, ipcMsg);

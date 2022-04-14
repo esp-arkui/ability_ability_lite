@@ -40,14 +40,14 @@ bool AbilityMsClient::Initialize() const
     int retry = RETRY_TIMES;
     while (retry--) {
         IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(AMS_SERVICE, AMS_FEATURE);
-        if (iUnknown == nullptr) {
+        if (!iUnknown) {
             HILOG_ERROR(HILOG_MODULE_APP, "iUnknown is null");
             usleep(ERROR_SLEEP_TIMES); // sleep 300ms
             continue;
         }
 
         (void)iUnknown->QueryInterface(iUnknown, CLIENT_PROXY_VER, (void **)&amsProxy_);
-        if (amsProxy_ == nullptr) {
+        if (!amsProxy_) {
             HILOG_ERROR(HILOG_MODULE_APP, "ams proxy is null");
             usleep(ERROR_SLEEP_TIMES); // sleep 300ms
             continue;
@@ -61,7 +61,7 @@ bool AbilityMsClient::Initialize() const
 
 int AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int state) const
 {
-    if (amsProxy_ == nullptr) {
+    if (!amsProxy_) {
         return PARAM_NULL_ERROR;
     }
     IpcIo req;
@@ -74,7 +74,7 @@ int AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int state) const
 
 int AbilityMsClient::ScheduleAms(const Want *want, uint64_t token, const SvcIdentity *sid, int commandType) const
 {
-    if (amsProxy_ == nullptr) {
+    if (!amsProxy_) {
         return PARAM_NULL_ERROR;
     }
     IpcIo req;

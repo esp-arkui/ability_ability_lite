@@ -88,7 +88,7 @@ void *AbilityThread::UITaskPost(void *arg)
     prctl(PR_SET_NAME, UI_TASK_THREAD_NAME);
 
     auto handler = static_cast<AbilityEventHandler *>(arg);
-    if (handler == nullptr) {
+    if (!handler) {
         HILOG_ERROR(HILOG_MODULE_APP, "EventHandler is nullptr, fail to start loop");
         return nullptr;
     }
@@ -134,7 +134,7 @@ void AbilityThread::InitUITaskEnv()
 
 void AbilityThread::StartAbilityCallback(const Want &want)
 {
-    if ((want.sid == nullptr) || (want.element == nullptr)) {
+    if (!(want.sid) || !(want.element)) {
         return;
     }
     HILOG_INFO(HILOG_MODULE_APP, "start ability callback");
@@ -172,12 +172,12 @@ void AbilityThread::PerformAppInit(const AppInfo &appInfo)
                 continue;
             }
             char realPath[PATH_MAX + 1] = { 0 };
-            if (realpath(modulePath.c_str(), realPath) == nullptr) {
+            if (!realpath(modulePath.c_str(), realPath)) {
                 HILOG_ERROR(HILOG_MODULE_APP, "Fail to get realpath of %{public}s", modulePath.c_str());
                 continue;
             }
             void *handle = dlopen(static_cast<char *>(realPath), RTLD_NOW | RTLD_GLOBAL);
-            if (handle == nullptr) {
+            if (!handle) {
                 HILOG_ERROR(HILOG_MODULE_APP, "Fail to dlopen %{public}s, [%{public}s]", modulePath.c_str(), dlerror());
                 exit(-1);
             }
@@ -207,15 +207,15 @@ void AbilityThread::PerformTransactAbilityState(const Want &want, int state, uin
     HILOG_INFO(HILOG_MODULE_APP, "perform transact ability state to [%{public}d]", state);
     Ability *ability = nullptr;
     auto iter = abilities_.find(token);
-    if ((iter == abilities_.end()) || (iter->second == nullptr)) {
-        if (want.element == nullptr) {
+    if ((iter == abilities_.end()) || !(iter->second)) {
+        if (!(want.element)) {
             HILOG_ERROR(HILOG_MODULE_APP, "element name is null, fail to load ability");
             AbilityMsClient::GetInstance().SchedulerLifecycleDone(token, STATE_INITIAL);
             return;
         }
         auto abilityName = isNativeApp_ ? want.element->abilityName : ACE_ABILITY_NAME;
         ability = AbilityLoader::GetInstance().GetAbilityByName(abilityName);
-        if (ability == nullptr) {
+        if (!ability) {
             HILOG_ERROR(HILOG_MODULE_APP, "fail to load ability: %{public}s", abilityName);
             AbilityMsClient::GetInstance().SchedulerLifecycleDone(token, STATE_INITIAL);
             return;
@@ -253,7 +253,7 @@ void AbilityThread::PerformTransactAbilityState(const Want &want, int state, uin
 void AbilityThread::PerformConnectAbility(const Want &want, uint64_t token)
 {
     auto iter = abilities_.find(token);
-    if (iter == abilities_.end() || iter->second == nullptr) {
+    if (iter == abilities_.end() || !(iter->second)) {
         HILOG_ERROR(HILOG_MODULE_APP, "app has been stopped");
         return;
     }
@@ -264,7 +264,7 @@ void AbilityThread::PerformConnectAbility(const Want &want, uint64_t token)
 void AbilityThread::PerformDisconnectAbility(const Want &want, uint64_t token)
 {
     auto iter = abilities_.find(token);
-    if (iter == abilities_.end() || iter->second == nullptr) {
+    if (iter == abilities_.end() || !(iter->second)) {
         HILOG_ERROR(HILOG_MODULE_APP, "app has been stopped");
         return;
     }
@@ -275,11 +275,11 @@ void AbilityThread::PerformDisconnectAbility(const Want &want, uint64_t token)
 void AbilityThread::PerformDumpAbility(const Want &want, uint64_t token)
 {
     auto iter = abilities_.find(token);
-    if (iter == abilities_.end() || iter->second == nullptr) {
+    if (iter == abilities_.end() || !(iter->second)) {
         HILOG_ERROR(HILOG_MODULE_APP, "app has been stopped");
         return;
     }
-    if (want.sid == nullptr) {
+    if (!(want.sid)) {
         HILOG_ERROR(HILOG_MODULE_APP, "SvcIdentity is null, dump failed");
         return;
     }
@@ -364,7 +364,7 @@ void AbilityThread::AttachBundle(uint64_t token)
     }
 
     identity_ = static_cast<SvcIdentity *>(AdapterMalloc(sizeof(SvcIdentity)));
-    if (identity_ == nullptr) {
+    if (!identity_) {
         HILOG_ERROR(HILOG_MODULE_APP, "ams identity is null");
         return;
     }
