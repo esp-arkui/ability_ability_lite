@@ -127,11 +127,13 @@ private:
  */
 #ifdef ABILITY_WINDOW_SUPPORT
 #define REGISTER_AS(className)                                                                \
+    do{\
     __attribute__((constructor)) void RegisterAS##className() {                               \
         AbilityLoader::GetInstance().RegisterAbilitySlice(#className, []()->AbilitySlice* {   \
             return new className;                                                             \
         });                                                                                   \
-    }
+    }\
+    }while(0)
 #endif
 } // namespace OHOS
 #endif // OHOS_ABILITY_LOADER_H
