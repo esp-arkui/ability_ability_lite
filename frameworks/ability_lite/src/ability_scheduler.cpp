@@ -33,13 +33,13 @@ AbilityScheduler::AbilityScheduler(AbilityEventHandler &eventHandler, Scheduler 
 
 int32_t AbilityScheduler::AmsCallback(const IpcContext* context, void *ipcMsg, IpcIo *data, void *arg)
 {
-    if (ipcMsg == nullptr) {
+    if (!ipcMsg) {
         HILOG_ERROR(HILOG_MODULE_APP, "ams call back error, ipcMsg is null");
         return PARAM_NULL_ERROR;
     }
 
     auto scheduler = static_cast<AbilityScheduler *>(arg);
-    if (scheduler == nullptr) {
+    if (!scheduler) {
         HILOG_ERROR(HILOG_MODULE_APP, "ams call back error, scheduler is null");
         // if you need to send reply to the client, please use SendReply method
         ClearIpcMsg(ipcMsg);
@@ -55,7 +55,7 @@ int32_t AbilityScheduler::AmsCallback(const IpcContext* context, void *ipcMsg, I
             char *bundleName = reinterpret_cast<char *>(IpcIoPopString(data, nullptr));
             char *srcPath = reinterpret_cast<char *>(IpcIoPopString(data, nullptr));
             char *dataPath = reinterpret_cast<char *>(IpcIoPopString(data, nullptr));
-            if ((bundleName == nullptr) || (srcPath == nullptr) || (dataPath == nullptr)) {
+            if ((!bundleName) || (!srcPath) || (!dataPath)) {
                 HILOG_ERROR(HILOG_MODULE_APP, "ams call back error, bundleName, srcPath or dataPath is null");
                 ClearIpcMsg(ipcMsg);
                 return PARAM_NULL_ERROR;
@@ -185,7 +185,7 @@ void AbilityScheduler::PerformAppExit()
 void AbilityScheduler::PerformDumpAbility(const Want &want, uint64_t token)
 {
 #ifdef __LINUX__
-    if (want.sid == nullptr) {
+    if (!want.sid) {
         HILOG_ERROR(HILOG_MODULE_APP, "svcId is invalid when dump ability");
         return;
     }
@@ -200,7 +200,7 @@ void AbilityScheduler::PerformDumpAbility(const Want &want, uint64_t token)
 
 void AbilityScheduler::ClearIpcMsg(void *ipcMsg)
 {
-    if (ipcMsg == nullptr) {
+    if (!ipcMsg) {
         return;
     }
     uint32_t flag = 0;

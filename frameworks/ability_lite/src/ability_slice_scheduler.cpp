@@ -39,9 +39,9 @@ AbilitySliceScheduler::~AbilitySliceScheduler()
 
 void AbilitySliceScheduler::HandleStartAbilitySlice(const Want &want)
 {
-    if (topAbilitySlice_ == nullptr) {
+    if (!topAbilitySlice_) {
         topAbilitySlice_ = GetTargetAbilitySlice();
-        if (topAbilitySlice_ == nullptr) {
+        if (!topAbilitySlice_) {
             HILOG_ERROR(HILOG_MODULE_APP, "Cannot get slice [%{public}s]", abilitySliceRoute_->GetMainRoute().c_str());
             return;
         }
@@ -53,7 +53,7 @@ void AbilitySliceScheduler::HandleStartAbilitySlice(const Want &want)
 
 void AbilitySliceScheduler::HandleInactiveAbilitySlice()
 {
-    if (topAbilitySlice_ == nullptr) {
+    if (!topAbilitySlice_) {
         return;
     }
 
@@ -62,7 +62,7 @@ void AbilitySliceScheduler::HandleInactiveAbilitySlice()
 
 void AbilitySliceScheduler::HandleActiveAbilitySlice(const Want &want)
 {
-    if (topAbilitySlice_ == nullptr) {
+    if (!topAbilitySlice_) {
         HILOG_ERROR(HILOG_MODULE_APP, "top ability slice is null, active slice error");
         return;
     }
@@ -74,7 +74,7 @@ void AbilitySliceScheduler::HandleActiveAbilitySlice(const Want &want)
 
 void AbilitySliceScheduler::HandleMoveAbilitySliceToBackground()
 {
-    if (topAbilitySlice_ == nullptr) {
+    if (!topAbilitySlice_) {
         return;
     }
 
@@ -83,7 +83,7 @@ void AbilitySliceScheduler::HandleMoveAbilitySliceToBackground()
 
 void AbilitySliceScheduler::HandleStopAbilitySlice()
 {
-    if (topAbilitySlice_ == nullptr) {
+    if (!topAbilitySlice_) {
         return;
     }
 
@@ -145,7 +145,7 @@ void AbilitySliceScheduler::RemoveAbilitySlice(AbilitySlice &slice)
         Want want { nullptr, nullptr, nullptr, 0 };
         // Scheduler the top slice in the stack to Active.
         auto next = abilitySliceStack_->Pop();
-        if (next == nullptr) {
+        if (!next) {
             topAbilitySlice_->OnActive(want);
             return;
         }
@@ -183,7 +183,7 @@ AbilitySlice *AbilitySliceScheduler::GetTargetAbilitySlice() const
 
 bool AbilitySliceScheduler::CheckLegalForAdd(const AbilitySlice &caller, AbilitySlice &target, const Want &want)
 {
-    if (topAbilitySlice_ == nullptr) {
+    if (!topAbilitySlice_) {
         return false;
     }
     if (abilitySliceManager_.GetAbilityState() != STATE_ACTIVE) {
@@ -204,7 +204,7 @@ bool AbilitySliceScheduler::CheckLegalForAdd(const AbilitySlice &caller, Ability
 
 bool AbilitySliceScheduler::CheckLegalForRemove(const AbilitySlice &slice)
 {
-    if (topAbilitySlice_ == nullptr) {
+    if (!topAbilitySlice_) {
         return false;
     }
     if (abilitySliceManager_.GetAbilityState() != STATE_ACTIVE) {
@@ -226,7 +226,7 @@ bool AbilitySliceScheduler::CheckLegalForRemove(const AbilitySlice &slice)
 
 const std::string AbilitySliceScheduler::GetSliceStackInfo() const
 {
-    if (topAbilitySlice_ == nullptr) {
+    if (!topAbilitySlice_) {
         return "    none";
     }
     std::string buff;

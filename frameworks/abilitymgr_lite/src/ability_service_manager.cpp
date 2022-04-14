@@ -29,7 +29,7 @@ namespace OHOS {
 AbilityServiceManager::~AbilityServiceManager()
 {
     for (const auto &storeArgs : storeList_) {
-        if (storeArgs == nullptr) {
+        if (!storeArgs) {
             continue;
         }
         if (storeArgs->sid != nullptr) {
@@ -44,13 +44,13 @@ AbilityServiceManager::~AbilityServiceManager()
 int AbilityServiceManager::ConnectAbility(const Want &want, const IAbilityConnection &conn,
                                           uint64_t token, void *storeArg)
 {
-    if (conn.OnAbilityDisconnectDone == nullptr || conn.OnAbilityConnectDone == nullptr) {
+    if (!conn.OnAbilityDisconnectDone || !conn.OnAbilityConnectDone) {
         HILOG_INFO(HILOG_MODULE_APP, "IAbilityConnection callback func is null");
         return LITEIPC_EINVAL;
     }
 
     StoreArgs *storeArgs = AddStoreArgs(conn, storeArg);
-    if (storeArgs == nullptr) {
+    if (!storeArgs) {
         return LITEIPC_EINVAL;
     }
     AbilityMsClient::GetInstance().Initialize();
@@ -74,7 +74,7 @@ int AbilityServiceManager::ConnectAbility(const Want &want, const IAbilityConnec
 int AbilityServiceManager::DisconnectAbility(const IAbilityConnection &conn, uint64_t token)
 {
     StoreArgs *storeArgs = RemoveStoreArgs(&conn, nullptr);
-    if (storeArgs == nullptr) {
+    if (!storeArgs) {
         HILOG_INFO(HILOG_MODULE_APP, "no need to disconnect");
         return LITEIPC_EINVAL;
     }
@@ -113,7 +113,7 @@ StoreArgs *AbilityServiceManager::GetStoreArgs(const IAbilityConnection &conn) c
 StoreArgs *AbilityServiceManager::RemoveStoreArgs(const IAbilityConnection *conn, StoreArgs *storeArgs)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    if (storeArgs == nullptr) {
+    if (!storeArgs) {
         storeArgs = GetStoreArgs(*conn);
     }
     storeList_.remove(storeArgs);
@@ -125,8 +125,8 @@ int32_t AbilityServiceManager::ConnectAbilityCallBack(const IpcContext* context,
 {
     // param check
     StoreArgs *storeArgs = static_cast<StoreArgs *>(arg);
-    if (storeArgs == nullptr || ipcMsg == nullptr || storeArgs->conn == nullptr ||
-        storeArgs->conn->OnAbilityConnectDone == nullptr || storeArgs->conn->OnAbilityDisconnectDone == nullptr) {
+    if (!storeArgs || !ipcMsg || !(storeArgs->conn) ||
+        !(storeArgs->conn->OnAbilityConnectDone) || !(storeArgs->conn->OnAbilityDisconnectDone)) {
         HILOG_ERROR(HILOG_MODULE_APP, "storeArgs or callback func or ipcMsg is null");
         AbilityServiceManager::GetInstance().RemoveStoreArgs(nullptr, storeArgs);
         ClearStore(storeArgs);
@@ -140,7 +140,7 @@ int32_t AbilityServiceManager::ConnectAbilityCallBack(const IpcContext* context,
     int resultCode = (funcId != SCHEDULER_ABILITY_CONNECT_FAIL) ? 0 : -1;
     // parse service sid
     SvcIdentity *serviceSid = (funcId == SCHEDULER_ABILITY_CONNECT) ? IpcIoPopSvc(data) : nullptr;
-    if ((funcId == SCHEDULER_ABILITY_CONNECT) && (serviceSid == nullptr)) {
+    if ((funcId == SCHEDULER_ABILITY_CONNECT) && (!serviceSid)) {
         resultCode = -1;
     }
     // parse element
@@ -168,7 +168,7 @@ int32_t AbilityServiceManager::ConnectAbilityCallBack(const IpcContext* context,
 
 void AbilityServiceManager::ClearStore(StoreArgs *storeArgs)
 {
-    if ((storeArgs == nullptr) || (storeArgs->sid == nullptr)) {
+    if ((!storeArgs) || !(storeArgs->sid)) {
         HILOG_INFO(HILOG_MODULE_APP, "no need to clear storeArgs");
         return;
     }

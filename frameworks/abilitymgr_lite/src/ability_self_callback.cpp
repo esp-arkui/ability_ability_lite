@@ -33,7 +33,7 @@ AbilitySelfCallback::~AbilitySelfCallback()
 
 int32_t InnerCallback(const char *resultMessage, uint8_t resultCode, const IAbilityStartCallback &iAbilityStartCallback)
 {
-    if (resultMessage == nullptr || iAbilityStartCallback == nullptr) {
+    if (!resultMessage || !iAbilityStartCallback) {
         return PARAM_NULL_ERROR;
     }
     if (resultCode == ERR_OK) {
@@ -46,18 +46,18 @@ int32_t InnerCallback(const char *resultMessage, uint8_t resultCode, const IAbil
 
 int32_t AbilitySelfCallback::Callback(const IpcContext *context, void *ipcMsg, IpcIo *io, void *arg)
 {
-    if (ipcMsg == nullptr) {
+    if (!ipcMsg) {
         HILOG_ERROR(HILOG_MODULE_APP, "AbilitySelfCallback ipcMsg is nullptr");
         return PARAM_NULL_ERROR;
     }
 
-    if (io == nullptr) {
+    if (!io) {
         HILOG_ERROR(HILOG_MODULE_APP, "AbilitySelfCallback io is nullptr");
         FreeBuffer(NULL, ipcMsg);
         return PARAM_NULL_ERROR;
     }
     IAbilityStartCallback iAbilityStartCallback = GetInstance().GetCallback();
-    if (iAbilityStartCallback == nullptr) {
+    if (!iAbilityStartCallback) {
         FreeBuffer(NULL, ipcMsg);
         return PARAM_NULL_ERROR;
     }
@@ -80,7 +80,7 @@ int32_t AbilitySelfCallback::Callback(const IpcContext *context, void *ipcMsg, I
 int32 AbilitySelfCallback::GenerateLocalServiceId()
 {
     svcIdentity_ = reinterpret_cast<SvcIdentity *>(AdapterMalloc(sizeof(SvcIdentity)));
-    if (svcIdentity_ == nullptr) {
+    if (!svcIdentity_) {
         return CALLBACK_GENERATE_LOCAL_SERVICEID_FAILED;
     }
 
@@ -95,10 +95,10 @@ int32 AbilitySelfCallback::GenerateLocalServiceId()
 
 const SvcIdentity *AbilitySelfCallback::RegisterAbilitySelfCallback(IAbilityStartCallback &iAbilityStartCallback)
 {
-    if (iAbilityStartCallback == nullptr) {
+    if (!iAbilityStartCallback) {
         return nullptr;
     }
-    if (svcIdentity_ == nullptr) {
+    if (!svcIdentity_) {
         int32 ret = GenerateLocalServiceId();
         if (ret != ERR_OK) {
             return nullptr;
