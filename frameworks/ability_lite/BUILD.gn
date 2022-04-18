@@ -35,7 +35,7 @@ lite_library("ability") {
     public_deps = [
       "${aafwk_lite_path}/frameworks/abilitymgr_lite:abilitymanager",
       "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_static",
-      "//utils/native/lite/kv_store:kv_store",
+      "//foundation/distributeddatamgr/appdatamgr/frameworks/native/kv_store:kv_store",
     ]
 
     defines = []
@@ -70,7 +70,7 @@ lite_library("ability") {
       "${appexecfwk_lite_path}/frameworks/bundle_lite:bundle",
       "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
       "//foundation/communication/ipc_lite:liteipc_adapter",
-      "//utils/native/lite/kv_store:kv_store",
+      "//foundation/distributeddatamgr/appdatamgr/frameworks/native/kv_store:kv_store",
     ]
 
     defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
@@ -105,7 +105,7 @@ lite_library("ability") {
     "//foundation/communication/ipc_lite/interfaces/kits",
     "//third_party/bounds_checking_function/include",
     "//third_party/freetype/include",
-    "//utils/native/lite/kv_store/innerkits",
+    "//foundation/distributeddatamgr/appdatamgr/frameworks/native/kv_store/innerkits",
     "//utils/native/lite/include",
     "./include",
     "./",
