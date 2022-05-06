@@ -144,6 +144,7 @@ config("abilitykit_config") {
     "${aafwk_lite_path}/interfaces/kits/want_lite",
     "${aafwk_lite_path}/interfaces/kits/ability_lite",
     "${aafwk_lite_path}/interfaces/kits/ability_lite/slite",
+    "//foundation/communication/ipc/interfaces/innerkits/c/ipc/include",
   ]
 }
 
