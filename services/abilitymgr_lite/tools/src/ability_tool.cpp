@@ -19,7 +19,6 @@
 #include <cstring>
 #include <ohos_errno.h>
 #include <ctime>
-#include "ipc_skeleton.h"
 #include <samgr_lite.h>
 #include <securec.h>
 #include <semaphore.h>
@@ -29,6 +28,7 @@
 #include "ability_manager.h"
 #include "ability_service_interface.h"
 #include "adapter.h"
+#include "ipc_skeleton.h"
 #include "want_utils.h"
 
 namespace OHOS {
