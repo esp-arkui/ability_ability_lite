@@ -2,7 +2,7 @@
 
 ## Introduction
 
-`Ability Manager Service` plays an important role in OpenHarmony. This module focuses provides functions such as managing ability stacks, managing application processes, and controlling ability slice lifecycle.
+`Ability Manager Service` plays an important role in OpenHarmony. This module provides functions such as managing ability stacks, managing application processes, and controlling ability slice lifecycle.
 
 ## Features
 
