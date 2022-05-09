@@ -1,2 +1,2 @@
 ## Introduction
-The cpp file is the implementation of Want class.
+The **want.cpp** file is the implementation of **Want** class.
