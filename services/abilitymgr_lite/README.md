@@ -1,15 +1,15 @@
-# AMS - Ability manager service of OpenHarmony
+# AMS - Ability Manager Service
 
 ## Introduction
 
-`Ability manager service` plays an important role in the OpenHarmony. This module focuses on aspect of introducing the feature of AMS aiming at managing ability stack, managing application process and controlling life cycle of ability slices.
+`Ability Manager Service` plays an important role in OpenHarmony. This module focuses provides functions such as managing ability stacks, managing application processes, and controlling ability slice lifecycle.
 
 ## Features
 
-- Manage ability stack.
-- Manage application process.
-- Controll life cycle of ability slices.
-- AMS tools.
+- Ability stack management
+- Application process management
+- Ability slice lifecycle control
+- AMS tools
 
 ## Directions
 
@@ -21,21 +21,21 @@
 │   ├── ability_connect_record.h
 │   ├── ability_connect_trans_param.h
 │   ├── ability_inner_feature.h
-│   ├── ability_list.h                          # ability map to store ability record
-│   ├── ability_message_id.h                    # message id of AMS task
+│   ├── ability_list.h                          # Ability list
+│   ├── ability_message_id.h                    # Message ID of the AMS task
 │   ├── ability_mgr_context.h
 │   ├── ability_mgr_feature.h                   # AMS feature in Service Manager
 │   ├── ability_mgr_handler.h                   # AMS message handler
-│   ├── ability_mgr_service.h                   # register AMS in the Service Manager
-│   ├── ability_mission_record.h                # ability mission record
-│   ├── ability_mission_stack.h                 # ability mission record stack
-│   ├── ability_record.h                        # ability record including ability info for GT
+│   ├── ability_mgr_service.h                   # Registered AMS in the Service Manager
+│   ├── ability_mission_record.h                # Ability mission record
+│   ├── ability_mission_stack.h                 # Ability mission record stack
+│   ├── ability_record.h                        # Ability record including ability info for GT
 │   ├── ability_service.h                       # AMS for GT
-│   ├── ability_stack.h                         # stack of AMS for GT
-│   ├── ability_stack_manager.h                 # ability stack manager
-│   ├── ability_worker.h                        # ability task manager
-│   ├── app_manager.h                           # application process record manager
-│   ├── app_record.h                            # application process record
+│   ├── ability_stack.h                         # AMS stack for GT
+│   ├── ability_stack_manager.h                 # Ability stack manager
+│   ├── ability_worker.h                        # Ability task manager
+│   ├── app_manager.h                           # Application process record manager
+│   ├── app_record.h                            # Application process record
 │   ├── client
 │   │   ├── ability_dump_client.h
 │   │   ├── ability_thread_client.h
