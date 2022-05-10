@@ -45,7 +45,6 @@ AbilityThreadClient::AbilityThreadClient(const AbilityThreadClient &client)
 
 AbilityThreadClient::~AbilityThreadClient()
 {
-
 }
 
 AbilityMsStatus AbilityThreadClient::Initialize(const char *bundleName)
