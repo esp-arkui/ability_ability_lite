@@ -584,6 +584,9 @@ void AbilityMgrFeature::AppDeathNotify(void *args)
     }
     PRINTE("AbilityMgrFeature", "%s AppDeathNotify called", appInfo->bundleName);
     int32 ret = RestartApp(appInfo->bundleName);
+    if (ret != EC_SUCCESS) {
+        PRINTE("AbilityMgrFeature", "restart app failure");
+    }
     AdapterFree(appInfo->bundleName);
     delete appInfo;
 }
