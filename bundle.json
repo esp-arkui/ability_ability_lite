@@ -22,7 +22,7 @@
         "ram": "",
         "deps": {
             "components": [
-                "appexecfwk_lite",
+                "bundle_framework_lite",
                 "kv_store",
                 "ui",
                 "surface",
