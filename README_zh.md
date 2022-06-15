@@ -50,7 +50,7 @@
 ## 目录<a name="section1464106163817"></a>
 
 ```
-/foundation/aafwk/aafwk_lite
+/foundation/ability/ability_lite
      ├── frameworks
      │      ├── ability_lite               # AbilityKit实现的核心代码
      │      ├── abilitymgr_lite            # 管理AbilityKit与Ability管理服务通信的客户端代码
