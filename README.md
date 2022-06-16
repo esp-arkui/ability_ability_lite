@@ -57,7 +57,7 @@ The ability management framework is provided by OpenHarmony for you to develop O
 ## Directory Structure<a name="section1464106163817"></a>
 
 ```
-/foundation/aafwk/aafwk_lite
+/foundation/ability/ability_lite
      ├── frameworks
      │      ├── ability_lite               # Core implementation code of AbilityKit
      │      ├── abilitymgr_lite            # Client code used for communication between the AbilityKit and Ability Manager Service
