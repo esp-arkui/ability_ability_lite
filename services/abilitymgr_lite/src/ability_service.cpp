@@ -280,7 +280,7 @@ int32_t AbilityService::ForceStop(char* bundlename)
 #ifndef __LITEOS_M__
     } else {
         uint16_t size = abilityStack_.GetAllAbilities();
-        HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop innerStack mumber is [%{public}u]", size);
+        HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop innerStack number is [%{public}u]", size);
         //topAbility may be not the targert, need to search the abilityStack_
         AbilityRecord *jsAbilityRecord = const_cast<AbilityRecord *>(abilityStack_.GetAbility(bundlename));
         if (jsAbilityRecord != nullptr) {
@@ -646,7 +646,7 @@ bool AbilityService::SendMsgToJsAbility(int32_t state, const AbilityRecord *reco
     } else if (state == STATE_BACKGROUND) {
         innerMsg.msgId = BACKGROUND;
     } else if (state == STATE_UNINITIALIZED) {
-        innerMsg.msgId = DESTORY;
+        innerMsg.msgId = DESTROY;
     } else {
         innerMsg.msgId = (AbilityMsgId) state;
     }

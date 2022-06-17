@@ -200,7 +200,7 @@ int AbilityMgrHandler::StartAbility(const Want *want, pid_t callingUid)
 void AbilityMgrHandler::AttachBundle(AbilityThreadClient *client)
 {
     PRINTD("AbilityMgrHandler", "start");
-    CHECK_NULLPTR_RETURN(client, "AbilityMgrHandler", "invalid augument");
+    CHECK_NULLPTR_RETURN(client, "AbilityMgrHandler", "invalid argument");
     AbilityMsStatus status = abilityWorker_.AttachBundle(*client);
     delete client;
     CHECK_RESULT_LOG(status);

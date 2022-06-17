@@ -8,7 +8,7 @@
 
 - Manage ability stack.
 - Manage application process.
-- Controll life cycle of ability slices.
+- Control life cycle of ability slices.
 - AMS tools.
 
 ## Directions
