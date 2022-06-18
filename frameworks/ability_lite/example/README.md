@@ -1,10 +1,10 @@
 ## Introduction
-A Ability demo is provided at here to verify the function of abilityms `Ability Manager Service`.
+An ability demo is provided here to verify the function of abilityms `Ability Manager Service`.
 
-## How to BUILD
+## How to build
 See the description in [Application Framework](https://gitee.com/openharmony/docs/blob/master/readme/%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6%E5%AD%90%E7%B3%BB%E7%BB%9FREADME.md).
 
-## Directions
+## Directory
 ```
 .
 ├── BUILD.gn
