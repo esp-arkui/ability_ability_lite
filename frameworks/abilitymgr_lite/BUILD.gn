@@ -67,7 +67,7 @@ lite_library("abilitymanager") {
     "${appexecfwk_lite_path}/frameworks/bundle_lite/include",
     "//foundation/distributedschedule/samgr_lite/interfaces/kits/registry",
     "//foundation/communication/ipc/interfaces/innerkits/c/ipc/include",
-    "//foundation/distributeddatamgr/appdatamgr/frameworks/native/kv_store/innerkits",
+    "//foundation/distributeddatamgr/appdatamgr/kv_store/interfaces/inner_api/kv_store/include",
     "//foundation/distributedschedule/samgr_lite/interfaces/kits/samgr",
     "//third_party/bounds_checking_function/include",
     "//utils/native/lite/include",
