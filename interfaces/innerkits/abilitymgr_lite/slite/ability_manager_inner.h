@@ -31,10 +31,10 @@ typedef int (*StartCheckFunc)(const char *bundleName);
 /**
  * @brief Register the check function for the ability starting.
  *
- * @param startChecktCallback Indicates the check function for the ability starting.
+ * @param startCheckCallback Indicates the check function for the ability starting.
  * @return Returns <b>0</b> if this function is successfully called; returns another value otherwise.
  */
-int RegAbilityCallback(StartCheckFunc startChecktCallback);
+int RegAbilityCallback(StartCheckFunc startCheckCallback);
 
 /**
  * @brief Schedule the lifecycle of the ability.

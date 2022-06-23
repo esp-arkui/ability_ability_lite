@@ -21,9 +21,9 @@ StartCheckFunc CALLBACKFUNC = nullptr;
 bool cleanAbilityDataFlag = false;
 
 extern "C" {
-int RegAbilityCallback(StartCheckFunc startChecktCallback)
+int RegAbilityCallback(StartCheckFunc startCheckCallback)
 {
-    CALLBACKFUNC = startChecktCallback;
+    CALLBACKFUNC = startCheckCallback;
     return 0;
 }
 
@@ -47,7 +47,7 @@ StartCheckFunc getAbilityCallback()
     return CALLBACKFUNC;
 }
 
-void setCleanAbilityDataFlag(bool cleanFlag) 
+void setCleanAbilityDataFlag(bool cleanFlag)
 {
     cleanAbilityDataFlag = cleanFlag;
 }
