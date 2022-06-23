@@ -56,7 +56,7 @@ AbilityMsStatus AppSpawnClient::Initialize()
     return AbilityMsStatus::Ok();
 }
 
-static void  InnerFreeDataBuff(void *ptr)
+static void InnerFreeDataBuff(void *ptr)
 {
     if (ptr != nullptr) {
         cJSON_free(ptr);
