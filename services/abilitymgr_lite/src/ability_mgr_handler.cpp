@@ -180,7 +180,7 @@ int AbilityMgrHandler::StartAbility(const Want *want, pid_t callingUid)
     CHECK_NULLPTR_RETURN_CODE(want, "AbilityMgrHandler", "invalid argument", EC_FAILURE);
     CHECK_NULLPTR_RETURN_CODE(want->element, "AbilityMgrHandler", "invalid argument", EC_FAILURE);
 
-    // Qurey BundleInfo note: bundleInfo not need clear
+    // Query BundleInfo note: bundleInfo not need clear
     BundleInfo bundleInfo = {};
     AbilityMsStatus status = bundleMsClient_.QueryBundleInfo(want->element->bundleName, &bundleInfo);
     CHECK_RESULT_LOG_CODE(status, EC_INVALID);
@@ -241,7 +241,7 @@ void AbilityMgrHandler::RestartApp(const char *bundleName)
 {
     PRINTD("AbilityMgrHandler", "start %{public}s", bundleName);
     CHECK_NULLPTR_RETURN(bundleName, "AbilityMgrHandler", "invalid argument");
-    // Qurey BundleInfo
+    // Query BundleInfo
     BundleInfo bundleInfo = {};
     AbilityMsStatus status = bundleMsClient_.QueryBundleInfo(bundleName, &bundleInfo);
     if (!status.IsOk()) {
@@ -267,7 +267,7 @@ int AbilityMgrHandler::ConnectAbility(AbilityConnectTransParam *transParam)
     const Want *want = transParam->GetWant();
     CHECK_NULLPTR_RETURN_CODE(want, "AbilityMgrHandler", "invalid argument", EC_FAILURE);
     CHECK_NULLPTR_RETURN_CODE(want->element, "AbilityMgrHandler", "invalid argument", EC_FAILURE);
-    // Qurey BundleInfo note: bundleInfo not need clear
+    // Query BundleInfo note: bundleInfo not need clear
     BundleInfo bundleInfo = {};
     AbilityMsStatus status = bundleMsClient_.QueryBundleInfo(want->element->bundleName, &bundleInfo);
     CHECK_RESULT_LOG_CODE(status, EC_INVALID);
@@ -318,7 +318,7 @@ void AbilityMgrHandler::TerminateService(Want *want, pid_t callingUid)
     CHECK_NULLPTR_RETURN(want, "AbilityMgrHandler", "invalid argument");
     CHECK_NULLPTR_RETURN(want->element, "AbilityMgrHandler", "invalid argument");
 
-    // Qurey BundleInfo note: bundleInfo not need clear
+    // Query BundleInfo note: bundleInfo not need clear
     BundleInfo bundleInfo = {};
     AbilityMsStatus status = bundleMsClient_.QueryBundleInfo(want->element->bundleName, &bundleInfo);
     CHECK_RESULT_LOG(status);
