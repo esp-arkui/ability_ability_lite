@@ -55,7 +55,7 @@
 #endif
 
 namespace OHOS {
-using CreateAblity = std::function<Ability *(void)>;
+using CreateAbility = std::function<Ability *(void)>;
 #ifdef ABILITY_WINDOW_SUPPORT
 using CreateSlice = std::function<AbilitySlice *(void)>;
 #endif
@@ -81,7 +81,7 @@ public:
 
     ~AbilityLoader() = default;
 
-    void RegisterAbility(const std::string &abilityName, const CreateAblity &createFunc);
+    void RegisterAbility(const std::string &abilityName, const CreateAbility &createFunc);
     Ability *GetAbilityByName(const std::string &abilityName);
 
 #ifdef ABILITY_WINDOW_SUPPORT
@@ -96,7 +96,7 @@ private:
     AbilityLoader(AbilityLoader &&) = delete;
     AbilityLoader &operator=(AbilityLoader &&) = delete;
 
-    std::unordered_map<std::string, CreateAblity> abilities_;
+    std::unordered_map<std::string, CreateAbility> abilities_;
 #ifdef ABILITY_WINDOW_SUPPORT
     std::unordered_map<std::string, CreateSlice> slices_;
 #endif
