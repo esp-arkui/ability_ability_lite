@@ -93,7 +93,7 @@ extern "C" {
 void ClearWant(Want *want);
 
 /**
- * @brief Sets key and value to the want which would be passed to remote deive to start remote ability.
+ * @brief Sets key and value to the want which would be passed to remote device to start remote ability.
  *
  * @param want Indicates the pointer to the <b>Want</b> object to set.
  * @param key Indicates the pointer to the key which would be added to the want.
@@ -105,7 +105,7 @@ void ClearWant(Want *want);
 bool SetIntParam(Want *want, const char *key, uint8_t keyLen, int32_t value);
 
 /**
- * @brief Sets key and value to the want which would be passed to remote deive to start remote ability.
+ * @brief Sets key and value to the want which would be passed to remote device to start remote ability.
  *
  * @param want Indicates the pointer to the <b>Want</b> object to set.
  * @param key Indicates the pointer to the key which would be added to the want.
