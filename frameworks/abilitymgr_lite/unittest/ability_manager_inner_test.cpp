@@ -48,8 +48,8 @@ namespace OHOS {
     {
         printf("AbilityManagerInnerTest setup");
         SetUp();
-        StartCheckFunc startChecktCallback = getAbilityCallback();
-        auto ret = RegAbilityCallback(startChecktCallback);
+        StartCheckFunc startCheckCallback = getAbilityCallback();
+        auto ret = RegAbilityCallback(startCheckCallback);
         EXPECT_TRUE(ret == 0);
         TearDown();
         printf("--------AbilityManagerInnerTest001 RegAbilityCallback end--------");
