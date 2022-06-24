@@ -78,7 +78,7 @@ private:
     void DeleteRecordInfo(uint16_t token);
     bool SendMsgToJsAbility(int32_t msgId, const AbilityRecord *record);
     void SetAbilityState(uint64_t token, int32_t state);
-    void UpdataRecord(AbilitySvcInfo *info);
+    void UpdateRecord(AbilitySvcInfo *info);
     int32_t ForceStopBundleInner(uint16_t token);
     bool IsValidAbility(AbilityInfo *abilityInfo);
 
