@@ -1,3 +1,45 @@
+setenv bootargs 'mem=128M console=ttyAMA0,115200 root=/dev/mmcblk0p3 rw rootfstype=ext4 rootwait blkdevparts=mmcblk0:1M(boot), 9M(kernel), 50M(rootfs), 50M(userfs)'
+setenv bootcmd "mmc read 0x0 0x82000000 0x800 0x4800;bootm 0x82000000"
+Save
+go 0x82000000
+ 
+ 
+ 
+LiteOS
+setenv bootcmd "mmc read 0x0 0x80000000 0x800 0x4800;mmc read 0x0 0x82000000 0x800 0x4800; mw 0x10FF0044 0x0600; mw 0x120D2010 0x00000000; mw 0x120D2400 0x000000ff; mw 0x120D2010 0x00000000; go 0x80000000";
+setenv bootargs "console=ttyAMA0,115200n8 root=emmc fstype=vfat rootaddr=10M rootsize=20M rw";
+saveenv
+go 0x80000000
+ 
+setenv bootcmd "sf probe 0;mmc read 0x0 0x80000000 0x800 0x4800; go 0x80000000";
+setenv bootargs "console=ttyAMA0,115200n8 root=emmc fstype=vfat rootaddr=10M rootsize=20M rw";
+saveenv
+ 
+ 
+hb build -f -T //foundation/communication/dsoftbus/tests/sdk/transmission/trans_channel/tcp_direct/sample:trans_client
+hb build -f -T //foundation/communication/dsoftbus/tests/sdk/transmission/trans_channel/tcp_direct/sample:trans_client
+ 
+Reset
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Ability Management Framework<a name="EN-US_TOPIC_0000001062157546"></a>
 
 -   [Introduction](#section11660541593)
