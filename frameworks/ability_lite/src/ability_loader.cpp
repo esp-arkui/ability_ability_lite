@@ -17,7 +17,7 @@
 #include "log.h"
 
 namespace OHOS {
-void AbilityLoader::RegisterAbility(const std::string &abilityName, const CreateAblity &createFunc)
+void AbilityLoader::RegisterAbility(const std::string &abilityName, const CreateAbility &createFunc)
 {
     abilities_.emplace(abilityName, createFunc);
     HILOG_INFO(HILOG_MODULE_APP, "RegisterAbility %s", abilityName.c_str());

@@ -146,7 +146,7 @@ int32_t AbilityService::StartAbility(const Want *want)
     return ERR_OK;
 }
 
-void AbilityService::UpdataRecord(AbilitySvcInfo *info)
+void AbilityService::UpdateRecord(AbilitySvcInfo *info)
 {
     if (info == nullptr) {
         return;
@@ -176,7 +176,7 @@ int32_t AbilityService::StartAbility(AbilitySvcInfo *info)
     uint16_t topToken = topRecord->GetToken();
     //  start launcher
     if (strcmp(info->bundleName, LAUNCHER_BUNDLE_NAME) == 0) {
-        UpdataRecord(info);
+        UpdateRecord(info);
         if (topToken != LAUNCHER_TOKEN && topRecord->GetState() != SCHEDULE_BACKGROUND) {
             HILOG_INFO(HILOG_MODULE_AAFWK, "Change Js app to background.");
             (void) SchedulerLifecycleInner(topRecord, STATE_BACKGROUND);
@@ -248,7 +248,7 @@ int32_t AbilityService::ForceStopBundle(uint16_t token)
         return ERR_OK;
     }
 
-    // free js mem and delete the record 
+    // free js mem and delete the record
     AbilityRecord *record = abilityList_.Get(token);
     if (ForceStopBundleInner(token) != ERR_OK) {
         return PARAM_CHECK_ERROR;
@@ -280,7 +280,7 @@ int32_t AbilityService::ForceStop(char* bundlename)
 #ifndef __LITEOS_M__
     } else {
         uint16_t size = abilityStack_.GetAllAbilities();
-        HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop innerStack mumber is [%{public}u]", size);
+        HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop innerStack number is [%{public}u]", size);
         //topAbility may be not the targert, need to search the abilityStack_
         AbilityRecord *jsAbilityRecord = const_cast<AbilityRecord *>(abilityStack_.GetAbility(bundlename));
         if (jsAbilityRecord != nullptr) {
@@ -296,7 +296,7 @@ int32_t AbilityService::ForceStop(char* bundlename)
 
 int32_t AbilityService::ForceStopBundleInner(uint16_t token)
 {
-    // free js mem and delete the record 
+    // free js mem and delete the record
     AbilityRecord *record = abilityList_.Get(token);
     if (record == nullptr) {
         return PARAM_NULL_ERROR;
@@ -646,7 +646,7 @@ bool AbilityService::SendMsgToJsAbility(int32_t state, const AbilityRecord *reco
     } else if (state == STATE_BACKGROUND) {
         innerMsg.msgId = BACKGROUND;
     } else if (state == STATE_UNINITIALIZED) {
-        innerMsg.msgId = DESTORY;
+        innerMsg.msgId = DESTROY;
     } else {
         innerMsg.msgId = (AbilityMsgId) state;
     }

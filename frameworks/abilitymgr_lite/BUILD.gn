@@ -43,7 +43,7 @@ lite_library("abilitymanager") {
     deps = [
       "${appexecfwk_lite_path}/frameworks/bundle_lite:bundle",
       "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
-      "//foundation/communication/ipc_lite:liteipc_adapter",
+      "//foundation/communication/ipc/interfaces/innerkits/c/ipc:ipc_single",
     ]
 
     defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
@@ -66,9 +66,10 @@ lite_library("abilitymanager") {
     "${appexecfwk_lite_path}/interfaces/kits/bundle_lite",
     "${appexecfwk_lite_path}/frameworks/bundle_lite/include",
     "//foundation/distributedschedule/samgr_lite/interfaces/kits/registry",
+    "//foundation/communication/ipc/interfaces/innerkits/c/ipc/include",
+    "//foundation/distributeddatamgr/appdatamgr/kv_store/interfaces/inner_api/kv_store/include",
     "//foundation/distributedschedule/samgr_lite/interfaces/kits/samgr",
     "//third_party/bounds_checking_function/include",
-    "//utils/native/lite/kv_store/innerkits",
     "//utils/native/lite/include",
     "//utils/native/lite/memory/include",
     "./include",
@@ -80,7 +81,7 @@ unittest("ability_manager_inner_test") {
   output_extension = "bin"
   output_dir = "$root_out_dir/test/unittest/ManagerInnerTest_lv0"
 
-  sources = [ "//foundation/aafwk/aafwk_lite/frameworks/abilitymgr_lite/unittest/ability_manager_inner_test.cpp" ]
+  sources = [ "//foundation/ability/ability_lite/frameworks/abilitymgr_lite/unittest/ability_manager_inner_test.cpp" ]
 }
 
 lite_component("aafwk_abilityManager_lite") {

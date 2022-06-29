@@ -27,7 +27,7 @@ ohos_shared_library("aafwk") {
   sources = [ "js_aafwk.cpp" ]
 
   deps = [
-    "//foundation/aafwk/aafwk_lite/frameworks/abilitymgr_lite:abilitymanager",
+    "//foundation/ability/ability_lite/frameworks/abilitymgr_lite:abilitymanager",
     "//foundation/arkui/napi/:ace_napi",
     "//utils/native/base:utils",
   ]

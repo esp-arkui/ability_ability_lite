@@ -34,7 +34,7 @@ unittest("ability_test_pageAbilityTest_lv0") {
     "${aafwk_lite_path}/services/abilitymgr_lite/unittest/util",
     "${appexecfwk_lite_path}/interfaces/kits/bundle_lite",
     "${appexecfwk_lite_path}/utils/bundle_lite",
-    "${appexecfwk_lite_path}/interfaces/innerkits/bundlemgr_lite",
+    "${appexecfwk_lite_path}/interfaces/inner_api/bundlemgr_lite",
     "${appexecfwk_lite_path}/frameworks/bundle_lite/include",
     "${appexecfwk_lite_path}/kits/appkit_lite/appkit_utils/include",
     "//foundation/distributedschedule/samgr_lite/interfaces/innerkits/samgr",
@@ -48,7 +48,7 @@ unittest("ability_test_pageAbilityTest_lv0") {
     "${appexecfwk_lite_path}/frameworks/bundle_lite:bundle",
     "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
     "//build/lite/config/component/cJSON:cjson_shared",
-    "//foundation/communication/ipc_lite:liteipc_adapter",
+    "//foundation/communication/ipc/interfaces/innerkits/c/ipc:ipc_single",
     "//foundation/distributedschedule/samgr_lite/samgr:samgr",
   ]
 

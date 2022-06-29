@@ -26,6 +26,7 @@
 #endif
 #include "element_name_utils.h"
 #include "iproxy_client.h"
+#include "rpc_errno.h"
 #include "util/abilityms_helper.h"
 
 namespace OHOS {
@@ -179,7 +180,7 @@ int AbilityMgrHandler::StartAbility(const Want *want, pid_t callingUid)
     CHECK_NULLPTR_RETURN_CODE(want, "AbilityMgrHandler", "invalid argument", EC_FAILURE);
     CHECK_NULLPTR_RETURN_CODE(want->element, "AbilityMgrHandler", "invalid argument", EC_FAILURE);
 
-    // Qurey BundleInfo note: bundleInfo not need clear
+    // Query BundleInfo note: bundleInfo not need clear
     BundleInfo bundleInfo = {};
     AbilityMsStatus status = bundleMsClient_.QueryBundleInfo(want->element->bundleName, &bundleInfo);
     CHECK_RESULT_LOG_CODE(status, EC_INVALID);
@@ -199,7 +200,7 @@ int AbilityMgrHandler::StartAbility(const Want *want, pid_t callingUid)
 void AbilityMgrHandler::AttachBundle(AbilityThreadClient *client)
 {
     PRINTD("AbilityMgrHandler", "start");
-    CHECK_NULLPTR_RETURN(client, "AbilityMgrHandler", "invalid augument");
+    CHECK_NULLPTR_RETURN(client, "AbilityMgrHandler", "invalid argument");
     AbilityMsStatus status = abilityWorker_.AttachBundle(*client);
     delete client;
     CHECK_RESULT_LOG(status);
@@ -240,7 +241,7 @@ void AbilityMgrHandler::RestartApp(const char *bundleName)
 {
     PRINTD("AbilityMgrHandler", "start %{public}s", bundleName);
     CHECK_NULLPTR_RETURN(bundleName, "AbilityMgrHandler", "invalid argument");
-    // Qurey BundleInfo
+    // Query BundleInfo
     BundleInfo bundleInfo = {};
     AbilityMsStatus status = bundleMsClient_.QueryBundleInfo(bundleName, &bundleInfo);
     if (!status.IsOk()) {
@@ -266,7 +267,7 @@ int AbilityMgrHandler::ConnectAbility(AbilityConnectTransParam *transParam)
     const Want *want = transParam->GetWant();
     CHECK_NULLPTR_RETURN_CODE(want, "AbilityMgrHandler", "invalid argument", EC_FAILURE);
     CHECK_NULLPTR_RETURN_CODE(want->element, "AbilityMgrHandler", "invalid argument", EC_FAILURE);
-    // Qurey BundleInfo note: bundleInfo not need clear
+    // Query BundleInfo note: bundleInfo not need clear
     BundleInfo bundleInfo = {};
     AbilityMsStatus status = bundleMsClient_.QueryBundleInfo(want->element->bundleName, &bundleInfo);
     CHECK_RESULT_LOG_CODE(status, EC_INVALID);
@@ -317,7 +318,7 @@ void AbilityMgrHandler::TerminateService(Want *want, pid_t callingUid)
     CHECK_NULLPTR_RETURN(want, "AbilityMgrHandler", "invalid argument");
     CHECK_NULLPTR_RETURN(want->element, "AbilityMgrHandler", "invalid argument");
 
-    // Qurey BundleInfo note: bundleInfo not need clear
+    // Query BundleInfo note: bundleInfo not need clear
     BundleInfo bundleInfo = {};
     AbilityMsStatus status = bundleMsClient_.QueryBundleInfo(want->element->bundleName, &bundleInfo);
     CHECK_RESULT_LOG(status);
@@ -338,13 +339,16 @@ void AbilityMgrHandler::StartAbilityCallback(const Want *want, int code)
     }
     PRINTI("AbilityMgrHandler", "start ability failed callback");
     IpcIo io;
-    char data[IPC_IO_DATA_MAX];
-    IpcIoInit(&io, data, IPC_IO_DATA_MAX, 0);
+    char data[MAX_IO_SIZE];
+    IpcIoInit(&io, data, MAX_IO_SIZE, 0);
     if (!SerializeElement(&io, want->element)) {
         return;
     }
-    IpcIoPushInt32(&io, code);
-    if (Transact(nullptr, *(want->sid), SCHEDULER_APP_INIT, &io, nullptr, LITEIPC_FLAG_ONEWAY, nullptr) != LITEIPC_OK) {
+    WriteInt32(&io, code);
+    MessageOption option;
+    MessageOptionInit(&option);
+    option.flags = TF_OP_ASYNC;
+    if (SendRequest(*(want->sid), SCHEDULER_APP_INIT, &io, nullptr, option, nullptr) != ERR_NONE) {
         PRINTE("AbilityMgrHandler", "start ability callback failed, ipc error");
     }
 }
@@ -354,9 +358,7 @@ void AbilityMgrHandler::DumpAbility(const AbilityDumpClient *client)
     PRINTD("AbilityMgrHandler", "start");
     CHECK_NULLPTR_RETURN(client, "AbilityMgrHandler", "invalid argument");
     AbilityMsStatus status = abilityWorker_.DumpAbility(*client);
-#ifdef __LINUX__
-    BinderRelease(client->GetWant().sid->ipcContext, client->GetWant().sid->handle);
-#endif
+    ReleaseSvc(*(client->GetWant().sid));
     delete client;
     CHECK_RESULT_LOG(status);
 }
@@ -367,12 +369,13 @@ void AbilityMgrHandler::ConnectAbilityCallback(AbilityConnectTransParam *transPa
         return;
     }
     PRINTI("AbilityMgrHandler", "connect ability failed");
-    if (Transact(nullptr, transParam->GetSvcIdentity(), SCHEDULER_ABILITY_CONNECT_FAIL, nullptr, nullptr,
-        LITEIPC_FLAG_ONEWAY, nullptr) != LITEIPC_OK) {
+    MessageOption option;
+    MessageOptionInit(&option);
+    option.flags = TF_OP_ASYNC;
+    if (SendRequest(transParam->GetSvcIdentity(), SCHEDULER_ABILITY_CONNECT_FAIL, nullptr, nullptr,
+        option, nullptr) != ERR_NONE) {
         PRINTE("AbilityMgrHandler", "connect ability callback failed, ipc error");
     }
-#ifdef __LINUX__
-    BinderRelease(transParam->GetSvcIdentity().ipcContext, transParam->GetSvcIdentity().handle);
-#endif
+    ReleaseSvc(transParam->GetSvcIdentity());
 }
 }  // namespace OHOS

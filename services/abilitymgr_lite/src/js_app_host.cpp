@@ -61,7 +61,7 @@ void JsAppHost::JsAppTaskHandler(uint32_t uwArg)
             case BACKGROUND:
                 jsappHost->OnBackground(innerMsg.token);
                 break;
-            case DESTORY:
+            case DESTROY:
                 // cleanup the message queue id to present any new async message
                 JsAsyncWork::SetAppQueueHandler(nullptr);
                 jsappHost->OnDestroy(innerMsg.token);

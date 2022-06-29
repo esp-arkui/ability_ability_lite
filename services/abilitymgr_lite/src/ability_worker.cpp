@@ -122,7 +122,7 @@ AbilityMsStatus AbilityWorker::ConnectAbility(const AbilityConnectTransParam &co
     const AbilityInfo &target, const BundleInfo &bundleInfo)
 {
     if (!AbilityMsHelper::CheckVisiblePermission(connectParam.GetCallingUid(), bundleInfo.uid, target.isVisible)) {
-        return AbilityMsStatus::PermissionStatus("connect ability visibale is false");
+        return AbilityMsStatus::PermissionStatus("connect ability visible is false");
     }
     if (abilityMgrContext_ == nullptr) {
         return AbilityMsStatus::TaskStatus("connect", "invalid argument");
