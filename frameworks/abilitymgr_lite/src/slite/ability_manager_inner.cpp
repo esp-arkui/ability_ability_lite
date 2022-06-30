@@ -37,9 +37,9 @@ int ForceStopBundle(uint64_t token)
     return OHOS::AbilityMsClient::GetInstance().ForceStopBundle(token);
 }
 
-int ForceStop(char *bundlename)
+int ForceStop(char *bundleName)
 {
-    return OHOS::AbilityMsClient::GetInstance().ForceStop(bundlename);
+    return OHOS::AbilityMsClient::GetInstance().ForceStop(bundleName);
 }
 
 StartCheckFunc getAbilityCallback()
