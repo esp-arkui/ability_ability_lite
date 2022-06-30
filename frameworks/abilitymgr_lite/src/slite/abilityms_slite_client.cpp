@@ -136,13 +136,13 @@ ElementName *AbilityMsClient::GetTopAbility() const
     return amsProxy_->GetTopAbility();
 }
 
-int AbilityMsClient::ForceStop(char *bundlename) const
+int AbilityMsClient::ForceStop(char *bundleName) const
 {
     AbilityMgrService *service = AbilityMgrService::GetInstance();
     if (service == nullptr) {
         return PARAM_CHECK_ERROR;
     }
-    char* name = Utils::Strdup(bundlename);
+    char* name = Utils::Strdup(bundleName);
     Request request = {
         .msgId = TERMINATE_APP_BY_BUNDLENAME,
         .len = (int16)strlen(name),

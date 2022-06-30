@@ -139,7 +139,7 @@ void AbilityMgrFeature::OnRequestCallback(const void *data, int32_t ret)
     option.flags = TF_OP_ASYNC;
     int32_t transRet = SendRequest(svc_, START_ABILITY_CALLBACK, &io, &reply, option, NULL);
     if (transRet != ERR_NONE) {
-        HILOG_ERROR(HILOG_MODULE_APP, "AbilityMgrFeature InnerSelfTransact fialed %{public}d\n", ret);
+        HILOG_ERROR(HILOG_MODULE_APP, "AbilityMgrFeature InnerSelfTransact failed %{public}d\n", ret);
     }
     ReleaseSvc(svc_);
 }
