@@ -179,9 +179,9 @@ bool SetIntParam(Want *want, const char *key, uint8_t keyLen, int32_t value)
         FreeTlvStruct(keyTlv);
         return result;
     }
-    int intBufferbNumber = 4;
+    int intBufferNumber = 4;
     unsigned char intBuffer[4] = {0};
-    for (int i = 0; i < intBufferbNumber; i++) {
+    for (int i = 0; i < intBufferNumber; i++) {
         intBuffer[i] = value >> (8 * (3- i));
     }
     Tlv *valueTlv = EncapTlv(INT_VALUE_TYPE, sizeof(int), (void *)intBuffer, sizeof(int));

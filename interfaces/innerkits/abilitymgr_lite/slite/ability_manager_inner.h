@@ -46,7 +46,7 @@ int RegAbilityCallback(StartCheckFunc startCheckCallback);
 int SchedulerLifecycleDone(uint64_t token, int state);
 
 /**
- * @brief Forcestop an ability based on the specified token information.
+ * @brief Force stop an ability based on the specified token information.
  *
  * @param token Indicates the token of the ability.
  * @return Returns <b>0</b> if this function is successfully called; returns another value otherwise.
@@ -61,12 +61,12 @@ int ForceStopBundle(uint64_t token);
 ElementName *GetTopAbility();
 
 /**
- * @brief Forcestop an ability based on the specified bundlename information.
+ * @brief Force stop an ability based on the specified bundleName information.
  *
- * @param bundlename Indicates the bundlename of the ability.
+ * @param bundleName Indicates the bundleName of the ability.
  * @return Returns <b>0</b> if this function is successfully called; returns another value otherwise.
  */
-int ForceStop(char *bundlename);
+int ForceStop(char *bundleName);
 
 /**
  * @brief get ability callback function.
