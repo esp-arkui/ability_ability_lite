@@ -33,7 +33,7 @@
  * @brief Declares callbacks to be invoked when a remote Service ability is connected or disconnected.
  *
  * You must override the callbacks provided in {@link IAbilityConnection} to implement your processing logic for
- * Service connection and disconnection.
+ * Service ability connection and disconnection.
  *
  * @since 1.0
  * @version 1.0
@@ -48,7 +48,7 @@
 typedef struct IAbilityConnection IAbilityConnection;
 
 /**
-* @brief Provides callbacks to be invoked when a remote Service ability is connected or disconnected.
+* @brief Declares callbacks to be invoked when a remote Service ability is connected or disconnected.
 */
 struct IAbilityConnection {
     /**

@@ -1,5 +1,5 @@
 ## Introduction
-An ability demo is provided here to verify the function of abilityms `Ability Manager Service`.
+An Ability demo is provided here to verify the functions of `Ability Manager Service`.
 
 ## How to build
 See the description in [Ability Framework](https://gitee.com/openharmony/ability_ability_lite/blob/master/README.md).
