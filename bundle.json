@@ -28,7 +28,6 @@
                 "surface",
                 "hilog",
                 "permission",
-                "ipc_lite",
                 "samgr_lite",
                 "appspawn_lite",
                 "wms"
