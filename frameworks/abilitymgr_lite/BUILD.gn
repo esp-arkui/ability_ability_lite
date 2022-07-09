@@ -49,9 +49,6 @@ lite_library("abilitymanager") {
     defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
   }
 
-  cflags = [ "-Wall" ]
-  cflags_cc = cflags
-
   include_dirs = [
     "${aafwk_lite_path}/services/abilitymgr_lite/include",
     "${aafwk_lite_path}/services/abilitymgr_lite/include/util",
