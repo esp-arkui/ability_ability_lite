@@ -11,8 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//build/lite/config/component/lite_component.gni")
-import("//build/lite/config/test.gni")
+import("//build/hb/config/component/lite_component.gni")
+import("//build/hb/config/test.gni")
 
 unittest("ability_test_pageAbilityTest_lv0") {
   output_extension = "bin"
@@ -47,7 +47,7 @@ unittest("ability_test_pageAbilityTest_lv0") {
     "${aafwk_lite_path}/frameworks/abilitymgr_lite:aafwk_abilityManager_lite",
     "${appexecfwk_lite_path}/frameworks/bundle_lite:bundle",
     "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
-    "//build/lite/config/component/cJSON:cjson_shared",
+    "//build/hb/config/component/cJSON:cjson_shared",
     "//foundation/communication/ipc/interfaces/innerkits/c/ipc:ipc_single",
     "//foundation/distributedschedule/samgr_lite/samgr:samgr",
   ]
