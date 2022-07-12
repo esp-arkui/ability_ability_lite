@@ -272,7 +272,7 @@ int32_t AbilityService::ForceStop(char* bundleName)
         return TerminateAbility(0);
     }
 
-    //stop js app
+    // stop js app
     if (strcmp(abilityStack_.GetTopAbility()->GetAppName(), bundleName) == 0) {
         AbilityRecord *topRecord = const_cast<AbilityRecord *>(abilityStack_.GetTopAbility());
         HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop [%{public}u]", topRecord->GetToken());
@@ -281,7 +281,7 @@ int32_t AbilityService::ForceStop(char* bundleName)
     } else {
         uint16_t size = abilityStack_.GetAllAbilities();
         HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop innerStack number is [%{public}u]", size);
-        //topAbility may be not the target, need to search the abilityStack_
+        // topAbility may be not the target, need to search the abilityStack_
         AbilityRecord *jsAbilityRecord = const_cast<AbilityRecord *>(abilityStack_.GetAbility(bundleName));
         if (jsAbilityRecord != nullptr) {
             jsAbilityRecord->SetTerminated(true);
