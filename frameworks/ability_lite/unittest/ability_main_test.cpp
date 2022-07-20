@@ -14,7 +14,7 @@
  */
 
 #include <gtest/gtest.h>
-#include "../../../interfaces/innerkits/abilitymgr_lite/ability_main.h"
+#include "../../../interfaces/inner_api/abilitymgr_lite/ability_main.h"
 
 using namespace testing::ext;
 
