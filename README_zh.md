@@ -59,7 +59,7 @@
      │      ├── kits
      │      │     ├── ability_lite        # AbilityKit为开发者提供的接口
      │      │     └── want_lite           # Ability之间交互的信息载体的对外接口
-     │      └── innerkits
+     │      └── inner_api
      │             └── abilitymgr_lite     # Ability管理服务为其它子系统提供的接口
      └── services
              └── abilitymgr_lite            # Ability管理服务的实现代码

@@ -66,7 +66,7 @@ The ability management framework is provided by OpenHarmony for you to develop O
      │      ├── kits
      │      │     ├── ability_lite        # AbilityKit APIs exposed externally
      │      │     └── want_lite           # External APIs of the information carrier for interaction between abilities
-     │      └── innerkits
+     │      └── inner_api
      │             └── abilitymgr_lite     # Internal APIs provided by the Ability Manager Service for other subsystems
      └── services
              └── abilitymgr_lite            # Implementation code of the Ability Manager Service

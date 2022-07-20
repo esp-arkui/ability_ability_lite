@@ -14,7 +14,7 @@
  */
 
 #include "gtest/gtest.h"
-#include "../../../interfaces/innerkits/abilitymgr_lite/slite/ability_manager_inner.h"
+#include "../../../interfaces/inner_api/abilitymgr_lite/slite/ability_manager_inner.h"
 
 using namespace testing::ext;
 
