@@ -41,7 +41,7 @@ lite_library("abilityms") {
     deps = [
       "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_static",
       "//foundation/arkui/ace_engine_lite/frameworks:ace_lite",
-      "//foundation/distributedschedule/samgr_lite/samgr:samgr",
+      "//foundation/systemabilitymgr/samgr_lite/samgr:samgr",
     ]
   } else {
     target_type = "shared_library"
@@ -88,7 +88,7 @@ lite_library("abilityms") {
       "${appexecfwk_lite_path}/frameworks/bundle_lite:bundle",
       "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
       "//foundation/communication/ipc/interfaces/innerkits/c/ipc:ipc_single",
-      "//foundation/distributedschedule/samgr_lite/samgr:samgr",
+      "//foundation/systemabilitymgr/samgr_lite/samgr:samgr",
     ]
 
     defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
@@ -132,8 +132,8 @@ lite_library("abilityms") {
     "${appexecfwk_lite_path}/frameworks/bundle_lite/include",
     "//foundation/communication/ipc/interfaces/innerkits/c/ipc/include",
     "//foundation/ability/dmsfwk_lite/interfaces/innerkits",
-    "//foundation/distributedschedule/samgr_lite/interfaces/kits/registry",
-    "//foundation/distributedschedule/samgr_lite/interfaces/kits/samgr",
+    "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/registry",
+    "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/samgr",
     "//foundation/graphic/wms/interfaces/innerkits",
     "//base/startup/appspawn/lite",
     "//base/security/permission/interfaces/kits/permission_lite",

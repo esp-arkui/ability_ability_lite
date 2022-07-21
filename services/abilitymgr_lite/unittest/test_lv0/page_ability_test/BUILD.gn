@@ -37,8 +37,8 @@ unittest("ability_test_pageAbilityTest_lv0") {
     "${appexecfwk_lite_path}/interfaces/inner_api/bundlemgr_lite",
     "${appexecfwk_lite_path}/frameworks/bundle_lite/include",
     "${appexecfwk_lite_path}/kits/appkit_lite/appkit_utils/include",
-    "//foundation/distributedschedule/samgr_lite/interfaces/innerkits/samgr",
-    "//foundation/distributedschedule/samgr_lite/interfaces/innerkits/registry",
+    "//foundation/systemabilitymgr/samgr_lite/interfaces/innerkits/samgr",
+    "//foundation/systemabilitymgr/samgr_lite/interfaces/innerkits/registry",
     "//third_party/cJSON",
     "//utils/native/lite/include",
   ]
@@ -49,7 +49,7 @@ unittest("ability_test_pageAbilityTest_lv0") {
     "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
     "//build/lite/config/component/cJSON:cjson_shared",
     "//foundation/communication/ipc/interfaces/innerkits/c/ipc:ipc_single",
-    "//foundation/distributedschedule/samgr_lite/samgr:samgr",
+    "//foundation/systemabilitymgr/samgr_lite/samgr:samgr",
   ]
 
   defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
