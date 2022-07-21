@@ -16,7 +16,7 @@
 #include "slite_ability.h"
 
 #include "ability_state.h"
-#include "abilityms_client.h"
+#include "abilityms_slite_client.h"
 
 namespace OHOS {
 void SliteAbility::OnStart(const Want &want)
