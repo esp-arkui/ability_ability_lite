@@ -17,7 +17,11 @@
 #define OHOS_AMS_INTERFACE_H
 
 #include "feature.h"
+#ifndef __LITEOS_M__
 #include "iproxy_server.h"
+#else
+#include "iunknown.h"
+#endif
 #include "want.h"
 
 #ifdef __cplusplus
@@ -49,6 +53,7 @@ enum AmsCommand {
     COMMAND_END,
 };
 
+#ifndef __LITEOS_M__
 /**
  * Expose to start or terminate ability.
  */
@@ -66,7 +71,7 @@ struct AmsInnerInterface {
     int32 (*StartKeepAliveApps)();
     int32 (*TerminateApp)(const char *bundleName);
 };
-
+#endif
 struct AmsSliteInterface {
     INHERIT_IUNKNOWN;
     int32 (*StartAbility)(const Want *want);
