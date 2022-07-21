@@ -19,7 +19,6 @@
 #include "ability_service.h"
 #include "ability_service_interface.h"
 #include "feature.h"
-#include "iproxy_client.h"
 #include "iunknown.h"
 #include "nocopyable.h"
 

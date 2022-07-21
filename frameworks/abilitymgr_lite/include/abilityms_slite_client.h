@@ -16,7 +16,6 @@
 #ifndef OHOS_ABILITYMS_SLITE_CLIENT_H
 #define OHOS_ABILITYMS_SLITE_CLIENT_H
 
-#include "iproxy_client.h"
 #include "nocopyable.h"
 #include "want.h"
 #include "ability_service_interface.h"
