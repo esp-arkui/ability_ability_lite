@@ -19,10 +19,13 @@ generate_notice_file("want_notice_file") {
 
 source_set("want") {
   sources = [ "src/want.cpp" ]
-  cflags = [
-    "-fPIC",
-    "-Wall",
-  ]
+  cflags = []
+  if (board_toolchain_type != "iccarm") {
+    cflags += [
+      "-fPIC",
+      "-Wall",
+    ]
+  }
   cflags_cc = cflags
 
   include_dirs = [
