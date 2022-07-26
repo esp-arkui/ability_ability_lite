@@ -29,10 +29,10 @@ ohos_shared_library("aafwk") {
   deps = [
     "//foundation/ability/ability_lite/frameworks/abilitymgr_lite:abilitymanager",
     "//foundation/arkui/napi/:ace_napi",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
+    "c_utils:utils",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
   ]
