@@ -76,11 +76,14 @@ lite_library("ability") {
     defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
   }
 
-  cflags = [
-    "-Wall",
-    "-Wno-format",
-    "-Wno-format-extra-args",
-  ]
+  cflags = []
+  if (board_toolchain_type != "iccarm") {
+    cflags += [
+      "-Wall",
+      "-Wno-format",
+      "-Wno-format-extra-args",
+    ]
+  }
   cflags_cc = cflags
 
   if (enable_ohos_appexecfwk_feature_ability == true) {

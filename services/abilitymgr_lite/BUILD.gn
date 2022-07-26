@@ -104,11 +104,14 @@ lite_library("abilityms") {
     }
   }
 
-  cflags = [
-    "-Wall",
-    "-Wno-format",
-    "-Wno-format-extra-args",
-  ]
+  cflags = []
+  if (board_toolchain_type != "iccarm") {
+    cflags += [
+      "-Wall",
+      "-Wno-format",
+      "-Wno-format-extra-args",
+    ]
+  }
   cflags_cc = cflags
 
   ldflags = [
