@@ -21,6 +21,11 @@
 #include "ability_message_id.h"
 #include "ability_mgr_service.h"
 #include "ability_mgr_slite_feature.h"
+
+#include "ability_connect_trans_param.h"
+#include "ability_callback_utils.h"
+
+#include "samgr_lite.h"
 #include "ability_record.h"
 #include "ability_stack.h"
 #include "ability_state.h"
@@ -42,6 +47,8 @@ constexpr char LAUNCHER_BUNDLE_NAME[] = "com.huawei.launcher";
 constexpr uint16_t LAUNCHER_TOKEN = 0;
 constexpr int32_t QUEUE_LENGTH = 32;
 constexpr int32_t APP_TASK_PRI = 25;
+IDmsListener* AbilityService::myCallback_ = nullptr;
+#define EC_INVALID -9;
 
 AbilityService::LifecycleFuncStr AbilityService::lifecycleFuncList_[] = {
     {STATE_UNINITIALIZED, &AbilityService::OnDestroyDone},
@@ -91,6 +98,52 @@ bool AbilityService::IsValidAbility(AbilityInfo *abilityInfo)
     return true;
 }
 
+int32 AbilityService::StartRemoteAbility(const Want *want, OnRequestCallbackFunc callback)
+{
+    void *origin;
+    pid_t uid = GetCallingUid(origin);
+    char *bundleName = want->element->bundleName;
+    IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(DISTRIBUTED_SCHEDULE_SERVICE, DMSLITE_FEATURE);
+    DmsProxy *dmsInterface = NULL;
+    if (iUnknown == NULL) {
+        return EC_INVALID;
+    }
+    int32 retVal = iUnknown->QueryInterface(iUnknown, DEFAULT_VERSION, (void**) &dmsInterface);
+    if (retVal != EC_SUCCESS) {
+        return ;
+    }
+    CallerInfo callerInfo = {
+        .uid = uid
+    };
+
+    if (callback != nullptr) {
+        if (myCallback_ == nullptr) {
+            myCallback_ = new IDmsListener();
+        }
+        myCallback_ -> OnResultCallback = callback;
+        retVal = dmsInterface->StartRemoteAbility((Want *)want, &callerInfo, myCallback_);
+    } else {
+        retVal = dmsInterface->StartRemoteAbility((Want *)want, &callerInfo, NULL);
+    }
+    return retVal;
+}
+
+void AbilityService::OnRequestCallback(const void *data, int32_t ret)
+{
+    IpcIo io;
+    char ipcData[IPC_IO_DATA_MAX];
+    IpcIo reply;
+    IpcIoInit(&io, ipcData, IPC_IO_DATA_MAX, 0);
+    IpcIoPushInt32(&io, static_cast<int32_t>(ret));
+    int32_t transRet = Transact(NULL, svc_, START_ABILITY_CALLBACK, &io, &reply, LITEIPC_FLAG_ONEWAY, NULL);
+    if (transRet != LITEIPC_OK) {
+        HILOG_ERROR(HILOG_MODULE_APP, "AbilityMgrFeature InnerSelfTransact fialed %{public}d\n", ret);
+    }
+    #ifdef __LINUX__
+        BinderRelease(svc_.ipcContext, svc_.handle);
+    #endif
+}
+
 int32_t AbilityService::StartAbility(const Want *want)
 {
     if (want == nullptr || want->element == nullptr) {
@@ -138,7 +191,17 @@ int32_t AbilityService::StartAbility(const Want *want)
 
     info->data = OHOS::Utils::Memdup(want->data, want->dataLength);
     info->dataLength = want->dataLength;
-    auto ret = StartAbility(info);
+    
+    int32 ret = 0;
+    const char *deviceId = want->element->deviceId;
+    if (deviceId != nullptr && *deviceId != '\0') {
+		HILOG_ERROR(HILOG_MODULE_AAFWK, "StartRemoteAbility");
+        ret = StartRemoteAbility(want, nullptr);
+    } else {
+        ret = StartAbility(info);
+		HILOG_ERROR(HILOG_MODULE_AAFWK, "StartAbility");
+    }
+
     AdapterFree(info->bundleName);
     AdapterFree(info->path);
     AdapterFree(info->data);

@@ -22,6 +22,7 @@
 #include "ability_record.h"
 #include "ability_stack.h"
 #include "adapter.h"
+#include "dmsfwk_interface.h"
 #include "js_app_host.h"
 #include "nocopyable.h"
 #include "want.h"
@@ -29,6 +30,8 @@
 #include "ability_state.h"
 
 namespace OHOS {
+typedef void (*OnRequestCallbackFunc)(const void *data, int32_t ret);
+
 struct AbilitySvcInfo {
     char *bundleName;
     char *path;
@@ -68,6 +71,7 @@ private:
     int32_t StartAbility(AbilitySvcInfo *info);
     int32_t PreCheckStartAbility(const char *bundleName, const char *path, const void *data, uint16_t dataLength);
     bool CheckResponse(const char *bundleName);
+    static int32 StartRemoteAbility(const Want *want, OnRequestCallbackFunc callback);
     int32_t SchedulerLifecycle(uint64_t token, int32_t state);
     int32_t SchedulerLifecycleInner(const AbilityRecord *record, int32_t state);
     void SchedulerAbilityLifecycle(SliteAbility *ability, const Want &want, int32_t state);
@@ -82,6 +86,7 @@ private:
     int32_t ForceStopBundleInner(uint16_t token);
     bool IsValidAbility(AbilityInfo *abilityInfo);
 
+    static IDmsListener *myCallback_;
     uint16_t pendingToken_ { 0 };
     AbilityList abilityList_ {};
     AbilityStack abilityStack_ {};
