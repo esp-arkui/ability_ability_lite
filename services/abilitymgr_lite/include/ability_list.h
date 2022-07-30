@@ -28,6 +28,7 @@ public:
     void Add(AbilityRecord *abilityRecord);
     AbilityRecord *Get(uint16_t token) const;
     AbilityRecord *Get(const char *bundleName) const;
+    AbilityRecord *GetByTaskId(uint32_t taskId) const;
     void Erase(uint16_t token);
 
 private:

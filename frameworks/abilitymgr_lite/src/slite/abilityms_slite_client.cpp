@@ -21,6 +21,7 @@
 #include "abilityms_log.h"
 #include "adapter.h"
 #include "cmsis_os2.h"
+#include "los_task.h"
 #include "samgr_lite.h"
 #include "securec.h"
 #include "want_utils.h"
@@ -74,6 +75,7 @@ int AbilityMsClient::StartAbility(const Want *want) const
     SetWantElement(info, *(want->element));
     SetWantData(info, want->data, want->dataLength);
     AbilityService::GetInstance().want_ = info;
+    AbilityService::GetInstance().curTask_ = LOS_CurTaskIDGet();
     Request request = {
         .msgId = START_ABILITY,
         .len = 0,

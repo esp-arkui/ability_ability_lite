@@ -79,6 +79,7 @@ BOOL AbilityMgrService::ServiceMessageHandle(Service *service, Request *request)
     if (request->msgId == START_ABILITY) {
         ret = AbilityService::GetInstance().StartAbility(AbilityService::GetInstance().want_);
         AbilityService::GetInstance().CleanWant();
+        AbilityService::GetInstance().curTask_ = 0;
     } else if  (request->msgId == ABILITY_TRANSACTION_DONE) {
         int token = request->msgValue & 0xFF;
         int state = (request->msgValue >> BYTE_OFFSET) & 0xFF;
