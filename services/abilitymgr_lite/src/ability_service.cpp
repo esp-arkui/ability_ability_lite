@@ -28,9 +28,15 @@
 #include "ability_manager_inner.h"
 #include "bundle_manager.h"
 #include "cmsis_os.h"
+#ifdef OHOS_DMS_ENABLED
+#include "dmsfwk_interface.h"
+#endif
 #include "js_app_host.h"
 #include "los_task.h"
 #include "pms.h"
+#ifdef OHOS_DMS_ENABLED
+#include "samgr_lite.h"
+#endif
 #include "slite_ability.h"
 #include "utils.h"
 #include "want.h"
@@ -66,6 +72,7 @@ void AbilityService::StartLauncher()
     record->SetAppName(LAUNCHER_BUNDLE_NAME);
     record->SetToken(LAUNCHER_TOKEN);
     record->SetState(SCHEDULE_ACTIVE);
+    record->SetTaskId(LOS_CurTaskIDGet());
     abilityList_.Add(record);
     abilityStack_.PushAbility(record);
     (void) SchedulerLifecycleInner(record, STATE_ACTIVE);
@@ -91,6 +98,45 @@ bool AbilityService::IsValidAbility(AbilityInfo *abilityInfo)
     return true;
 }
 
+int32_t AbilityService::StartRemoteAbility(const Want *want)
+{
+#ifdef OHOS_DMS_ENABLED
+    IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(DISTRIBUTED_SCHEDULE_SERVICE, DMSLITE_FEATURE);
+    DmsProxy *dmsInterface = nullptr;
+    if (iUnknown == nullptr) {
+        HILOG_ERROR(HILOG_MODULE_AAFWK, "Failed to get distributed schedule service.");
+        return EC_INVALID;
+    }
+    int32_t retVal = iUnknown->QueryInterface(iUnknown, DEFAULT_VERSION, (void **) &dmsInterface);
+    if (retVal != EC_SUCCESS) {
+        HILOG_ERROR(HILOG_MODULE_AAFWK, "Failed to get DMS interface retVal: [%{public}d]", retVal);
+        return EC_INVALID;
+    }
+    AbilityRecord *record = abilityList_.GetByTaskId(curTask_);
+    if (record == nullptr) {
+        HILOG_ERROR(HILOG_MODULE_AAFWK, "Failed to get record by taskId.");
+        return PARAM_NULL_ERROR;
+    }
+    const char *callerBundleName = record->GetAppName();
+    if (callerBundleName == nullptr) {
+        HILOG_ERROR(HILOG_MODULE_AAFWK, "Failed to get callerBundleName.");
+        return PARAM_NULL_ERROR;
+    }
+
+    CallerInfo callerInfo = {
+        .uid = 0,
+        .bundleName = OHOS::Utils::Strdup(callerBundleName)
+    };
+    retVal = dmsInterface->StartRemoteAbility((Want *) want, &callerInfo, nullptr);
+
+    HILOG_INFO(HILOG_MODULE_AAFWK, "StartRemoteAbility retVal: [%{public}d]", retVal);
+    AdapterFree(callerInfo.bundleName);
+    return retVal;
+#else
+    return PARAM_NULL_ERROR;
+#endif
+}
+
 int32_t AbilityService::StartAbility(const Want *want)
 {
     if (want == nullptr || want->element == nullptr) {
@@ -102,6 +148,13 @@ int32_t AbilityService::StartAbility(const Want *want)
         HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability Service wanted bundleName is null");
         return PARAM_NULL_ERROR;
     }
+
+#ifdef OHOS_DMS_ENABLED
+    if (want->element->deviceId != nullptr && *(want->element->deviceId) != '\0') {
+        // deviceId is set
+        return StartRemoteAbility(want);
+    }
+#endif
 
     AbilitySvcInfo *info =
         static_cast<OHOS::AbilitySvcInfo *>(AdapterMalloc(sizeof(AbilitySvcInfo)));

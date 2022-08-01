@@ -61,11 +61,13 @@ public:
     void StartLauncher();
     void CleanWant();
     Want *want_ = nullptr;
+    uint32_t curTask_ = 0;
 
 private:
     static uint16_t GenerateToken();
     AbilityService();
     int32_t StartAbility(AbilitySvcInfo *info);
+    int32_t StartRemoteAbility(const Want *want);
     int32_t PreCheckStartAbility(const char *bundleName, const char *path, const void *data, uint16_t dataLength);
     bool CheckResponse(const char *bundleName);
     int32_t SchedulerLifecycle(uint64_t token, int32_t state);

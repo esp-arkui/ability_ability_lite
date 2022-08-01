@@ -64,6 +64,21 @@ AbilityRecord *AbilityList::Get(const char *bundleName) const
     return nullptr;
 }
 
+AbilityRecord *AbilityList::GetByTaskId(uint32_t taskId) const
+{
+    for (auto node = abilityList_.Begin(); node != abilityList_.End(); node = node->next_) {
+        AbilityRecord *record = node->value_;
+        if (record == nullptr) {
+            continue;
+        }
+        if (record->GetTaskId() == taskId) {
+            return record;
+        }
+    }
+
+    return nullptr;
+}
+
 void AbilityList::Erase(uint16_t token)
 {
     for (auto node = abilityList_.Begin(); node != abilityList_.End(); node = node->next_) {
