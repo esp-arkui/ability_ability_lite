@@ -37,10 +37,10 @@ unittest("ability_test_pageAbilityTest_lv0") {
     "${appexecfwk_lite_path}/interfaces/inner_api/bundlemgr_lite",
     "${appexecfwk_lite_path}/frameworks/bundle_lite/include",
     "${appexecfwk_lite_path}/kits/appkit_lite/appkit_utils/include",
-    "//foundation/systemabilitymgr/samgr_lite/interfaces/innerkits/samgr",
+    "//commonlibrary/utils_lite/include",
     "//foundation/systemabilitymgr/samgr_lite/interfaces/innerkits/registry",
+    "//foundation/systemabilitymgr/samgr_lite/interfaces/innerkits/samgr",
     "//third_party/cJSON",
-    "//utils/native/lite/include",
   ]
 
   deps = [
