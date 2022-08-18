@@ -302,7 +302,6 @@ int32_t AbilityService::ForceStopBundle(uint16_t token)
     }
 
     // free js mem and delete the record
-    AbilityRecord *record = abilityList_.Get(token);
     if (ForceStopBundleInner(token) != ERR_OK) {
         return PARAM_CHECK_ERROR;
     }
