@@ -19,8 +19,8 @@
 #include "ability_service_interface.h"
 #include "ability_mgr_handler.h"
 #include "feature.h"
-#include "iunknown.h"
 #include "iproxy_client.h"
+#include "iunknown.h"
 #include "nocopyable.h"
 
 namespace OHOS {
