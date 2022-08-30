@@ -24,23 +24,21 @@ typedef struct {
     uint8_t totalLen = 0;
 } Tlv;
 
+#ifdef OHOS_APPEXECFWK_BMS_BUNDLEMANAGER
+#include <serializer.h>
+#endif
 #ifdef __cplusplus
 #if __cplusplus
 extern "C" {
 #endif
 #endif // __cplusplus
-
 #ifdef OHOS_APPEXECFWK_BMS_BUNDLEMANAGER
-#include <serializer.h>
-
 bool SerializeWant(IpcIo *io, const Want *want);
 bool DeserializeWant(Want *want, IpcIo *io);
 #endif
-
 #ifdef __cplusplus
 #if __cplusplus
 }
 #endif
 #endif // __cplusplus
-
 #endif // OHOS_WANT_UTILS_H
