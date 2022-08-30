@@ -102,11 +102,11 @@ int32_t AbilityService::StartRemoteAbility(const Want *want)
 {
 #ifdef OHOS_DMS_ENABLED
     IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(DISTRIBUTED_SCHEDULE_SERVICE, DMSLITE_FEATURE);
-    DmsProxy *dmsInterface = nullptr;
     if (iUnknown == nullptr) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "Failed to get distributed schedule service.");
         return EC_INVALID;
     }
+    DmsProxy *dmsInterface = nullptr;
     int32_t retVal = iUnknown->QueryInterface(iUnknown, DEFAULT_VERSION, (void **) &dmsInterface);
     if (retVal != EC_SUCCESS) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "Failed to get DMS interface retVal: [%{public}d]", retVal);
