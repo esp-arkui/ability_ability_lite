@@ -119,7 +119,7 @@ bool AbilityMsHelper::IsLegalBundleName(const char *bundleName)
 
 bool AbilityMsHelper::CheckVisiblePermission(pid_t callingUid, pid_t targetUid, bool isVisible)
 {
-    if (callingUid == SYSTEM_UID) {
+    if (callingUid == SYSTEM_UID || callingUid == HUKS_UID) {
         return true;
     }
     if (isVisible || callingUid == targetUid) {
