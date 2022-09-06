@@ -38,6 +38,7 @@ public:
     static bool CheckVisiblePermission(pid_t callingUid, pid_t targetUid, bool isVisible);
 
     static const pid_t SYSTEM_UID = 0;
+    static const pid_t HUKS_UID = 19;
 };
 }
 #endif // OHOS_ABILITY_HELPER_H
