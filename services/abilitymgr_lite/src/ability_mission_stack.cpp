@@ -18,6 +18,11 @@
 #include "util/abilityms_log.h"
 
 namespace OHOS {
+
+namespace {
+    constexpr static uint16_t MISSION_RECORD_LIST_CAPACITY = 10240;
+}
+
 AbilityMissionStack::AbilityMissionStack(StackType type)
     : stackType_(type)
 {
@@ -40,6 +45,9 @@ StackType AbilityMissionStack::GetStackType() const
 void AbilityMissionStack::PushTopMissionRecord(AbilityMissionRecord &missionRecord)
 {
     missionRecord.SetMissionStack(this);
+    if (missionRecords_.size() >= MISSION_RECORD_LIST_CAPACITY) {
+        return;
+    }
     missionRecords_.emplace_back(&missionRecord);
 }
 
