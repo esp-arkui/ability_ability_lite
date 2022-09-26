@@ -16,9 +16,8 @@
 #ifndef OHOS_ABILITYMGRSERVICE_SERVICE_H
 #define OHOS_ABILITYMGRSERVICE_SERVICE_H
 
-#include "service.h"
-
 #include "nocopyable.h"
+#include "service.h"
 
 namespace OHOS {
 class AbilityMgrService : public Service {

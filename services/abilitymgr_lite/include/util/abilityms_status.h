@@ -164,4 +164,4 @@ private:
         }                              \
     } while (0)
 }
-#endif // OHOS_ABILITY_CONST_H
+#endif // OHOS_ABILITYMS_STATUS_H

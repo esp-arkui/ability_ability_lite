@@ -18,8 +18,8 @@
 
 #include "ability_connect_trans_param.h"
 #include "ability_mgr_context.h"
-#include "client/ability_thread_client.h"
 #include "client/ability_dump_client.h"
+#include "client/ability_thread_client.h"
 
 namespace OHOS {
 class AbilityWorker {
