@@ -400,7 +400,7 @@ int32_t AbilityService::PreCheckStartAbility(
 
 bool AbilityService::CheckResponse(const char *bundleName)
 {
-    StartCheckFunc callBackFunc = getAbilityCallback();
+    StartCheckFunc callBackFunc = GetAbilityCallback();
     if (callBackFunc == nullptr) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "calling ability callback failed: null");
         return true;
@@ -558,11 +558,11 @@ void AbilityService::OnBackgroundDone(uint16_t token)
     // the launcher background
     if (topRecord->GetToken() != LAUNCHER_TOKEN) {
         (void) SchedulerLifecycleInner(topRecord, STATE_ACTIVE);
-        if (getCleanAbilityDataFlag()) {
+        if (GetCleanAbilityDataFlag()) {
             HILOG_INFO(HILOG_MODULE_AAFWK, "OnBackgroundDone clean launcher record data");
             AbilityRecord *record = abilityList_.Get(token);
             record->SetAppData(nullptr, 0);
-            setCleanAbilityDataFlag(false);
+            SetCleanAbilityDataFlag(false);
         }
         return;
     }
