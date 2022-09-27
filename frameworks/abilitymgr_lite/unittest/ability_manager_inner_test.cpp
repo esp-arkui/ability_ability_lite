@@ -48,7 +48,7 @@ namespace OHOS {
     {
         printf("AbilityManagerInnerTest setup");
         SetUp();
-        StartCheckFunc startCheckCallback = getAbilityCallback();
+        StartCheckFunc startCheckCallback = GetAbilityCallback();
         auto ret = RegAbilityCallback(startCheckCallback);
         EXPECT_TRUE(ret == 0);
         TearDown();
@@ -101,32 +101,32 @@ namespace OHOS {
 
     void AbilityManagerInnerTest::AbilityManagerInnerTest006()
     {
-        printf("--------AbilityManagerInnerTest006 getAbilityCallback begin--------");
+        printf("--------AbilityManagerInnerTest006 GetAbilityCallback begin--------");
         SetUp();
-        auto ret = getAbilityCallback();
+        auto ret = GetAbilityCallback();
         EXPECT_TRUE(ret == nullptr);
         TearDown();
-        printf("--------AbilityManagerInnerTest006 getAbilityCallback end--------");
+        printf("--------AbilityManagerInnerTest006 GetAbilityCallback end--------");
     }
 
     void AbilityManagerInnerTest::AbilityManagerInnerTest007()
     {
-        printf("--------AbilityManagerInnerTest007 setCleanAbilityDataFlag begin--------");
+        printf("--------AbilityManagerInnerTest007 SetCleanAbilityDataFlag begin--------");
         SetUp();
         bool cleanFlag = true;
-        setCleanAbilityDataFlag(cleanFlag);
+        SetCleanAbilityDataFlag(cleanFlag);
         TearDown();
-        printf("--------AbilityManagerInnerTest007 setCleanAbilityDataFlag end--------");
+        printf("--------AbilityManagerInnerTest007 SetCleanAbilityDataFlag end--------");
     }
 
     void AbilityManagerInnerTest::AbilityManagerInnerTest008()
     {
-        printf("--------AbilityManagerInnerTest008 getCleanAbilityDataFlag begin--------");
+        printf("--------AbilityManagerInnerTest008 GetCleanAbilityDataFlag begin--------");
         SetUp();
-        auto ret = getCleanAbilityDataFlag();
+        auto ret = GetCleanAbilityDataFlag();
         EXPECT_TRUE(ret == 0);
         TearDown();
-        printf("--------AbilityManagerInnerTest008 getCleanAbilityDataFlag end--------");
+        printf("--------AbilityManagerInnerTest008 GetCleanAbilityDataFlag end--------");
     }
 
     void AbilityManagerInnerTest::RunTests()
