@@ -18,6 +18,7 @@
 namespace OHOS {
 namespace {
     thread_local AbilityEventHandler* g_currentHandler;
+    constexpr static uint16_t TASK_QUEUE_CAPACITY = 10240;
 }
 
 AbilityEventHandler::AbilityEventHandler()
@@ -53,6 +54,9 @@ void AbilityEventHandler::Run()
 
 void AbilityEventHandler::PostTask(const Task& task)
 {
+    if (taskQueue_.size() >= TASK_QUEUE_CAPACITY) {
+        return;
+    }
     (void) pthread_mutex_lock(&queueMutex_);
     taskQueue_.push(task);
 
