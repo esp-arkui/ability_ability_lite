@@ -16,8 +16,8 @@
 #ifndef OHOS_ABILITY_MANAGER_INNER_H
 #define OHOS_ABILITY_MANAGER_INNER_H
 
-#include <stdbool.h>
-#include <stdint.h>
+#include <cstdbool>
+#include <cstdint>
 
 #include "element_name.h"
 
@@ -74,11 +74,11 @@ int ForceStop(char *bundleName);
  *
  * @return Returns the ability callback function.
  */
-StartCheckFunc getAbilityCallback(void);
+StartCheckFunc GetAbilityCallback(void);
 
-void setCleanAbilityDataFlag(bool cleanFlag);
+void SetCleanAbilityDataFlag(bool cleanFlag);
 
-bool getCleanAbilityDataFlag();
+bool GetCleanAbilityDataFlag();
 
 #ifdef __cplusplus
 #if __cplusplus
