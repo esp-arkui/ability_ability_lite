@@ -42,17 +42,17 @@ int ForceStop(char *bundleName)
     return OHOS::AbilityMsClient::GetInstance().ForceStop(bundleName);
 }
 
-StartCheckFunc getAbilityCallback()
+StartCheckFunc GetAbilityCallback()
 {
     return CALLBACKFUNC;
 }
 
-void setCleanAbilityDataFlag(bool cleanFlag)
+void SetCleanAbilityDataFlag(bool cleanFlag)
 {
     cleanAbilityDataFlag = cleanFlag;
 }
 
-bool getCleanAbilityDataFlag()
+bool GetCleanAbilityDataFlag()
 {
     return cleanAbilityDataFlag;
 }
