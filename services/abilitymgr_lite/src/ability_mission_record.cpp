@@ -20,6 +20,11 @@
 #include "utils.h"
 
 namespace OHOS {
+
+namespace {
+    constexpr static uint16_t PAGE_ABILITY_RECORDS_LIST_CAPACITY = 10240;
+}
+
 AbilityMissionRecord::AbilityMissionRecord(AbilityMissionStack* missionStack, const char *bundleName)
     : abilityMissionStack_(missionStack)
 {
@@ -112,6 +117,9 @@ PageAbilityRecord *AbilityMissionRecord::GetPrevPageAbility(const PageAbilityRec
 void AbilityMissionRecord::PushPageAbility(PageAbilityRecord &abilityRecord)
 {
     abilityRecord.SetMissionRecord(this);
+    if (pageAbilityRecords_.size() >= PAGE_ABILITY_RECORDS_LIST_CAPACITY) {
+        return;
+    }
     pageAbilityRecords_.emplace_back(&abilityRecord);
 }
 

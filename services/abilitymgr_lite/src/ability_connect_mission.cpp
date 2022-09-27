@@ -20,6 +20,11 @@
 #include "util/abilityms_log.h"
 
 namespace OHOS {
+
+namespace {
+    constexpr static uint16_t SERVICE_RECORDS_LIST_CAPACITY = 10240;
+}
+
 AbilityConnectMission::~AbilityConnectMission()
 {
     for (auto iterator = serviceRecords_.begin(); iterator != serviceRecords_.end(); ++iterator) {
@@ -32,6 +37,9 @@ AbilityConnectMission::~AbilityConnectMission()
 
 void AbilityConnectMission::PushServiceRecord(PageAbilityRecord &abilityRecord)
 {
+    if (serviceRecords_.size() >= SERVICE_RECORDS_LIST_CAPACITY) {
+        return;
+    }
     serviceRecords_.emplace_back(&abilityRecord);
 }
 

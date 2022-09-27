@@ -19,9 +19,14 @@
 
 
 namespace OHOS {
+
+namespace {
+    constexpr static uint16_t ABILITY_LIST_CAPACITY = 10240;
+}
+    
 void AbilityList::Add(AbilityRecord *abilityRecord)
 {
-    if (abilityRecord == nullptr) {
+    if (abilityRecord == nullptr || abilityList_.Size() >= ABILITY_LIST_CAPACITY) {
         return;
     }
 

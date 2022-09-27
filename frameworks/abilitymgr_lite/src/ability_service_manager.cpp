@@ -27,6 +27,11 @@
 #include "want.h"
 
 namespace OHOS {
+
+namespace {
+    constexpr static uint16_t STORE_LIST_CAPACITY = 10240;
+}
+
 AbilityServiceManager::~AbilityServiceManager()
 {
     for (const auto &storeArgs : storeList_) {
@@ -89,6 +94,10 @@ StoreArgs *AbilityServiceManager::AddStoreArgs(const IAbilityConnection &conn, v
     std::lock_guard<std::mutex> lock(mutex_);
     if (GetStoreArgs(conn) != nullptr) {
         HILOG_ERROR(HILOG_MODULE_APP, "func has already used");
+        return nullptr;
+    }
+    if (storeList_.size() >= STORE_LIST_CAPACITY) {
+        HILOG_ERROR(HILOG_MODULE_APP, "can not add more storeArgs, capacity overflow");
         return nullptr;
     }
     StoreArgs *storeArgs = new StoreArgs();

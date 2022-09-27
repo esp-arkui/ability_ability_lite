@@ -196,6 +196,10 @@ void AbilityThread::PerformAppInit(const AppInfo &appInfo)
 void AbilityThread::PerformAppExit()
 {
     HILOG_INFO(HILOG_MODULE_APP, "perform app exit");
+    if (eventHandler_ == nullptr) {
+        return;
+    }
+    
     eventHandler_->PostTask([] {
         AbilityThread::isAppRunning_ = false;
     });
@@ -376,6 +380,8 @@ void AbilityThread::AttachBundle(uint64_t token)
 
 void AbilityThread::Run()
 {
-    eventHandler_->Run();
+    if (eventHandler_) {
+        eventHandler_->Run();
+    }
 }
 } //  namespace OHOS

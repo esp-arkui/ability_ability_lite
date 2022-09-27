@@ -26,6 +26,11 @@
 #include "util/abilityms_helper.h"
 
 namespace OHOS {
+
+namespace {
+    constexpr static uint16_t CONNECT_RECORDS_LIST_CAPACITY = 10240;
+}
+
 PageAbilityRecord::PageAbilityRecord(const AbilityInfo &abilityInfo, const Want &want)
 {
     if (want.element != nullptr) {
@@ -223,6 +228,9 @@ AbilityConnectRecord *PageAbilityRecord::GetConnectRecord(const SvcIdentity &ser
 
 void PageAbilityRecord::pushConnectRecord(AbilityConnectRecord *connectRecord)
 {
+    if (connectRecords_.size() >= CONNECT_RECORDS_LIST_CAPACITY) {
+        return;
+    }
     connectRecords_.emplace_back(connectRecord);
 }
 
