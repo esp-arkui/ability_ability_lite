@@ -18,6 +18,8 @@
     },
     "module": {
         "deviceType": [
+	    "default",
+            "tablet",
             "smartVision"
         ],
         "distro": {
