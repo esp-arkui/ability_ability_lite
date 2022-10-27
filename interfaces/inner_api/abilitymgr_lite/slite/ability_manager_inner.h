@@ -78,7 +78,7 @@ StartCheckFunc GetAbilityCallback(void);
 
 void SetCleanAbilityDataFlag(bool cleanFlag);
 
-bool GetCleanAbilityDataFlag();
+bool GetCleanAbilityDataFlag(void);
 
 #ifdef __cplusplus
 #if __cplusplus
