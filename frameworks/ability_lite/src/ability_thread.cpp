@@ -169,9 +169,8 @@ void AbilityThread::PerformAppInit(const AppInfo &appInfo)
     AbilityThread::isNativeApp_ = appInfo.isNativeApp;
 
     for (const auto &module : appInfo.moduleNames) {
-        std::string modulePath;
         if (appInfo.isNativeApp) {
-            modulePath = appInfo.srcPath + PATH_SEPARATOR + module + LIB_PREFIX + module + LIB_SUFFIX;
+            std::string modulePath = appInfo.srcPath + PATH_SEPARATOR + module + LIB_PREFIX + module + LIB_SUFFIX;
             if (modulePath.size() > PATH_MAX) {
                 continue;
             }

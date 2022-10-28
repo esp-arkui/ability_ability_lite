@@ -127,7 +127,7 @@ int32_t AbilityService::StartRemoteAbility(const Want *want)
         .uid = 0,
         .bundleName = OHOS::Utils::Strdup(callerBundleName)
     };
-    retVal = dmsInterface->StartRemoteAbility((Want *) want, &callerInfo, nullptr);
+    retVal = dmsInterface->StartRemoteAbility(want, &callerInfo, nullptr);
 
     HILOG_INFO(HILOG_MODULE_AAFWK, "StartRemoteAbility retVal: [%{public}d]", retVal);
     AdapterFree(callerInfo.bundleName);
