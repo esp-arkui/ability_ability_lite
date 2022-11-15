@@ -30,6 +30,7 @@ public:
     int GetAllAbilities(AbilityRecord **abilityRecords);
     void PushAbility(AbilityRecord *record);
     void PopAbility();
+    void Erase(AbilityRecord *record);
 
 private:
     List<AbilityRecord *> abilityStack_ {};

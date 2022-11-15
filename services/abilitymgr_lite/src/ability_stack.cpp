@@ -58,4 +58,20 @@ void AbilityStack::PopAbility()
 {
     abilityStack_.PopFront();
 }
+
+void AbilityStack::Erase(AbilityRecord *record)
+{
+    Node<AbilityRecord *> *node = abilityStack_.Begin();
+    const Node<AbilityRecord *> *end = abilityStack_.End();
+    while (node != end) {
+        if (node == nullptr) {
+            break;
+        }
+        if (node->value_ == record) {
+            abilityStack_.Remove(node);
+            break;
+        }
+        node = node->next_;
+    }
+}
 } // namespace OHOS
