@@ -110,7 +110,7 @@ int AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int state) const
         .msgId = ABILITY_TRANSACTION_DONE,
         .len = 0,
         .data = nullptr,
-        .msgValue = static_cast<uint32_t>((token & 0xFF) | (state << 8)),
+        .msgValue = static_cast<uint32_t>((token & 0xFFFF) | (state << 16)),
     };
     return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
 }
