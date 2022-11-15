@@ -28,7 +28,7 @@
 namespace OHOS {
 const int QUEUE_SIZE = 20;
 #ifdef __LITEOS_M__
-const int BYTE_OFFSET = 8;
+const int BYTE_OFFSET = 16;
 #endif
 
 AbilityMgrService::AbilityMgrService() : Service(), identity_()
@@ -81,8 +81,8 @@ BOOL AbilityMgrService::ServiceMessageHandle(Service *service, Request *request)
         AbilityService::GetInstance().CleanWant();
         AbilityService::GetInstance().curTask_ = 0;
     } else if  (request->msgId == ABILITY_TRANSACTION_DONE) {
-        int token = request->msgValue & 0xFF;
-        int state = (request->msgValue >> BYTE_OFFSET) & 0xFF;
+        int token = request->msgValue & 0xFFFF;
+        int state = (request->msgValue >> BYTE_OFFSET) & 0xFFFF;
         ret = AbilityService::GetInstance().SchedulerLifecycleDone(token, state);
     } else if (request->msgId == TERMINATE_ABILITY) {
         ret = AbilityService::GetInstance().TerminateAbility(request->msgValue);
