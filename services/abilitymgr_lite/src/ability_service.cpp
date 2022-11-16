@@ -169,7 +169,7 @@ int32_t AbilityService::StartAbility(const Want *want)
         info->path = nullptr;
     } else {
         // JS APP
-#ifdef OHOS_APPEXECFWK_BMS_BUNDLEMANAGER
+#if ((defined OHOS_APPEXECFWK_BMS_BUNDLEMANAGER) || (defined APP_PLATFORM_WATCHGT))
         AbilityInfo abilityInfo = { nullptr, nullptr };
         QueryAbilityInfo(want, &abilityInfo);
         if (!IsValidAbility(&abilityInfo)) {
@@ -502,6 +502,7 @@ void AbilityService::DeleteRecordInfo(uint16_t token)
         // record app info event when stop app
         RecordAbiityInfoEvt(record->GetAppName());
     }
+    abilityStack_.Erase(record);
     abilityList_.Erase(token);
     delete record;
 }
@@ -522,9 +523,17 @@ void AbilityService::OnActiveDone(uint16_t token)
             return;
         }
         if (topRecord->GetToken() != LAUNCHER_TOKEN) {
+            int abilityState = STATE_UNINITIALIZED;
+            if (topRecord->GetState() == SCHEDULE_ACTIVE) {
+                HILOG_ERROR(HILOG_MODULE_AAFWK,
+                    "js is in active state, native state is %{public}d", abilityState);
+                OnDestroyDone(topRecord->GetToken());
+                return;
+            }
             if (topRecord->GetState() != SCHEDULE_BACKGROUND) {
                 APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_START_LAUNCHER_EXIT_FAILED);
-                HILOG_ERROR(HILOG_MODULE_AAFWK, "Active launcher js bg fail");
+                HILOG_ERROR(HILOG_MODULE_AAFWK,
+                    "Active launcher js bg fail, native state is %{public}d", abilityState);
                 abilityStack_.PopAbility();
                 DeleteRecordInfo(topRecord->GetToken());
             } else if (topRecord->IsTerminated()) {
@@ -652,6 +661,7 @@ int32_t AbilityService::SchedulerLifecycleInner(const AbilityRecord *record, int
     SetWantData(info, record->GetAppData(), record->GetDataLength());
     SchedulerAbilityLifecycle(nativeAbility_, *info, state);
     ClearWant(info);
+    AdapterFree(info);
     return ERR_OK;
 }
 
