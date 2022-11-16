@@ -17,7 +17,7 @@ generate_notice_file("want_notice_file") {
   module_source_dir_list = [ "//third_party/bounds_checking_function" ]
 }
 
-source_set("want") {
+static_library("want") {
   sources = [ "src/want.cpp" ]
   cflags = []
   if (board_toolchain_type != "iccarm") {
