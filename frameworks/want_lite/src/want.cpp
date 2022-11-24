@@ -96,7 +96,7 @@ Tlv *EncapTlv(uint8_t type, uint8_t length, const void *value, uint8_t valueLen)
 
     // Tlv header can only has 2 bytes.
     uint8_t totalLen = valueLen + 2;
-    entity = calloc(1, totalLen);
+    entity = AdapterMalloc(totalLen);
     if (entity == nullptr) {
         return nullptr;
     }
@@ -108,7 +108,7 @@ Tlv *EncapTlv(uint8_t type, uint8_t length, const void *value, uint8_t valueLen)
         return nullptr;
     }
 
-    Tlv *newTlv = new Tlv();
+    Tlv *newTlv = reinterpret_cast<Tlv *>(AdapterMalloc(sizeof(Tlv)));
     newTlv->type = type;
     newTlv->entity = entity;
     newTlv->totalLen = totalLen;
@@ -124,7 +124,7 @@ void FreeTlvStruct(Tlv *tlv)
 Tlv *CombineKeyValueTlv(Tlv *keyTlv, Tlv *valueTlv)
 {
     uint8_t newTlvValueLen = keyTlv->totalLen + valueTlv->totalLen;
-    void *newTlvValue = calloc(1, newTlvValueLen);
+    void *newTlvValue = AdapterMalloc(newTlvValueLen);
     if (newTlvValue == nullptr) {
         return nullptr;
     }
@@ -144,7 +144,7 @@ bool UpdateWantData(Want *want, Tlv *tlv)
 {
     bool result = false;
     if (want->data != nullptr) {
-        void *newWantData = calloc(1, tlv->totalLen + want->dataLength);
+        void *newWantData = AdapterMalloc(tlv->totalLen + want->dataLength);
         if (newWantData == nullptr) {
             return result;
         }
