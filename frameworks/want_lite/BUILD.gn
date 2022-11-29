@@ -42,6 +42,8 @@ static_library("want") {
 
   if (ohos_kernel_type == "liteos_m") {
     deps = [ "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_static" ]
+    include_dirs +=
+        [ "//base/hiviewdfx/hilog_lite/interfaces/native/kits/hilog_lite" ]
   } else {
     defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
     deps = [ "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared" ]

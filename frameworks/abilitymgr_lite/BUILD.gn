@@ -72,6 +72,11 @@ lite_library("abilitymanager") {
     "./include",
     "./",
   ]
+
+  if (ohos_kernel_type == "liteos_m") {
+    include_dirs +=
+        [ "//base/hiviewdfx/hilog_lite/interfaces/native/kits/hilog_lite" ]
+  }
 }
 
 unittest("ability_manager_inner_test") {
