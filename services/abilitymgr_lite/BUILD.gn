@@ -148,6 +148,11 @@ lite_library("abilityms") {
     "include",
     "include/task",
   ]
+
+  if (ohos_kernel_type == "liteos_m") {
+    include_dirs +=
+        [ "//base/hiviewdfx/hilog_lite/interfaces/native/kits/hilog_lite" ]
+  }
 }
 
 generate_notice_file("abilityms_notice_file") {
