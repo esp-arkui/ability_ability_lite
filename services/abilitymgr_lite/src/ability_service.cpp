@@ -49,14 +49,6 @@ constexpr uint16_t LAUNCHER_TOKEN = 0;
 constexpr int32_t QUEUE_LENGTH = 32;
 constexpr int32_t APP_TASK_PRI = 25;
 
-AbilityService::LifecycleFuncStr AbilityService::lifecycleFuncList_[] = {
-    {STATE_UNINITIALIZED, &AbilityService::OnDestroyDone},
-    {STATE_INITIAL, nullptr},
-    {STATE_INACTIVE, nullptr},
-    {STATE_ACTIVE, &AbilityService::OnActiveDone},
-    {STATE_BACKGROUND, &AbilityService::OnBackgroundDone},
-};
-
 AbilityService::AbilityService()
 {
 }
@@ -688,9 +680,21 @@ void AbilityService::SchedulerAbilityLifecycle(SliteAbility *ability, const Want
 
 int32_t AbilityService::SchedulerLifecycleDone(uint64_t token, int32_t state)
 {
-    for (auto temp : lifecycleFuncList_) {
-        if (state == temp.state && temp.func_ptr != nullptr) {
-            (this->*temp.func_ptr)(token);
+    switch (state) {
+        case STATE_ACTIVE: {
+            OnActiveDone(token);
+            break;
+        }
+        case STATE_BACKGROUND: {
+            OnBackgroundDone(token);
+            break;
+        }
+        case STATE_UNINITIALIZED: {
+            OnDestroyDone(token);
+            break;
+        }
+        default: {
+            break;
         }
     }
     return ERR_OK;
