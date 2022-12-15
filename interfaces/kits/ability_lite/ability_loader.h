@@ -73,11 +73,7 @@ using CreateSlice = std::function<AbilitySlice *(void)>;
  */
 class AbilityLoader {
 public:
-    static AbilityLoader &GetInstance()
-    {
-        static AbilityLoader abilityLoader;
-        return abilityLoader;
-    }
+    static AbilityLoader &GetInstance();
 
     ~AbilityLoader() = default;
 
