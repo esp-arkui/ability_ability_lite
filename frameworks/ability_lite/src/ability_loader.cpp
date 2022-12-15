@@ -17,6 +17,12 @@
 #include "log.h"
 
 namespace OHOS {
+AbilityLoader &AbilityLoader::GetInstance()
+{
+    static AbilityLoader abilityLoader;
+    return abilityLoader;
+}
+
 void AbilityLoader::RegisterAbility(const std::string &abilityName, const CreateAbility &createFunc)
 {
     abilities_.emplace(abilityName, createFunc);
