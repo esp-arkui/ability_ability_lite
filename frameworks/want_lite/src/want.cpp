@@ -109,6 +109,11 @@ Tlv *EncapTlv(uint8_t type, uint8_t length, const void *value, uint8_t valueLen)
     }
 
     Tlv *newTlv = reinterpret_cast<Tlv *>(AdapterMalloc(sizeof(Tlv)));
+    if (newTlv == nullptr) {
+        AdapterFree(entity);
+        return nullptr;
+    }
+    
     newTlv->type = type;
     newTlv->entity = entity;
     newTlv->totalLen = totalLen;
