@@ -38,7 +38,6 @@ constexpr static uint8_t FONT_ID = 10;
 
 int32_t IpcMsgHandler(int funcId, ElementName *elementName, SvcIdentity *serviceSid, void *storeArg)
 {
-    printf("IpcMsgHandler, funcId is %d, serviceSid is %p\n", funcId, serviceSid);
     printf("elementName is %s, %s\n", elementName->bundleName, elementName->abilityName);
     if (serviceSid == nullptr) {
         return 0;
