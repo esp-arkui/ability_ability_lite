@@ -19,6 +19,7 @@
 #include "ability_message_id.h"
 #include "ability_state.h"
 #include "adapter.h"
+#include "pthread.h"
 
 using namespace OHOS::ACELite;
 
@@ -40,6 +41,8 @@ void JsAppHost::JsAppTaskHandler(uint32_t uwArg)
     if (jsappHost == nullptr) {
         return;
     }
+
+    (void)pthread_setname_np(pthread_self(), "AppTask");
 
     osMessageQueueId_t appQueueId = jsappHost->GetMessageQueueId();
     if (appQueueId == nullptr) {
