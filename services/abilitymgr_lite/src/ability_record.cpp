@@ -20,48 +20,45 @@
 #include "utils.h"
 
 namespace OHOS {
-AbilityRecord::AbilityRecord()
-    : abilityInfo_()
+AbilityData::AbilityData() = default;
+
+AbilityData::~AbilityData()
 {
+    AdapterFree(wantData);
 }
+
+AbilityRecord::AbilityRecord() = default;
 
 AbilityRecord::~AbilityRecord()
 {
-    AdapterFree(appName_);
-    AdapterFree(appPath_);
-    AdapterFree(appData_);
+    AdapterFree(appName);
+    AdapterFree(appPath);
+    delete abilityData;
 }
 
-void AbilityRecord::SetAppName(const char *bundleName)
+void AbilityRecord::SetAppName(const char *name)
 {
-    AdapterFree(appName_);
-    appName_ = Utils::Strdup(bundleName);
+    AdapterFree(appName);
+    appName = Utils::Strdup(name);
 }
 
-void AbilityRecord::SetAppPath(const char *appPath)
+void AbilityRecord::SetAppPath(const char *path)
 {
-    AdapterFree(appPath_);
-    appPath_ = Utils::Strdup(appPath);
+    AdapterFree(appPath);
+    appPath = Utils::Strdup(path);
 }
 
-void AbilityRecord::SetAppData(const void *appData, uint16_t dataLength)
+void AbilityRecord::SetWantData(const void *wantData, uint16_t wantDataSize)
 {
-    AdapterFree(appData_);
-    appData_ = Utils::Memdup(appData, dataLength);
-    if (appData == nullptr) {
-        dataLength_ = 0;
+    if (abilityData == nullptr) {
+        abilityData = new AbilityData;
+    }
+    AdapterFree(abilityData->wantData);
+    abilityData->wantData = Utils::Memdup(wantData, wantDataSize);
+    if (abilityData->wantData == nullptr) {
+        abilityData->wantDataSize = 0;
         return;
     }
-    dataLength_ = dataLength;
-}
-
-void AbilityRecord::CopyAbilityRecord(AbilityRecord &abilityRecord, AbilityRecord &newAbilityRecord)
-{
-    newAbilityRecord.SetAppName(abilityRecord.GetAppName());
-    newAbilityRecord.SetAppPath(abilityRecord.GetAppPath());
-    newAbilityRecord.SetAppData(abilityRecord.GetAppData(), abilityRecord.GetDataLength());
-    newAbilityRecord.SetState(abilityRecord.GetState());
-    newAbilityRecord.SetToken(abilityRecord.GetToken());
-    newAbilityRecord.SetTaskId(abilityRecord.GetTaskId());
+    abilityData->wantDataSize = wantDataSize;
 }
 } // namespace OHOS

@@ -30,7 +30,7 @@ void AbilityList::Add(AbilityRecord *abilityRecord)
         return;
     }
 
-    if (Get(abilityRecord->GetToken()) == nullptr) {
+    if (Get(abilityRecord->token) == nullptr) {
         abilityList_.PushBack(abilityRecord);
     }
 }
@@ -42,7 +42,7 @@ AbilityRecord *AbilityList::Get(uint16_t token) const
         if (record == nullptr) {
             continue;
         }
-        if (record->GetToken() == token) {
+        if (record->token == token) {
             return record;
         }
     }
@@ -58,10 +58,10 @@ AbilityRecord *AbilityList::Get(const char *bundleName) const
 
     for (auto node = abilityList_.Begin(); node != abilityList_.End(); node = node->next_) {
         AbilityRecord *record = node->value_;
-        if (record == nullptr || record->GetAppName() == nullptr) {
+        if (record == nullptr || record->appName == nullptr) {
             continue;
         }
-        if (strcmp(bundleName, record->GetAppName()) == 0) {
+        if (strcmp(bundleName, record->appName) == 0) {
             return record;
         }
     }
@@ -76,7 +76,7 @@ AbilityRecord *AbilityList::GetByTaskId(uint32_t taskId) const
         if (record == nullptr) {
             continue;
         }
-        if (record->GetTaskId() == taskId) {
+        if (record->taskId == taskId) {
             return record;
         }
     }
@@ -91,7 +91,7 @@ void AbilityList::Erase(uint16_t token)
         if (record == nullptr) {
             continue;
         }
-        if (record->GetToken() == token) {
+        if (record->token == token) {
             abilityList_.Remove(node);
             return;
         }
