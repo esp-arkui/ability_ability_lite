@@ -188,7 +188,7 @@ int32_t AbilityService::StartAbility(const Want *want)
     AdapterFree(info->path);
     AdapterFree(info->data);
     AdapterFree(info);
-    return ERR_OK;
+    return ret;
 }
 
 void AbilityService::UpdateRecord(AbilitySvcInfo *info)
@@ -650,7 +650,11 @@ int32_t AbilityService::SchedulerLifecycleInner(const AbilityRecord *record, int
     SetElementBundleName(&elementName, LAUNCHER_BUNDLE_NAME);
     SetWantElement(info, elementName);
     ClearElement(&elementName);
-    SetWantData(info, record->abilityData->wantData, record->abilityData->wantDataSize);
+    if (record->abilityData != nullptr) {
+        SetWantData(info, record->abilityData->wantData, record->abilityData->wantDataSize);
+    } else {
+        SetWantData(info, nullptr, 0);
+    }
     SchedulerAbilityLifecycle(nativeAbility_, *info, state);
     ClearWant(info);
     AdapterFree(info);
@@ -719,8 +723,13 @@ bool AbilityService::SendMsgToJsAbility(int32_t state, const AbilityRecord *reco
     innerMsg.bundleName = record->appName;
     innerMsg.token = record->token;
     innerMsg.path = record->appPath;
-    innerMsg.data = const_cast<void *>(record->abilityData->wantData);
-    innerMsg.dataLength = record->abilityData->wantDataSize;
+    if (record->abilityData != nullptr) {
+        innerMsg.data = const_cast<void *>(record->abilityData->wantData);
+        innerMsg.dataLength = record->abilityData->wantDataSize;
+    } else {
+        innerMsg.data = nullptr;
+        innerMsg.dataLength = 0;
+    }
     osMessageQueueId_t appQueueId = record->jsAppQueueId;
     osStatus_t ret = osMessageQueuePut(appQueueId, static_cast<void *>(&innerMsg), 0, 0);
     return ret == osOK;
