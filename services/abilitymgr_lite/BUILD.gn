@@ -19,8 +19,7 @@ lite_library("abilityms") {
 
     sources = [
       "src/ability_list.cpp",
-      "src/ability_mgr_service.cpp",
-      "src/ability_mgr_slite_feature.cpp",
+      "src/ability_mgr_service_slite.cpp",
       "src/ability_record.cpp",
       "src/ability_record_manager.cpp",
       "src/ability_stack.cpp",

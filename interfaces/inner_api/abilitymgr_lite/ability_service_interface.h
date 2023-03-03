@@ -35,6 +35,12 @@ const char AMS_FEATURE[] = "AmsFeature";
 const char AMS_SLITE_FEATURE[] = "AmsSliteFeature";
 const char AMS_INNER_FEATURE[] = "AmsInnerFeature";
 
+#ifdef __LITEOS_M__
+constexpr uint32_t TRANSACTION_MSG_TOKEN_MUSK = 0xFFFF;
+constexpr uint32_t TRANSACTION_MSG_STATE_MUSK = 0xFFFF;
+constexpr uint32_t TRANSACTION_MSG_STATE_OFFSET = 16;
+#endif
+
 enum AmsCommand {
     START_ABILITY = 0,
     TERMINATE_ABILITY,
@@ -71,15 +77,16 @@ struct AmsInnerInterface {
     int32 (*StartKeepAliveApps)();
     int32 (*TerminateApp)(const char *bundleName);
 };
-#endif
+#else
 struct AmsSliteInterface {
     INHERIT_IUNKNOWN;
-    int32 (*StartAbility)(const Want *want);
-    int32 (*TerminateAbility)(uint64_t token);
-    int32 (*SchedulerLifecycleDone)(uint64_t token, int state);
-    int32 (*ForceStopBundle)(uint64_t token);
+    int32_t (*StartAbility)(const Want *want);
+    int32_t (*TerminateAbility)(uint64_t token);
+    int32_t (*SchedulerLifecycleDone)(uint64_t token, int state);
+    int32_t (*ForceStopBundle)(uint64_t token);
     ElementName *(*GetTopAbility)();
 };
+#endif
 #ifdef __cplusplus
 #if __cplusplus
 }

@@ -17,10 +17,6 @@
 #include "aafwk_event_error_id.h"
 #include "aafwk_event_error_code.h"
 #include "ability_errors.h"
-#include "ability_list.h"
-#include "ability_message_id.h"
-#include "ability_mgr_service.h"
-#include "ability_mgr_slite_feature.h"
 #include "ability_record.h"
 #include "ability_stack.h"
 #include "ability_state.h"
@@ -33,7 +29,6 @@
 #endif
 #include "js_app_host.h"
 #include "los_task.h"
-#include "pms.h"
 #ifdef OHOS_DMS_ENABLED
 #include "samgr_lite.h"
 #endif
@@ -49,9 +44,7 @@ constexpr uint16_t LAUNCHER_TOKEN = 0;
 constexpr int32_t QUEUE_LENGTH = 32;
 constexpr int32_t APP_TASK_PRI = 25;
 
-AbilityRecordManager::AbilityRecordManager()
-{
-}
+AbilityRecordManager::AbilityRecordManager() = default;
 
 AbilityRecordManager::~AbilityRecordManager()
 {
@@ -309,7 +302,7 @@ int32_t AbilityRecordManager::ForceStopBundle(uint16_t token)
     return ERR_OK;
 }
 
-int32_t AbilityRecordManager::ForceStop(char* bundleName)
+int32_t AbilityRecordManager::ForceStop(char *bundleName)
 {
     // stop Launcher
     if (strcmp(bundleName, LAUNCHER_BUNDLE_NAME) == 0) {
@@ -321,19 +314,6 @@ int32_t AbilityRecordManager::ForceStop(char* bundleName)
         AbilityRecord *topRecord = const_cast<AbilityRecord *>(abilityStack_.GetTopAbility());
         HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop [%{public}u]", topRecord->token);
         return TerminateAbility(topRecord->token);
-#ifndef __LITEOS_M__
-    } else {
-        uint16_t size = abilityStack_.GetAllAbilities();
-        HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop innerStack number is [%{public}u]", size);
-        // topAbility may be not the target, need to search the abilityStack_
-        AbilityRecord *jsAbilityRecord = const_cast<AbilityRecord *>(abilityStack_.GetAbility(bundleName));
-        if (jsAbilityRecord != nullptr) {
-            jsAbilityRecord->SetTerminated(true);
-            // TerminateAbility top js
-            return SchedulerLifecycleInner(topRecord, STATE_UNINITIALIZED);
-        }
-        HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop cannot find exact Js ability");
-#endif
     }
     return PARAM_CHECK_ERROR;
 }
@@ -413,15 +393,15 @@ int32_t AbilityRecordManager::CreateAppTask(AbilityRecord *record)
     }
 
     HILOG_INFO(HILOG_MODULE_AAFWK, "CreateAppTask.");
-    TSK_INIT_PARAM_S stTskInitParam = {0};
+    TSK_INIT_PARAM_S stTskInitParam = { 0 };
     LOS_TaskLock();
-    stTskInitParam.pfnTaskEntry = (TSK_ENTRY_FUNC)(JsAppHost::JsAppTaskHandler);
+    stTskInitParam.pfnTaskEntry = (TSK_ENTRY_FUNC) (JsAppHost::JsAppTaskHandler);
     stTskInitParam.uwStackSize = TASK_STACK_SIZE;
     stTskInitParam.usTaskPrio = OS_TASK_PRIORITY_LOWEST - APP_TASK_PRI;
     stTskInitParam.pcName = const_cast<char *>("AppTask");
     stTskInitParam.uwResved = 0;
     auto jsAppHost = new JsAppHost();
-    stTskInitParam.uwArg = reinterpret_cast<UINT32>((uintptr_t)jsAppHost);
+    stTskInitParam.uwArg = reinterpret_cast<UINT32>((uintptr_t) jsAppHost);
     UINT32 appTaskId = 0;
     UINT32 ret = LOS_TaskCreate(&appTaskId, &stTskInitParam);
     if (ret != LOS_OK) {
@@ -438,12 +418,6 @@ int32_t AbilityRecordManager::CreateAppTask(AbilityRecord *record)
     record->taskId = appTaskId;
     record->jsAppQueueId = jsAppQueueId;
     record->jsAppHost = jsAppHost;
-
-    // LiteOS-M not support permissions checking right now, when permission checking is ready, we
-    // can remove the macro.
-#ifndef __LITEOS_M__
-    LoadPermissions(record->GetAppName(), appTaskId);
-#endif
     record->state = SCHEDULE_INACTIVE;
     abilityStack_.PushAbility(record);
     APP_EVENT(MT_ACE_APP_START);
@@ -480,9 +454,6 @@ void AbilityRecordManager::DeleteRecordInfo(uint16_t token)
             UINT32 taskId = record->taskId;
             // LiteOS-M not support permissions checking right now, when permission checking is
             // ready, we can remove the macro.
-#ifndef __LITEOS_M__
-            UnLoadPermissions(taskId);
-#endif
             LOS_TaskDelete(taskId);
             osMessageQueueId_t jsAppQueueId = record->jsAppQueueId;
             osMessageQueueDelete(jsAppQueueId);
@@ -510,8 +481,9 @@ void AbilityRecordManager::OnActiveDone(uint16_t token)
 
     // the launcher active
     if (token == LAUNCHER_TOKEN) {
-        if (nativeAbility_== nullptr || nativeAbility_->GetState() != STATE_ACTIVE) {
-            HILOG_ERROR(HILOG_MODULE_AAFWK, "native ability is in wrong state : %{public}d", nativeAbility_->GetState());
+        if (nativeAbility_ == nullptr || nativeAbility_->GetState() != STATE_ACTIVE) {
+            HILOG_ERROR(HILOG_MODULE_AAFWK, "native ability is in wrong state : %{public}d",
+                nativeAbility_->GetState());
             return;
         }
         if (topRecord->token != LAUNCHER_TOKEN) {

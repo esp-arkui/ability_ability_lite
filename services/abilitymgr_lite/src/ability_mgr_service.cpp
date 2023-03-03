@@ -74,28 +74,7 @@ BOOL AbilityMgrService::ServiceMessageHandle(Service *service, Request *request)
     if (request == nullptr) {
         return FALSE;
     }
-#ifdef __LITEOS_M__
-    int ret = ERR_OK;
-    if (request->msgId == START_ABILITY) {
-        ret = AbilityRecordManager::GetInstance().StartAbility(AbilityRecordManager::GetInstance().want_);
-        AbilityRecordManager::GetInstance().CleanWant();
-        AbilityRecordManager::GetInstance().curTask_ = 0;
-    } else if  (request->msgId == ABILITY_TRANSACTION_DONE) {
-        int token = request->msgValue & 0xFFFF;
-        int state = (request->msgValue >> BYTE_OFFSET) & 0xFFFF;
-        ret = AbilityRecordManager::GetInstance().SchedulerLifecycleDone(token, state);
-    } else if (request->msgId == TERMINATE_ABILITY) {
-        ret = AbilityRecordManager::GetInstance().TerminateAbility(request->msgValue);
-    } else if (request->msgId == TERMINATE_APP) {
-        ret = AbilityRecordManager::GetInstance().ForceStopBundle(request->msgValue);
-    } else if (request->msgId == TERMINATE_APP_BY_BUNDLENAME) {
-        char* bundleName = reinterpret_cast<char *>(request->data);
-        ret = AbilityRecordManager::GetInstance().ForceStop(bundleName);
-    }
-    return ret == ERR_OK;
-#else
     return TRUE;
-#endif
 }
 
 TaskConfig AbilityMgrService::GetServiceTaskConfig(Service *service)
