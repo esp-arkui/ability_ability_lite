@@ -17,7 +17,7 @@
 
 #include "ability_errors.h"
 #include "ability_mgr_service.h"
-#include "ability_service.h"
+#include "ability_record_manager.h"
 #include "abilityms_log.h"
 #include "adapter.h"
 #include "cmsis_os2.h"
@@ -74,8 +74,8 @@ int AbilityMsClient::StartAbility(const Want *want) const
     info->dataLength = 0;
     SetWantElement(info, *(want->element));
     SetWantData(info, want->data, want->dataLength);
-    AbilityService::GetInstance().want_ = info;
-    AbilityService::GetInstance().curTask_ = LOS_CurTaskIDGet();
+    AbilityRecordManager::GetInstance().want_ = info;
+    AbilityRecordManager::GetInstance().curTask_ = LOS_CurTaskIDGet();
     Request request = {
         .msgId = START_ABILITY,
         .len = 0,

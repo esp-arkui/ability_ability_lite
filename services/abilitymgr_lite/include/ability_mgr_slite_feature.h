@@ -16,7 +16,7 @@
 #ifndef OHOS_ABILITYMANAGERSERVICE_SLITE_FEATURE_H
 #define OHOS_ABILITYMANAGERSERVICE_SLITE_FEATURE_H
 
-#include "ability_service.h"
+#include "ability_record_manager.h"
 #include "ability_service_interface.h"
 #include "feature.h"
 #include "iunknown.h"
@@ -46,7 +46,7 @@ private:
 
 private:
     Identity identity_;
-    AbilityService *abilityService_;
+    AbilityRecordManager *abilityService_;
     DISALLOW_COPY_AND_MOVE(AbilityMgrSliteFeature);
 };
 

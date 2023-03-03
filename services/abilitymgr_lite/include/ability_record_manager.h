@@ -36,21 +36,21 @@ struct AbilitySvcInfo {
     uint16_t dataLength;
 };
 
-class AbilityService : public NoCopyable {
+class AbilityRecordManager : public NoCopyable {
 public:
-    typedef void (AbilityService::*LifecycleFunc)(uint16_t token);
+    typedef void (AbilityRecordManager::*LifecycleFunc)(uint16_t token);
 
     struct LifecycleFuncStr {
         int32_t state;
         LifecycleFunc func_ptr;
     };
 
-    static AbilityService& GetInstance()
+    static AbilityRecordManager& GetInstance()
     {
-        static AbilityService instance;
+        static AbilityRecordManager instance;
         return instance;
     }
-    ~AbilityService() override;
+    ~AbilityRecordManager() override;
     int32_t StartAbility(const Want *want);
     int32_t TerminateAbility(uint16_t token);
     int32_t ForceStop(char *bundleName);
@@ -65,7 +65,7 @@ public:
 
 private:
     static uint16_t GenerateToken();
-    AbilityService();
+    AbilityRecordManager();
     int32_t StartAbility(AbilitySvcInfo *info);
     int32_t StartRemoteAbility(const Want *want);
     int32_t PreCheckStartAbility(const char *bundleName, const char *path, const void *data, uint16_t dataLength);

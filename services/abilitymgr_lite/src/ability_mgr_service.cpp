@@ -17,7 +17,7 @@
 
 #include "ability_errors.h"
 #ifdef __LITEOS_M__
-#include "ability_service.h"
+#include "ability_record_manager.h"
 #endif
 #include "ability_service_interface.h"
 #include "adapter.h"
@@ -77,20 +77,20 @@ BOOL AbilityMgrService::ServiceMessageHandle(Service *service, Request *request)
 #ifdef __LITEOS_M__
     int ret = ERR_OK;
     if (request->msgId == START_ABILITY) {
-        ret = AbilityService::GetInstance().StartAbility(AbilityService::GetInstance().want_);
-        AbilityService::GetInstance().CleanWant();
-        AbilityService::GetInstance().curTask_ = 0;
+        ret = AbilityRecordManager::GetInstance().StartAbility(AbilityRecordManager::GetInstance().want_);
+        AbilityRecordManager::GetInstance().CleanWant();
+        AbilityRecordManager::GetInstance().curTask_ = 0;
     } else if  (request->msgId == ABILITY_TRANSACTION_DONE) {
         int token = request->msgValue & 0xFFFF;
         int state = (request->msgValue >> BYTE_OFFSET) & 0xFFFF;
-        ret = AbilityService::GetInstance().SchedulerLifecycleDone(token, state);
+        ret = AbilityRecordManager::GetInstance().SchedulerLifecycleDone(token, state);
     } else if (request->msgId == TERMINATE_ABILITY) {
-        ret = AbilityService::GetInstance().TerminateAbility(request->msgValue);
+        ret = AbilityRecordManager::GetInstance().TerminateAbility(request->msgValue);
     } else if (request->msgId == TERMINATE_APP) {
-        ret = AbilityService::GetInstance().ForceStopBundle(request->msgValue);
+        ret = AbilityRecordManager::GetInstance().ForceStopBundle(request->msgValue);
     } else if (request->msgId == TERMINATE_APP_BY_BUNDLENAME) {
         char* bundleName = reinterpret_cast<char *>(request->data);
-        ret = AbilityService::GetInstance().ForceStop(bundleName);
+        ret = AbilityRecordManager::GetInstance().ForceStop(bundleName);
     }
     return ret == ERR_OK;
 #else

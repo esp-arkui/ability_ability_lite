@@ -30,7 +30,7 @@
 │   ├── ability_mission_record.h                # Ability mission record
 │   ├── ability_mission_stack.h                 # Ability mission record stack
 │   ├── ability_record.h                        # Ability record including ability info for GT
-│   ├── ability_service.h                       # AMS for GT
+│   ├── ability_record_manager.h                # Ability record manager for GT
 │   ├── ability_stack.h                         # AMS stack for GT
 │   ├── ability_stack_manager.h                 # Ability stack manager
 │   ├── ability_worker.h                        # Ability task manager
@@ -77,7 +77,7 @@
 │   ├── ability_mission_record.cpp
 │   ├── ability_mission_stack.cpp
 │   ├── ability_record.cpp
-│   ├── ability_service.cpp
+│   ├── ability_record_manager.cpp
 │   ├── ability_stack.cpp
 │   ├── ability_stack_manager.cpp
 │   ├── ability_worker.cpp

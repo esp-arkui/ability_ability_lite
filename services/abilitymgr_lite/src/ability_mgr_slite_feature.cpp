@@ -73,7 +73,7 @@ void AbilityMgrSliteFeature::OnFeatureInitialize(Feature *feature, Service *pare
 {
     CHECK_NULLPTR_RETURN(feature, "AbilityMgrSliteFeature", "initialize fail");
     (static_cast<AbilityMgrSliteFeature *>(feature))->identity_ = identity;
-    AbilityService::GetInstance().StartLauncher();
+    AbilityRecordManager::GetInstance().StartLauncher();
 }
 
 void AbilityMgrSliteFeature::OnFeatureStop(Feature *feature, Identity identity)
@@ -92,7 +92,7 @@ BOOL AbilityMgrSliteFeature::OnFeatureMessage(Feature *feature, Request *request
 
 int32 AbilityMgrSliteFeature::StartAbility(const Want *want)
 {
-    int32 ret = AbilityService::GetInstance().StartAbility(want);
+    int32 ret = AbilityRecordManager::GetInstance().StartAbility(want);
     ClearWant(const_cast<Want *>(want));
     return ret;
 }
@@ -100,22 +100,22 @@ int32 AbilityMgrSliteFeature::StartAbility(const Want *want)
 int32 AbilityMgrSliteFeature::TerminateAbility(uint64_t token)
 {
     uint16_t slitToken = token & 0xFFFF;
-    return AbilityService::GetInstance().TerminateAbility(slitToken);
+    return AbilityRecordManager::GetInstance().TerminateAbility(slitToken);
 }
 
 int32 AbilityMgrSliteFeature::SchedulerLifecycleDone(uint64_t token, int state)
 {
-    return AbilityService::GetInstance().SchedulerLifecycleDone(token, state);
+    return AbilityRecordManager::GetInstance().SchedulerLifecycleDone(token, state);
 }
 
 int32 AbilityMgrSliteFeature::ForceStopBundle(uint64_t token)
 {
     uint16_t slitToken = token & 0xFFFF;
-    return AbilityService::GetInstance().ForceStopBundle(slitToken);
+    return AbilityRecordManager::GetInstance().ForceStopBundle(slitToken);
 }
 
 ElementName *AbilityMgrSliteFeature::GetTopAbility()
 {
-    return AbilityService::GetInstance().GetTopAbility();
+    return AbilityRecordManager::GetInstance().GetTopAbility();
 }
 } // namespace OHOS

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "ability_service.h"
+#include "ability_record_manager.h"
 #include "aafwk_event_error_id.h"
 #include "aafwk_event_error_code.h"
 #include "ability_errors.h"
@@ -49,16 +49,16 @@ constexpr uint16_t LAUNCHER_TOKEN = 0;
 constexpr int32_t QUEUE_LENGTH = 32;
 constexpr int32_t APP_TASK_PRI = 25;
 
-AbilityService::AbilityService()
+AbilityRecordManager::AbilityRecordManager()
 {
 }
 
-AbilityService::~AbilityService()
+AbilityRecordManager::~AbilityRecordManager()
 {
     DeleteRecordInfo(LAUNCHER_TOKEN);
 }
 
-void AbilityService::StartLauncher()
+void AbilityRecordManager::StartLauncher()
 {
     auto record = new AbilityRecord();
     record->SetAppName(LAUNCHER_BUNDLE_NAME);
@@ -70,13 +70,13 @@ void AbilityService::StartLauncher()
     (void) SchedulerLifecycleInner(record, STATE_ACTIVE);
 }
 
-void AbilityService::CleanWant()
+void AbilityRecordManager::CleanWant()
 {
     ClearWant(want_);
     AdapterFree(want_);
 }
 
-bool AbilityService::IsValidAbility(AbilityInfo *abilityInfo)
+bool AbilityRecordManager::IsValidAbility(AbilityInfo *abilityInfo)
 {
     if (abilityInfo == nullptr) {
         return false;
@@ -90,7 +90,7 @@ bool AbilityService::IsValidAbility(AbilityInfo *abilityInfo)
     return true;
 }
 
-int32_t AbilityService::StartRemoteAbility(const Want *want)
+int32_t AbilityRecordManager::StartRemoteAbility(const Want *want)
 {
 #ifdef OHOS_DMS_ENABLED
     IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(DISTRIBUTED_SCHEDULE_SERVICE, DMSLITE_FEATURE);
@@ -129,7 +129,7 @@ int32_t AbilityService::StartRemoteAbility(const Want *want)
 #endif
 }
 
-int32_t AbilityService::StartAbility(const Want *want)
+int32_t AbilityRecordManager::StartAbility(const Want *want)
 {
     if (want == nullptr || want->element == nullptr) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability Service wanted element is null");
@@ -191,7 +191,7 @@ int32_t AbilityService::StartAbility(const Want *want)
     return ret;
 }
 
-void AbilityService::UpdateRecord(AbilitySvcInfo *info)
+void AbilityRecordManager::UpdateRecord(AbilitySvcInfo *info)
 {
     if (info == nullptr) {
         return;
@@ -206,7 +206,7 @@ void AbilityService::UpdateRecord(AbilitySvcInfo *info)
     record->SetWantData(info->data, info->dataLength);
 }
 
-int32_t AbilityService::StartAbility(AbilitySvcInfo *info)
+int32_t AbilityRecordManager::StartAbility(AbilitySvcInfo *info)
 {
     if ((info == nullptr) || (info->bundleName == nullptr) || (strlen(info->bundleName) == 0)) {
         return PARAM_NULL_ERROR;
@@ -257,7 +257,7 @@ int32_t AbilityService::StartAbility(AbilitySvcInfo *info)
     return PreCheckStartAbility(info->bundleName, info->path, info->data, info->dataLength);
 }
 
-int32_t AbilityService::TerminateAbility(uint16_t token)
+int32_t AbilityRecordManager::TerminateAbility(uint16_t token)
 {
     HILOG_INFO(HILOG_MODULE_AAFWK, "TerminateAbility [%{public}u]", token);
     AbilityRecord *topRecord = const_cast<AbilityRecord *>(abilityStack_.GetTopAbility());
@@ -285,7 +285,7 @@ int32_t AbilityService::TerminateAbility(uint16_t token)
     return SchedulerLifecycleInner(topRecord, STATE_BACKGROUND);
 }
 
-int32_t AbilityService::ForceStopBundle(uint16_t token)
+int32_t AbilityRecordManager::ForceStopBundle(uint16_t token)
 {
     HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStopBundle [%{public}u]", token);
     if (token == LAUNCHER_TOKEN) {
@@ -309,7 +309,7 @@ int32_t AbilityService::ForceStopBundle(uint16_t token)
     return ERR_OK;
 }
 
-int32_t AbilityService::ForceStop(char* bundleName)
+int32_t AbilityRecordManager::ForceStop(char* bundleName)
 {
     // stop Launcher
     if (strcmp(bundleName, LAUNCHER_BUNDLE_NAME) == 0) {
@@ -338,7 +338,7 @@ int32_t AbilityService::ForceStop(char* bundleName)
     return PARAM_CHECK_ERROR;
 }
 
-int32_t AbilityService::ForceStopBundleInner(uint16_t token)
+int32_t AbilityRecordManager::ForceStopBundleInner(uint16_t token)
 {
     // free js mem and delete the record
     AbilityRecord *record = abilityList_.Get(token);
@@ -354,7 +354,7 @@ int32_t AbilityService::ForceStopBundleInner(uint16_t token)
     return ERR_OK;
 }
 
-int32_t AbilityService::PreCheckStartAbility(
+int32_t AbilityRecordManager::PreCheckStartAbility(
     const char *bundleName, const char *path, const void *data, uint16_t dataLength)
 {
     if (path == nullptr) {
@@ -390,7 +390,7 @@ int32_t AbilityService::PreCheckStartAbility(
     return ERR_OK;
 }
 
-bool AbilityService::CheckResponse(const char *bundleName)
+bool AbilityRecordManager::CheckResponse(const char *bundleName)
 {
     StartCheckFunc callBackFunc = GetAbilityCallback();
     if (callBackFunc == nullptr) {
@@ -405,7 +405,7 @@ bool AbilityService::CheckResponse(const char *bundleName)
     return true;
 }
 
-int32_t AbilityService::CreateAppTask(AbilityRecord *record)
+int32_t AbilityRecordManager::CreateAppTask(AbilityRecord *record)
 {
     if ((record == nullptr) || (record->appName == nullptr)) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "CreateAppTask fail: null");
@@ -460,7 +460,7 @@ int32_t AbilityService::CreateAppTask(AbilityRecord *record)
     return ERR_OK;
 }
 
-uint16_t AbilityService::GenerateToken()
+uint16_t AbilityRecordManager::GenerateToken()
 {
     static uint16_t token = LAUNCHER_TOKEN;
     if (token == UINT16_MAX - 1) {
@@ -469,7 +469,7 @@ uint16_t AbilityService::GenerateToken()
     return ++token;
 }
 
-void AbilityService::DeleteRecordInfo(uint16_t token)
+void AbilityRecordManager::DeleteRecordInfo(uint16_t token)
 {
     AbilityRecord *record = abilityList_.Get(token);
     if (record == nullptr) {
@@ -499,7 +499,7 @@ void AbilityService::DeleteRecordInfo(uint16_t token)
     delete record;
 }
 
-void AbilityService::OnActiveDone(uint16_t token)
+void AbilityRecordManager::OnActiveDone(uint16_t token)
 {
     HILOG_INFO(HILOG_MODULE_AAFWK, "OnActiveDone [%{public}u]", token);
     SetAbilityState(token, SCHEDULE_ACTIVE);
@@ -540,7 +540,7 @@ void AbilityService::OnActiveDone(uint16_t token)
     }
 }
 
-void AbilityService::OnBackgroundDone(uint16_t token)
+void AbilityRecordManager::OnBackgroundDone(uint16_t token)
 {
     HILOG_INFO(HILOG_MODULE_AAFWK, "OnBackgroundDone [%{public}u]", token);
     SetAbilityState(token, SCHEDULE_BACKGROUND);
@@ -570,7 +570,7 @@ void AbilityService::OnBackgroundDone(uint16_t token)
     HILOG_WARN(HILOG_MODULE_AAFWK, "Js app exit, but has no js app.");
 }
 
-void AbilityService::OnDestroyDone(uint16_t token)
+void AbilityRecordManager::OnDestroyDone(uint16_t token)
 {
     HILOG_INFO(HILOG_MODULE_AAFWK, "OnDestroyDone [%{public}u]", token);
     // the launcher destroy
@@ -605,7 +605,7 @@ void AbilityService::OnDestroyDone(uint16_t token)
     pendingToken_ = 0;
 }
 
-int32_t AbilityService::SchedulerLifecycle(uint64_t token, int32_t state)
+int32_t AbilityRecordManager::SchedulerLifecycle(uint64_t token, int32_t state)
 {
     AbilityRecord *record = abilityList_.Get(token);
     if (record == nullptr) {
@@ -614,7 +614,7 @@ int32_t AbilityService::SchedulerLifecycle(uint64_t token, int32_t state)
     return SchedulerLifecycleInner(record, state);
 }
 
-void AbilityService::SetAbilityState(uint64_t token, int32_t state)
+void AbilityRecordManager::SetAbilityState(uint64_t token, int32_t state)
 {
     AbilityRecord *record = abilityList_.Get(token);
     if (record == nullptr) {
@@ -623,7 +623,7 @@ void AbilityService::SetAbilityState(uint64_t token, int32_t state)
     record->state = state;
 }
 
-int32_t AbilityService::SchedulerLifecycleInner(const AbilityRecord *record, int32_t state)
+int32_t AbilityRecordManager::SchedulerLifecycleInner(const AbilityRecord *record, int32_t state)
 {
     if (record == nullptr) {
         return PARAM_NULL_ERROR;
@@ -661,7 +661,7 @@ int32_t AbilityService::SchedulerLifecycleInner(const AbilityRecord *record, int
     return ERR_OK;
 }
 
-void AbilityService::SchedulerAbilityLifecycle(SliteAbility *ability, const Want &want, int32_t state)
+void AbilityRecordManager::SchedulerAbilityLifecycle(SliteAbility *ability, const Want &want, int32_t state)
 {
     if (ability == nullptr) {
         return;
@@ -682,7 +682,7 @@ void AbilityService::SchedulerAbilityLifecycle(SliteAbility *ability, const Want
     return;
 }
 
-int32_t AbilityService::SchedulerLifecycleDone(uint64_t token, int32_t state)
+int32_t AbilityRecordManager::SchedulerLifecycleDone(uint64_t token, int32_t state)
 {
     switch (state) {
         case STATE_ACTIVE: {
@@ -704,7 +704,7 @@ int32_t AbilityService::SchedulerLifecycleDone(uint64_t token, int32_t state)
     return ERR_OK;
 }
 
-bool AbilityService::SendMsgToJsAbility(int32_t state, const AbilityRecord *record)
+bool AbilityRecordManager::SendMsgToJsAbility(int32_t state, const AbilityRecord *record)
 {
     if (record == nullptr) {
         return false;
@@ -735,7 +735,7 @@ bool AbilityService::SendMsgToJsAbility(int32_t state, const AbilityRecord *reco
     return ret == osOK;
 }
 
-ElementName *AbilityService::GetTopAbility()
+ElementName *AbilityRecordManager::GetTopAbility()
 {
     auto topRecord = const_cast<AbilityRecord *>(abilityStack_.GetTopAbility());
     AbilityRecord *launcherRecord = abilityList_.Get(LAUNCHER_TOKEN);
@@ -759,7 +759,7 @@ ElementName *AbilityService::GetTopAbility()
     return element;
 }
 
-void AbilityService::setNativeAbility(const SliteAbility *ability)
+void AbilityRecordManager::setNativeAbility(const SliteAbility *ability)
 {
     nativeAbility_ = const_cast<SliteAbility *>(ability);
 }
@@ -768,12 +768,12 @@ void AbilityService::setNativeAbility(const SliteAbility *ability)
 extern "C" {
 int InstallNativeAbility(const AbilityInfo *abilityInfo, const OHOS::SliteAbility *ability)
 {
-    OHOS::AbilityService::GetInstance().setNativeAbility(ability);
+    OHOS::AbilityRecordManager::GetInstance().setNativeAbility(ability);
     return ERR_OK;
 }
 
 ElementName *GetTopAbility()
 {
-    return OHOS::AbilityService::GetInstance().GetTopAbility();
+    return OHOS::AbilityRecordManager::GetInstance().GetTopAbility();
 }
 }
