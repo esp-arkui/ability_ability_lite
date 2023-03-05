@@ -87,7 +87,7 @@ lite_library("ability") {
   cflags_cc = cflags
 
   if (enable_ohos_appexecfwk_feature_ability == true) {
-    public_deps += [ "//foundation/graphic/ui:lite_ui" ]
+    public_deps += [ "//foundation/graphic/ui:ui_lite" ]
   }
 
   include_dirs = [
