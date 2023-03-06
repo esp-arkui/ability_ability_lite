@@ -53,6 +53,10 @@ AbilityRecordManager::~AbilityRecordManager()
 
 void AbilityRecordManager::StartLauncher()
 {
+    AbilityRecord *launcherRecord = abilityList_.Get(LAUNCHER_TOKEN);
+    if (launcherRecord != nullptr) {
+        return;
+    }
     auto record = new AbilityRecord();
     record->SetAppName(LAUNCHER_BUNDLE_NAME);
     record->token = LAUNCHER_TOKEN;
@@ -302,8 +306,12 @@ int32_t AbilityRecordManager::ForceStopBundle(uint16_t token)
     return ERR_OK;
 }
 
-int32_t AbilityRecordManager::ForceStop(char *bundleName)
+int32_t AbilityRecordManager::ForceStop(const char *bundleName)
 {
+    if (bundleName == nullptr) {
+        return PARAM_NULL_ERROR;
+    }
+
     // stop Launcher
     if (strcmp(bundleName, LAUNCHER_BUNDLE_NAME) == 0) {
         return TerminateAbility(0);

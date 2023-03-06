@@ -40,6 +40,16 @@ AbilityMgrServiceSliteImpl g_amsSliteImpl = {
     DEFAULT_IUNKNOWN_ENTRY_END
 };
 
+static void InitService()
+{
+    SamgrLite *sm = SAMGR_GetInstance();
+    CHECK_NULLPTR_RETURN(sm, "AbilityManagerService", "get samgr error");
+    BOOL result = sm->RegisterService(AbilityMgrServiceSlite::GetInstance());
+    PRINTI("AbilityManagerService", "ams starts %{public}s", result ? "successfully" : "unsuccessfully");
+}
+
+SYSEX_SERVICE_INIT(InitService);
+
 static void InitFeature()
 {
     SamgrLite *samgrLite = SAMGR_GetInstance();
@@ -57,16 +67,6 @@ static void InitFeature()
 }
 
 SYSEX_FEATURE_INIT(InitFeature);
-
-static void InitService()
-{
-    SamgrLite *sm = SAMGR_GetInstance();
-    CHECK_NULLPTR_RETURN(sm, "AbilityManagerService", "get samgr error");
-    BOOL result = sm->RegisterService(AbilityMgrServiceSlite::GetInstance());
-    PRINTI("AbilityManagerService", "ams starts %{public}s", result ? "successfully" : "unsuccessfully");
-}
-
-SYSEX_SERVICE_INIT(InitService);
 
 AbilityMgrServiceSlite::AbilityMgrServiceSlite() : Service(), Feature()
 {
