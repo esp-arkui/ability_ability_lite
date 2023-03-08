@@ -16,7 +16,7 @@
 #ifndef ABILITYLITE_ABILITY_THREAD_LOADER_H
 #define ABILITYLITE_ABILITY_THREAD_LOADER_H
 
-#include "ability_thread.h"
+#include "slite_ability_thread.h"
 
 namespace OHOS {
 namespace AbilitySlite {
@@ -31,7 +31,8 @@ enum class AbilityThreadCreatorType {
 * This method can create an AbilityThread and return a pointer to the AbilityThread.
 *
 */
-using AbilityCreatorFunc = AbilityThread*(*)();
+
+using AbilityCreatorFunc = SliteAbilityThread*(*)();
 
 class AbilityThreadLoader final {
 public:
@@ -47,7 +48,7 @@ public:
 
     void SetCreatorFunc(AbilityThreadCreatorType type, AbilityCreatorFunc creator);
 
-    AbilityThread *CreateAbilityThread(AbilityThreadCreatorType type) const;
+    SliteAbilityThread *CreateAbilityThread(AbilityThreadCreatorType type) const;
 
     void UnsetCreatorFunc(AbilityThreadCreatorType type);
 
