@@ -24,6 +24,7 @@ lite_library("abilityms") {
       "src/ability_record.cpp",
       "src/ability_service.cpp",
       "src/ability_stack.cpp",
+      "src/ability_thread_loader.cpp",
       "src/js_app_host.cpp",
     ]
 
