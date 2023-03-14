@@ -18,13 +18,13 @@ lite_library("abilityms") {
     target_type = "static_library"
 
     sources = [
-      "src/ability_list.cpp",
-      "src/ability_mgr_service_slite.cpp",
-      "src/ability_record.cpp",
-      "src/ability_record_manager.cpp",
-      "src/ability_stack.cpp",
-      "src/ability_thread_loader.cpp",
-      "src/js_app_host.cpp",
+      "src/slite/ability_list.cpp",
+      "src/slite/ability_mgr_service_slite.cpp",
+      "src/slite/ability_record.cpp",
+      "src/slite/ability_record_manager.cpp",
+      "src/slite/ability_stack.cpp",
+      "src/slite/ability_thread.cpp",
+      "src/slite/ability_thread_loader.cpp",
     ]
 
     if (defined(config_ohos_aafwk_ams_task_size) &&
@@ -42,6 +42,24 @@ lite_library("abilityms") {
       "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_static",
       "//foundation/arkui/ace_engine_lite/frameworks:ace_lite",
       "//foundation/systemabilitymgr/samgr_lite/samgr:samgr",
+    ]
+
+    include_dirs = [
+      "${aafwk_lite_path}/interfaces/inner_api/abilitymgr_lite",
+      "${aafwk_lite_path}/interfaces/inner_api/abilitymgr_lite/slite",
+      "${aafwk_lite_path}/interfaces/kits/ability_lite/slite",
+      "${aafwk_lite_path}/interfaces/kits/want_lite",
+      "${appexecfwk_lite_path}/interfaces/inner_api/bundlemgr_lite",
+      "${appexecfwk_lite_path}/interfaces/kits/bundle_lite",
+      "${appexecfwk_lite_path}/utils/bundle_lite",
+      "//commonlibrary/utils_lite/include",
+      "//commonlibrary/utils_lite/memory/include",
+      "//foundation/ability/dmsfwk_lite/interfaces/innerkits",
+      "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/registry",
+      "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/samgr",
+      "//third_party/bounds_checking_function/include",
+      "./include/slite",
+      "./include/util",
     ]
   } else {
     target_type = "shared_library"
@@ -102,6 +120,33 @@ lite_library("abilityms") {
       deps += [ "//foundation/graphic/surface" ]
       defines += [ "ABILITY_WINDOW_SUPPORT" ]
     }
+
+    include_dirs = [
+      "${aafwk_lite_path}/interfaces/kits/ability_lite",
+      "${aafwk_lite_path}/interfaces/kits/want_lite",
+      "${aafwk_lite_path}/frameworks/want_lite/include",
+      "${aafwk_lite_path}/interfaces/inner_api/abilitymgr_lite",
+      "${aafwk_lite_path}/frameworks/abilitymgr_lite/include",
+      "${aafwk_lite_path}/services/abilitymgr_lite/include/util",
+      "${appexecfwk_lite_path}/interfaces/kits/bundle_lite",
+      "${appexecfwk_lite_path}/utils/bundle_lite",
+      "${appexecfwk_lite_path}/interfaces/inner_api/bundlemgr_lite",
+      "${appexecfwk_lite_path}/frameworks/bundle_lite/include",
+      "//base/security/permission_lite/interfaces/kits",
+      "//base/security/permission_lite/services/pms/include",
+      "//base/startup/appspawn/lite",
+      "//commonlibrary/utils_lite/include",
+      "//commonlibrary/utils_lite/memory/include",
+      "//foundation/ability/dmsfwk_lite/interfaces/innerkits",
+      "//foundation/communication/ipc/interfaces/innerkits/c/ipc/include",
+      "//foundation/graphic/wms/interfaces/innerkits",
+      "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/registry",
+      "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/samgr",
+      "//third_party/bounds_checking_function/include",
+      "//third_party/cJSON",
+      "include",
+      "include/task",
+    ]
   }
 
   cflags = []
@@ -118,35 +163,6 @@ lite_library("abilityms") {
     "-lstdc++",
     "-lpthread",
     "-ldl",
-  ]
-
-  include_dirs = [
-    "${aafwk_lite_path}/interfaces/kits/ability_lite",
-    "${aafwk_lite_path}/interfaces/kits/ability_lite/slite",
-    "${aafwk_lite_path}/interfaces/kits/want_lite",
-    "${aafwk_lite_path}/frameworks/want_lite/include",
-    "${aafwk_lite_path}/interfaces/inner_api/abilitymgr_lite",
-    "${aafwk_lite_path}/interfaces/inner_api/abilitymgr_lite/slite",
-    "${aafwk_lite_path}/frameworks/abilitymgr_lite/include",
-    "${aafwk_lite_path}/services/abilitymgr_lite/include/util",
-    "${appexecfwk_lite_path}/interfaces/kits/bundle_lite",
-    "${appexecfwk_lite_path}/utils/bundle_lite",
-    "${appexecfwk_lite_path}/interfaces/inner_api/bundlemgr_lite",
-    "${appexecfwk_lite_path}/frameworks/bundle_lite/include",
-    "//base/security/permission_lite/interfaces/kits",
-    "//base/security/permission_lite/services/pms/include",
-    "//base/startup/appspawn/lite",
-    "//commonlibrary/utils_lite/include",
-    "//commonlibrary/utils_lite/memory/include",
-    "//foundation/ability/dmsfwk_lite/interfaces/innerkits",
-    "//foundation/communication/ipc/interfaces/innerkits/c/ipc/include",
-    "//foundation/graphic/wms/interfaces/innerkits",
-    "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/registry",
-    "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/samgr",
-    "//third_party/bounds_checking_function/include",
-    "//third_party/cJSON",
-    "include",
-    "include/task",
   ]
 
   if (ohos_kernel_type == "liteos_m") {

@@ -23,7 +23,7 @@
 #include "los_task.h"
 #include "samgr_lite.h"
 #include "securec.h"
-#include "want_utils.h"
+#include "want.h"
 #include "utils.h"
 
 namespace OHOS {

@@ -14,8 +14,6 @@
  */
 
 #include "lite_context.h"
-
-#include "ability_state.h"
 #include "abilityms_slite_client.h"
 
 namespace OHOS {

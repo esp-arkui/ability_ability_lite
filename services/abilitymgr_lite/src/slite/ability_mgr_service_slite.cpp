@@ -22,7 +22,7 @@
 #include "iunknown.h"
 #include "ohos_init.h"
 #include "samgr_lite.h"
-#include "want_utils.h"
+#include "want.h"
 
 namespace OHOS {
 typedef struct {

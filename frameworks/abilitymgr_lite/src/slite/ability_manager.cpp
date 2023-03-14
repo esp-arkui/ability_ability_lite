@@ -14,7 +14,6 @@
  */
 
 #include "ability_manager.h"
-
 #include "abilityms_slite_client.h"
 
 extern "C" {

@@ -14,7 +14,6 @@
  */
 
 #include "ability_manager_inner.h"
-
 #include "abilityms_slite_client.h"
 
 StartCheckFunc CALLBACKFUNC = nullptr;
