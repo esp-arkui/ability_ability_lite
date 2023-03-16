@@ -25,6 +25,7 @@ lite_library("abilityms") {
       "src/ability_service.cpp",
       "src/ability_stack.cpp",
       "src/js_app_host.cpp",
+      "src/ability_thread_loader.cpp",
     ]
 
     if (defined(config_ohos_aafwk_ams_task_size) &&
