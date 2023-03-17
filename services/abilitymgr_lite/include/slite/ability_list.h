@@ -20,20 +20,26 @@
 #include "utils_list.h"
 
 namespace OHOS {
+namespace AbilitySlite {
 class AbilityList {
 public:
     AbilityList() = default;
+
     ~AbilityList() = default;
 
     void Add(AbilityRecord *abilityRecord);
+
     AbilityRecord *Get(uint16_t token) const;
+
     AbilityRecord *Get(const char *bundleName) const;
+
     AbilityRecord *GetByTaskId(uint32_t taskId) const;
+
     void Erase(uint16_t token);
 
 private:
     List<AbilityRecord *> abilityList_ {};
 };
+} // AbilitySlite
 } // namespace OHOS
-
 #endif // OHOS_ABILITY_LIST_H

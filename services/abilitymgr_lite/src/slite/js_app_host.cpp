@@ -23,6 +23,7 @@
 using namespace OHOS::ACELite;
 
 namespace OHOS {
+namespace AbilitySlite {
 JsAppHost::JsAppHost()
 {
 }
@@ -36,7 +37,7 @@ JsAppHost::~JsAppHost()
 
 void JsAppHost::JsAppTaskHandler(uint32_t uwArg)
 {
-    auto jsappHost = reinterpret_cast<JsAppHost *>((uintptr_t)uwArg);
+    auto jsappHost = reinterpret_cast<JsAppHost *>((uintptr_t) uwArg);
     if (jsappHost == nullptr) {
         return;
     }
@@ -54,7 +55,7 @@ void JsAppHost::JsAppTaskHandler(uint32_t uwArg)
             return;
         }
         LP_TaskBegin();
-        switch ((uint32_t)innerMsg.msgId) {
+        switch ((uint32_t) innerMsg.msgId) {
             case ACTIVE:
                 jsappHost->OnActive(innerMsg.token, innerMsg.bundleName, innerMsg.path);
                 break;
@@ -71,7 +72,7 @@ void JsAppHost::JsAppTaskHandler(uint32_t uwArg)
                 jsappHost->BackPressed();
                 break;
             case ASYNCWORK: {
-                AsyncWork* work = reinterpret_cast<AsyncWork *>(innerMsg.data);
+                AsyncWork *work = reinterpret_cast<AsyncWork *>(innerMsg.data);
                 JsAsyncWork::ExecuteAsyncWork(work);
                 break;
             }
@@ -146,4 +147,5 @@ void JsAppHost::SendMsgToAbilityService(uint16_t token, int32_t id)
 {
     SchedulerLifecycleDone(token, id);
 }
+} // namespace AbilitySlite
 } // namespace OHOS

@@ -39,6 +39,7 @@
 using namespace OHOS::ACELite;
 
 namespace OHOS {
+namespace AbilitySlite {
 constexpr char LAUNCHER_BUNDLE_NAME[] = "com.ohos.launcher";
 constexpr uint16_t LAUNCHER_TOKEN = 0;
 constexpr int32_t QUEUE_LENGTH = 32;
@@ -156,8 +157,7 @@ int32_t AbilityRecordManager::StartAbility(const Want *want)
     }
 #endif
 
-    AbilitySvcInfo *info =
-        static_cast<OHOS::AbilitySvcInfo *>(AdapterMalloc(sizeof(AbilitySvcInfo)));
+    auto *info = static_cast<AbilitySvcInfo *>(AdapterMalloc(sizeof(AbilitySvcInfo)));
     if (info == nullptr) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability Service AbilitySvcInfo is null");
         return PARAM_NULL_ERROR;
@@ -754,17 +754,18 @@ void AbilityRecordManager::setNativeAbility(const SliteAbility *ability)
 {
     nativeAbility_ = const_cast<SliteAbility *>(ability);
 }
+} // namespace AbilitySlite
 } // namespace OHOS
 
 extern "C" {
-int InstallNativeAbility(const AbilityInfo *abilityInfo, const OHOS::SliteAbility *ability)
+int InstallNativeAbility(const AbilityInfo *abilityInfo, const OHOS::AbilitySlite::SliteAbility *ability)
 {
-    OHOS::AbilityRecordManager::GetInstance().setNativeAbility(ability);
+    OHOS::AbilitySlite::AbilityRecordManager::GetInstance().setNativeAbility(ability);
     return ERR_OK;
 }
 
 ElementName *GetTopAbility()
 {
-    return OHOS::AbilityRecordManager::GetInstance().GetTopAbility();
+    return OHOS::AbilitySlite::AbilityRecordManager::GetInstance().GetTopAbility();
 }
 }

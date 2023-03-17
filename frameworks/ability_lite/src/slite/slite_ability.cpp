@@ -18,6 +18,7 @@
 #include "abilityms_slite_client.h"
 
 namespace OHOS {
+namespace AbilitySlite {
 void SliteAbility::OnStart(const Want &want)
 {
     abilityState_ = STATE_INITIAL;
@@ -46,4 +47,5 @@ int SliteAbility::GetState() const
 {
     return abilityState_;
 }
+} // namespace AbilitySlite
 } // namespace OHOS

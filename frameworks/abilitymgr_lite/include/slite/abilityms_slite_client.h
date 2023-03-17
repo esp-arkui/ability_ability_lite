@@ -21,6 +21,7 @@
 #include "ability_service_interface.h"
 
 namespace OHOS {
+namespace AbilitySlite {
 class AbilityMsClient {
 public:
     static AbilityMsClient &GetInstance()
@@ -52,6 +53,7 @@ private:
 
     DISALLOW_COPY_AND_MOVE(AbilityMsClient);
 };
+} // namespace AbilitySlite
 } // namespace OHOS
 
 #endif // OHOS_ABILITYMS_SLITE_CLIENT_H

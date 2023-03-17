@@ -17,6 +17,7 @@
 #include "abilityms_slite_client.h"
 
 namespace OHOS {
+namespace AbilitySlite {
 int LiteContext::StartAbility(const Want &want)
 {
     return AbilityMsClient::GetInstance().StartAbility(&want);
@@ -26,4 +27,5 @@ int LiteContext::TerminateAbility()
 {
     return AbilityMsClient::GetInstance().TerminateAbility(token_);
 }
-} //  namespace OHOS
+} // namespace AbilitySlite
+} // namespace OHOS

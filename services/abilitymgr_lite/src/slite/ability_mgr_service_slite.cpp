@@ -25,6 +25,7 @@
 #include "want.h"
 
 namespace OHOS {
+namespace AbilitySlite {
 typedef struct {
     INHERIT_IUNKNOWNENTRY(AmsSliteInterface);
     AbilityMgrServiceSlite *ams;
@@ -198,4 +199,5 @@ ElementName *AbilityMgrServiceSlite::GetTopAbility()
 {
     return AbilityRecordManager::GetInstance().GetTopAbility();
 }
+} // namespace AbilitySlite
 } // namespace OHOS

@@ -21,18 +21,24 @@
 #include <new>
 
 namespace OHOS {
+namespace AbilitySlite {
 class AbilityStack {
 public:
     AbilityStack() = default;
+
     ~AbilityStack() = default;
 
     const AbilityRecord *GetTopAbility() const;
+
     void PushAbility(AbilityRecord *record);
+
     void PopAbility();
+
     void Erase(AbilityRecord *record);
 
 private:
     List<AbilityRecord *> abilityStack_ {};
 };
+} // namespace AbilitySlite
 } // namespace OHOS
 #endif  // OHOS_ABILITY_STACK_H

@@ -24,9 +24,11 @@ extern "C" void LP_TaskBegin();
 extern "C" void LP_TaskEnd();
 
 namespace OHOS {
+namespace AbilitySlite {
 class JsAppHost {
 public:
     JsAppHost();
+
     ~JsAppHost();
 
     static void JsAppTaskHandler(uint32_t uwArg);
@@ -46,15 +48,21 @@ public:
 
 private:
     void OnActive(uint16_t token, const char *bundleName, const char *path);
+
     void OnBackground(uint16_t token);
+
     void OnDestroy(uint16_t token);
+
     void BackPressed();
+
     void SendMsgToAbilityService(uint16_t token, int32_t id);
+
     void HandleTickEvent();
 
     ACELite::JSAbility *jsAbility_ = nullptr;
-    osMessageQueueId_t jsAppQueueId_ = {nullptr};
+    osMessageQueueId_t jsAppQueueId_ = { nullptr };
     bool isBackground_ = false;
 };
+} // namespace AbilitySlite
 } // namespace OHOS
 #endif // OHOS_JS_APP_HOST_H

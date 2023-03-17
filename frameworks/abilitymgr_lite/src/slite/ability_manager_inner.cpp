@@ -28,17 +28,17 @@ int RegAbilityCallback(StartCheckFunc startCheckCallback)
 
 int SchedulerLifecycleDone(uint64_t token, int state)
 {
-    return OHOS::AbilityMsClient::GetInstance().SchedulerLifecycleDone(token, state);
+    return OHOS::AbilitySlite::AbilityMsClient::GetInstance().SchedulerLifecycleDone(token, state);
 }
 
 int ForceStopBundle(uint64_t token)
 {
-    return OHOS::AbilityMsClient::GetInstance().ForceStopBundle(token);
+    return OHOS::AbilitySlite::AbilityMsClient::GetInstance().ForceStopBundle(token);
 }
 
 int ForceStop(char *bundleName)
 {
-    return OHOS::AbilityMsClient::GetInstance().ForceStop(bundleName);
+    return OHOS::AbilitySlite::AbilityMsClient::GetInstance().ForceStop(bundleName);
 }
 
 StartCheckFunc GetAbilityCallback()

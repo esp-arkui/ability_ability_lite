@@ -20,6 +20,7 @@
 #include "want.h"
 
 namespace OHOS {
+namespace AbilitySlite {
 /**
  * @brief Declares ability-related functions, including ability lifecycle callbacks and functions for connecting to or
  *        disconnecting from Particle Abilities.
@@ -35,6 +36,7 @@ namespace OHOS {
 class SliteAbility : public LiteContext {
 public:
     SliteAbility() = default;
+
     virtual ~SliteAbility() = default;
 
     /**
@@ -82,8 +84,11 @@ public:
     virtual void OnStop();
 
     int GetState() const;
+
 private:
     int abilityState_ = 0;
 };
+} // namespace AbilitySlite
+using AbilitySlite::SliteAbility;
 } // namespace OHOS
 #endif // OHOS_SLITE_ABILITY_H

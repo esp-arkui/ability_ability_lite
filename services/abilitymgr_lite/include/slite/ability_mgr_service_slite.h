@@ -21,6 +21,7 @@
 #include "nocopyable.h"
 
 namespace OHOS {
+namespace AbilitySlite {
 class AbilityMgrServiceSlite : public Service, public Feature {
 public:
     static AbilityMgrServiceSlite *GetInstance();
@@ -63,5 +64,6 @@ private:
     Identity featureIdentity_ {};
     DISALLOW_COPY_AND_MOVE(AbilityMgrServiceSlite);
 };
+} // namespace AbilitySlite
 } // namespace OHOS
 #endif // OHOS_ABILITY_MGR_SERVICE_SLITE_H

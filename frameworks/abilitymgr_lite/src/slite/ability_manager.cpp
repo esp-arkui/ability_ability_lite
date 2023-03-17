@@ -19,11 +19,11 @@
 extern "C" {
 int StartAbility(const Want *want)
 {
-    return OHOS::AbilityMsClient::GetInstance().StartAbility(want);
+    return OHOS::AbilitySlite::AbilityMsClient::GetInstance().StartAbility(want);
 }
 
 int TerminateAbility(uint64_t token)
 {
-    return OHOS::AbilityMsClient::GetInstance().TerminateAbility(token);
+    return OHOS::AbilitySlite::AbilityMsClient::GetInstance().TerminateAbility(token);
 }
 }

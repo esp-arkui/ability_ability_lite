@@ -21,6 +21,7 @@
 #include "slite_ability.h"
 
 namespace OHOS {
+namespace AbilitySlite {
 class AbilityThread {
 public:
     AbilityThread();
@@ -38,9 +39,11 @@ public:
     int32_t HandleForeground();
 
     int32_t HandleBackground();
+
 private:
     SliteAbility *ability_ { nullptr };
 };
+} // namespace AbilitySlite
 } // namespace OHOS
 
 #endif //OHOS_ABILITY_THREAD_H

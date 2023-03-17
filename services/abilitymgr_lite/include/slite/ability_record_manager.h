@@ -29,6 +29,7 @@
 #include "ability_state.h"
 
 namespace OHOS {
+namespace AbilitySlite {
 struct AbilitySvcInfo {
     char *bundleName;
     char *path;
@@ -45,43 +46,72 @@ public:
         LifecycleFunc func_ptr;
     };
 
-    static AbilityRecordManager& GetInstance()
+    static AbilityRecordManager &GetInstance()
     {
         static AbilityRecordManager instance;
         return instance;
     }
+
     ~AbilityRecordManager() override;
+
     int32_t StartAbility(const Want *want);
+
     int32_t TerminateAbility(uint16_t token);
+
     int32_t ForceStop(const char *bundleName);
+
     int32_t ForceStopBundle(uint16_t token);
+
     int32_t SchedulerLifecycleDone(uint64_t token, int32_t state);
+
     ElementName *GetTopAbility();
+
     void setNativeAbility(const SliteAbility *ability);
+
     void StartLauncher();
+
     void CleanWant();
+
     Want *want_ = nullptr;
     uint32_t curTask_ = 0;
 
 private:
     static uint16_t GenerateToken();
+
     AbilityRecordManager();
+
     int32_t StartAbility(AbilitySvcInfo *info);
+
     int32_t StartRemoteAbility(const Want *want);
+
     int32_t PreCheckStartAbility(const char *bundleName, const char *path, const void *data, uint16_t dataLength);
+
     bool CheckResponse(const char *bundleName);
+
     int32_t SchedulerLifecycle(uint64_t token, int32_t state);
+
     int32_t SchedulerLifecycleInner(const AbilityRecord *record, int32_t state);
+
     void SchedulerAbilityLifecycle(SliteAbility *ability, const Want &want, int32_t state);
+
     int32_t CreateAppTask(AbilityRecord *record);
+
     void OnActiveDone(uint16_t token);
+
     void OnBackgroundDone(uint16_t token);
+
     void OnDestroyDone(uint16_t token);
+
     void DeleteRecordInfo(uint16_t token);
+
     bool SendMsgToJsAbility(int32_t msgId, const AbilityRecord *record);
+
     void SetAbilityState(uint64_t token, int32_t state);
+
     void UpdateRecord(AbilitySvcInfo *info);
+
     int32_t ForceStopBundleInner(uint16_t token);
+
     bool IsValidAbility(AbilityInfo *abilityInfo);
     bool IsLauncher(const char *bundleName);
 
@@ -91,5 +121,6 @@ private:
     SliteAbility *nativeAbility_ = nullptr;
     static LifecycleFuncStr lifecycleFuncList_[STATE_BACKGROUND + 1];
 };
+} // namespace AbilitySlite
 } // namespace OHOS
 #endif  // OHOS_ABILITY_SERVICE_H

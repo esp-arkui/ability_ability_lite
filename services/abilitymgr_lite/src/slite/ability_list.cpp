@@ -19,9 +19,9 @@
 
 
 namespace OHOS {
-
+namespace AbilitySlite {
 namespace {
-    constexpr static uint16_t ABILITY_LIST_CAPACITY = 10240;
+constexpr static uint16_t ABILITY_LIST_CAPACITY = 10240;
 }
 
 void AbilityList::Add(AbilityRecord *abilityRecord)
@@ -97,4 +97,5 @@ void AbilityList::Erase(uint16_t token)
         }
     }
 }
+} // namespace AbilitySlite
 } // namespace OHOS

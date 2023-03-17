@@ -20,6 +20,7 @@
 #include "utils.h"
 
 namespace OHOS {
+namespace AbilitySlite {
 AbilityData::AbilityData() = default;
 
 AbilityData::~AbilityData()
@@ -62,4 +63,5 @@ void AbilityRecord::SetWantData(const void *wantData, uint16_t wantDataSize)
     }
     abilityData->wantDataSize = wantDataSize;
 }
+} // namespace AbilitySlite
 } // namespace OHOS

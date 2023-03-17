@@ -27,6 +27,7 @@
 #include "utils.h"
 
 namespace OHOS {
+namespace AbilitySlite {
 bool AbilityMsClient::Initialize() const
 {
     if (amsProxy_ != nullptr) {
@@ -41,7 +42,7 @@ bool AbilityMsClient::Initialize() const
             continue;
         }
 
-        (void)iUnknown->QueryInterface(iUnknown, DEFAULT_VERSION, (void **)&amsProxy_);
+        (void) iUnknown->QueryInterface(iUnknown, DEFAULT_VERSION, (void **) &amsProxy_);
         if (amsProxy_ == nullptr) {
             HILOG_ERROR(HILOG_MODULE_APP, "ams proxy is null");
             osDelay(ERROR_SLEEP_TIMES); // sleep 300ms
@@ -144,13 +145,14 @@ int AbilityMsClient::ForceStop(char *bundleName) const
     if (service == nullptr) {
         return PARAM_CHECK_ERROR;
     }
-    char* name = Utils::Strdup(bundleName);
+    char *name = Utils::Strdup(bundleName);
     Request request = {
         .msgId = TERMINATE_APP_BY_BUNDLENAME,
-        .len = (int16)strlen(name),
+        .len = (int16) strlen(name),
         .data = reinterpret_cast<void *>(name),
     };
 
     return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
 }
-} //  namespace OHOS
+} // namespace AbilitySlite
+} // namespace OHOS

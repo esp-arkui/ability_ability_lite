@@ -22,6 +22,7 @@
 #include "ability_info.h"
 
 namespace OHOS {
+namespace AbilitySlite {
 class JsAppHost;
 
 constexpr int FAIL_CALLBACK_ERRORCODE = 200;
@@ -74,5 +75,6 @@ public:
     uint8_t state = SCHEDULE_STOP;
     bool isTerminated = false;
 };
+} // namespace AbilitySlite
 } // namespace OHOS
 #endif // OHOS_ABILITY_RECORD_H
