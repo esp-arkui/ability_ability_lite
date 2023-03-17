@@ -94,7 +94,7 @@ int AbilityMsClient::TerminateAbility(uint64_t token) const
         .msgId = TERMINATE_ABILITY,
         .len = 0,
         .data = nullptr,
-        .msgValue = static_cast<uint32_t>(token & TRANSACTION_MSG_TOKEN_MUSK),
+        .msgValue = static_cast<uint32_t>(token & TRANSACTION_MSG_TOKEN_MASK),
     };
     return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
 }
@@ -109,7 +109,7 @@ int AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int state) const
         .msgId = ABILITY_TRANSACTION_DONE,
         .len = 0,
         .data = nullptr,
-        .msgValue = static_cast<uint32_t>((token & TRANSACTION_MSG_TOKEN_MUSK) |
+        .msgValue = static_cast<uint32_t>((token & TRANSACTION_MSG_TOKEN_MASK) |
                                           (state << TRANSACTION_MSG_STATE_OFFSET)),
     };
     return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
@@ -125,7 +125,7 @@ int AbilityMsClient::ForceStopBundle(uint64_t token) const
         .msgId = TERMINATE_APP,
         .len = 0,
         .data = nullptr,
-        .msgValue = static_cast<uint32_t>(token & TRANSACTION_MSG_TOKEN_MUSK),
+        .msgValue = static_cast<uint32_t>(token & TRANSACTION_MSG_TOKEN_MASK),
     };
     return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
 }

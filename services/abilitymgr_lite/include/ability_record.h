@@ -43,16 +43,16 @@ typedef enum {
     STATE_JS_JUMP_JS,
 } AppState;
 
-typedef struct AbilityData {
+struct AbilityData {
     AbilityData();
 
     ~AbilityData();
 
-    void *wantData { nullptr };
-    uint16_t wantDataSize { 0 };
-} AbilityData;
+    void *wantData = nullptr;
+    uint16_t wantDataSize = 0;
+};
 
-typedef struct AbilityRecord {
+struct AbilityRecord {
 public:
     AbilityRecord();
 
@@ -64,15 +64,15 @@ public:
 
     void SetWantData(const void *wantData, uint16_t wantDataSize);
 
-    char *appName { nullptr };
-    char *appPath { nullptr };
-    AbilityData *abilityData { nullptr };
-    JsAppHost *jsAppHost { nullptr };
-    osMessageQueueId_t jsAppQueueId { nullptr };
-    uint32_t taskId { 0 };
-    uint16_t token { 0 };
-    uint8_t state { SCHEDULE_STOP };
-    bool isTerminated { false };
-} AbilityRecord;
+    char *appName = nullptr;
+    char *appPath = nullptr;
+    AbilityData *abilityData = nullptr;
+    JsAppHost *jsAppHost = nullptr;
+    osMessageQueueId_t jsAppQueueId = nullptr;
+    uint32_t taskId = 0;
+    uint16_t token = 0;
+    uint8_t state = SCHEDULE_STOP;
+    bool isTerminated = false;
+};
 } // namespace OHOS
 #endif // OHOS_ABILITY_RECORD_H

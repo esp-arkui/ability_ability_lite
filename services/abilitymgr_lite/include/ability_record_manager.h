@@ -83,6 +83,7 @@ private:
     void UpdateRecord(AbilitySvcInfo *info);
     int32_t ForceStopBundleInner(uint16_t token);
     bool IsValidAbility(AbilityInfo *abilityInfo);
+    bool IsLauncher(const char *bundleName);
 
     uint16_t pendingToken_ { 0 };
     AbilityList abilityList_ {};

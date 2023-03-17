@@ -149,8 +149,8 @@ BOOL AbilityMgrServiceSlite::ServiceMessageHandle(Service *service, Request *req
         AbilityRecordManager::GetInstance().CleanWant();
         AbilityRecordManager::GetInstance().curTask_ = 0;
     } else if (request->msgId == ABILITY_TRANSACTION_DONE) {
-        uint32_t token = request->msgValue & TRANSACTION_MSG_TOKEN_MUSK;
-        uint32_t state = (request->msgValue >> TRANSACTION_MSG_STATE_OFFSET) & TRANSACTION_MSG_STATE_MUSK;
+        uint32_t token = request->msgValue & TRANSACTION_MSG_TOKEN_MASK;
+        uint32_t state = (request->msgValue >> TRANSACTION_MSG_STATE_OFFSET) & TRANSACTION_MSG_STATE_MASK;
         ret = AbilityRecordManager::GetInstance().SchedulerLifecycleDone(token, state);
     } else if (request->msgId == TERMINATE_ABILITY) {
         ret = AbilityRecordManager::GetInstance().TerminateAbility(request->msgValue);
@@ -179,7 +179,7 @@ int32_t AbilityMgrServiceSlite::StartAbility(const Want *want)
 
 int32_t AbilityMgrServiceSlite::TerminateAbility(uint64_t token)
 {
-    uint32_t slitToken = token & TRANSACTION_MSG_TOKEN_MUSK;
+    uint32_t slitToken = token & TRANSACTION_MSG_TOKEN_MASK;
     return AbilityRecordManager::GetInstance().TerminateAbility(slitToken);
 }
 
@@ -190,7 +190,7 @@ int32_t AbilityMgrServiceSlite::SchedulerLifecycleDone(uint64_t token, int state
 
 int32_t AbilityMgrServiceSlite::ForceStopBundle(uint64_t token)
 {
-    uint16_t slitToken = token & TRANSACTION_MSG_TOKEN_MUSK;
+    uint16_t slitToken = token & TRANSACTION_MSG_TOKEN_MASK;
     return AbilityRecordManager::GetInstance().ForceStopBundle(slitToken);
 }
 

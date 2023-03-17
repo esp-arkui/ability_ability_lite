@@ -36,8 +36,8 @@ const char AMS_SLITE_FEATURE[] = "AmsSliteFeature";
 const char AMS_INNER_FEATURE[] = "AmsInnerFeature";
 
 #ifdef __LITEOS_M__
-constexpr uint32_t TRANSACTION_MSG_TOKEN_MUSK = 0xFFFF;
-constexpr uint32_t TRANSACTION_MSG_STATE_MUSK = 0xFFFF;
+constexpr uint32_t TRANSACTION_MSG_TOKEN_MASK = 0xFFFF;
+constexpr uint32_t TRANSACTION_MSG_STATE_MASK = 0xFFFF;
 constexpr uint32_t TRANSACTION_MSG_STATE_OFFSET = 16;
 #endif
 

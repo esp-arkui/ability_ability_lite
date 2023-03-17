@@ -39,7 +39,7 @@
 using namespace OHOS::ACELite;
 
 namespace OHOS {
-constexpr char LAUNCHER_BUNDLE_NAME[] = "com.huawei.launcher";
+constexpr char LAUNCHER_BUNDLE_NAME[] = "com.ohos.launcher";
 constexpr uint16_t LAUNCHER_TOKEN = 0;
 constexpr int32_t QUEUE_LENGTH = 32;
 constexpr int32_t APP_TASK_PRI = 25;
@@ -85,6 +85,17 @@ bool AbilityRecordManager::IsValidAbility(AbilityInfo *abilityInfo)
         return false;
     }
     return true;
+}
+
+bool AbilityRecordManager::IsLauncher(const char *bundleName)
+{
+    size_t len = strlen(bundleName);
+    const char* suffix = ".launcher";
+    size_t suffixLen = strlen(suffix);
+    if (len < suffixLen) {
+        return false;
+    }
+    return (strcmp(bundleName + len - suffixLen, suffix) == 0);
 }
 
 int32_t AbilityRecordManager::StartRemoteAbility(const Want *want)
@@ -152,7 +163,7 @@ int32_t AbilityRecordManager::StartAbility(const Want *want)
         return PARAM_NULL_ERROR;
     }
 
-    if (strcmp(bundleName, LAUNCHER_BUNDLE_NAME) == 0) {
+    if (IsLauncher(bundleName)) {
         // Launcher
         info->bundleName = Utils::Strdup(bundleName);
         info->path = nullptr;
@@ -217,7 +228,7 @@ int32_t AbilityRecordManager::StartAbility(AbilitySvcInfo *info)
     }
     uint16_t topToken = topRecord->token;
     //  start launcher
-    if (strcmp(info->bundleName, LAUNCHER_BUNDLE_NAME) == 0) {
+    if (IsLauncher(info->bundleName)) {
         UpdateRecord(info);
         if (topToken != LAUNCHER_TOKEN && topRecord->state != SCHEDULE_BACKGROUND) {
             HILOG_INFO(HILOG_MODULE_AAFWK, "Change Js app to background.");
@@ -313,7 +324,7 @@ int32_t AbilityRecordManager::ForceStop(const char *bundleName)
     }
 
     // stop Launcher
-    if (strcmp(bundleName, LAUNCHER_BUNDLE_NAME) == 0) {
+    if (IsLauncher(bundleName)) {
         return TerminateAbility(0);
     }
 
