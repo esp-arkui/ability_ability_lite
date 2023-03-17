@@ -13,37 +13,52 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_ABILITY_THREAD_H
-#define OHOS_ABILITY_THREAD_H
+#ifndef OHOS_ABILITY_SLITE_ABILITY_THREAD_H
+#define OHOS_ABILITY_SLITE_ABILITY_THREAD_H
 
-#include <stdint.h>
-#include "ability_record.h"
+#include <cstdint>
+#include "cmsis_os2.h"
 #include "slite_ability.h"
 
 namespace OHOS {
 namespace AbilitySlite {
+class AbilityRecord;
+enum class AbilityThreadState : int8_t {
+    ABILITY_THREAD_UNINITIALIZED,
+    ABILITY_THREAD_INITIALIZED,
+    ABILITY_THREAD_RELEASED,
+};
+
 class AbilityThread {
 public:
     AbilityThread();
 
     virtual ~AbilityThread();
 
-    virtual int32_t InitAbilityThread(AbilityRecord *abilityRecord) = 0;
+    virtual int32_t InitAbilityThread(const AbilityRecord *abilityRecord) = 0;
 
     virtual int32_t ReleaseAbilityThread() = 0;
 
-    int32_t HandleCreate();
+    static void AppTaskHandler(uint32_t uwArg);
+
+    osMessageQueueId_t messageQueueId_ = nullptr;
+    uint32_t appTaskId_ = 0;
+
+protected:
+    uint16_t token_ = 0;
+    AbilityThreadState state_ = AbilityThreadState::ABILITY_THREAD_UNINITIALIZED;
+    SliteAbility *ability_ = nullptr;
+
+private:
+    int32_t HandleCreate(const Want *want);
 
     int32_t HandleDestroy();
 
     int32_t HandleForeground();
 
     int32_t HandleBackground();
-
-private:
-    SliteAbility *ability_ { nullptr };
 };
 } // namespace AbilitySlite
 } // namespace OHOS
 
-#endif //OHOS_ABILITY_THREAD_H
+#endif //OHOS_ABILITY_SLITE_ABILITY_THREAD_H

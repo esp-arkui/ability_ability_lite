@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_ABILITY_MGR_SERVICE_SLITE_H
-#define OHOS_ABILITY_MGR_SERVICE_SLITE_H
+#ifndef OHOS_ABILITY_SLITE_ABILITY_MGR_SERVICE_SLITE_H
+#define OHOS_ABILITY_SLITE_ABILITY_MGR_SERVICE_SLITE_H
 
 #include "ability_record_manager.h"
 #include "feature.h"
@@ -66,4 +66,4 @@ private:
 };
 } // namespace AbilitySlite
 } // namespace OHOS
-#endif // OHOS_ABILITY_MGR_SERVICE_SLITE_H
+#endif // OHOS_ABILITY_SLITE_ABILITY_MGR_SERVICE_SLITE_H

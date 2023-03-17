@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_ABILITY_LIST_H
-#define OHOS_ABILITY_LIST_H
+#ifndef OHOS_ABILITY_SLITE_ABILITY_LIST_H
+#define OHOS_ABILITY_SLITE_ABILITY_LIST_H
 
 #include "ability_record.h"
 #include "utils_list.h"
@@ -42,4 +42,4 @@ private:
 };
 } // AbilitySlite
 } // namespace OHOS
-#endif // OHOS_ABILITY_LIST_H
+#endif // OHOS_ABILITY_SLITE_ABILITY_LIST_H

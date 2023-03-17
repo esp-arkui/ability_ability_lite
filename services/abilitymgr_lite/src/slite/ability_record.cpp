@@ -16,7 +16,6 @@
 #include "ability_record.h"
 
 #include "adapter.h"
-#include "securec.h"
 #include "utils.h"
 
 namespace OHOS {

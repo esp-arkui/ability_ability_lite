@@ -17,6 +17,7 @@
 #include "aafwk_event_error_id.h"
 #include "aafwk_event_error_code.h"
 #include "ability_errors.h"
+#include "ability_inner_message.h"
 #include "ability_record.h"
 #include "ability_stack.h"
 #include "ability_state.h"
@@ -27,7 +28,7 @@
 #ifdef OHOS_DMS_ENABLED
 #include "dmsfwk_interface.h"
 #endif
-#include "js_app_host.h"
+#include "js_ability_thread.h"
 #include "los_task.h"
 #ifdef OHOS_DMS_ENABLED
 #include "samgr_lite.h"
@@ -339,17 +340,6 @@ int32_t AbilityRecordManager::ForceStop(const char *bundleName)
 
 int32_t AbilityRecordManager::ForceStopBundleInner(uint16_t token)
 {
-    // free js mem and delete the record
-    AbilityRecord *record = abilityList_.Get(token);
-    if (record == nullptr) {
-        return PARAM_NULL_ERROR;
-    }
-    auto jsAppHost = const_cast<JsAppHost *>(record->jsAppHost);
-    if (jsAppHost != nullptr) {
-        // free js mem
-        jsAppHost->ForceDestroy();
-    }
-    DeleteRecordInfo(token);
     return ERR_OK;
 }
 
@@ -411,32 +401,15 @@ int32_t AbilityRecordManager::CreateAppTask(AbilityRecord *record)
         return PARAM_NULL_ERROR;
     }
 
-    HILOG_INFO(HILOG_MODULE_AAFWK, "CreateAppTask.");
-    TSK_INIT_PARAM_S stTskInitParam = { 0 };
-    LOS_TaskLock();
-    stTskInitParam.pfnTaskEntry = (TSK_ENTRY_FUNC) (JsAppHost::JsAppTaskHandler);
-    stTskInitParam.uwStackSize = TASK_STACK_SIZE;
-    stTskInitParam.usTaskPrio = OS_TASK_PRIORITY_LOWEST - APP_TASK_PRI;
-    stTskInitParam.pcName = const_cast<char *>("AppTask");
-    stTskInitParam.uwResved = 0;
-    auto jsAppHost = new JsAppHost();
-    stTskInitParam.uwArg = reinterpret_cast<UINT32>((uintptr_t) jsAppHost);
-    UINT32 appTaskId = 0;
-    UINT32 ret = LOS_TaskCreate(&appTaskId, &stTskInitParam);
-    if (ret != LOS_OK) {
-        HILOG_ERROR(HILOG_MODULE_AAFWK, "CreateAppTask fail: ret = %{public}d", ret);
-        APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_START_CREATE_TSAK_FAILED);
-        delete jsAppHost;
-        LOS_TaskUnlock();
-        return CREATE_APPTASK_ERROR;
+    record->abilityThread = new JsAbilityThread;
+    int32_t ret = record->abilityThread->InitAbilityThread(record);
+    if (ret != ERR_OK) {
+        delete record->abilityThread;
+        record->abilityThread = nullptr;
+        return ret;
     }
-    osMessageQueueId_t jsAppQueueId = osMessageQueueNew(QUEUE_LENGTH, sizeof(AbilityInnerMsg), nullptr);
-    jsAppHost->SetMessageQueueId(jsAppQueueId);
-    LOS_TaskUnlock();
-
-    record->taskId = appTaskId;
-    record->jsAppQueueId = jsAppQueueId;
-    record->jsAppHost = jsAppHost;
+    record->taskId = record->abilityThread->appTaskId_;
+    record->jsAppQueueId = record->abilityThread->messageQueueId_;
     record->state = SCHEDULE_INACTIVE;
     abilityStack_.PushAbility(record);
     APP_EVENT(MT_ACE_APP_START);
@@ -470,14 +443,11 @@ void AbilityRecordManager::DeleteRecordInfo(uint16_t token)
     }
     if (token != LAUNCHER_TOKEN) {
         if (record->state != SCHEDULE_STOP) {
-            UINT32 taskId = record->taskId;
-            // LiteOS-M not support permissions checking right now, when permission checking is
-            // ready, we can remove the macro.
-            LOS_TaskDelete(taskId);
-            osMessageQueueId_t jsAppQueueId = record->jsAppQueueId;
-            osMessageQueueDelete(jsAppQueueId);
-            auto jsAppHost = const_cast<JsAppHost *>(record->jsAppHost);
-            delete jsAppHost;
+            if (record->abilityThread != nullptr) {
+                record->abilityThread->ReleaseAbilityThread();
+                delete record->abilityThread;
+                record->abilityThread = nullptr;
+            }
             // free all JS native memory after exiting it
             // CleanTaskMem(taskId)
         }
@@ -588,6 +558,9 @@ void AbilityRecordManager::OnDestroyDone(uint16_t token)
 
     // start pending token
     auto record = abilityList_.Get(pendingToken_);
+    if (record == nullptr) {
+        return;
+    }
     if (CreateAppTask(record) != ERR_OK) {
         abilityList_.Erase(pendingToken_);
         delete record;
@@ -703,17 +676,27 @@ bool AbilityRecordManager::SendMsgToJsAbility(int32_t state, const AbilityRecord
 
     AbilityInnerMsg innerMsg;
     if (state == STATE_ACTIVE) {
-        innerMsg.msgId = ACTIVE;
+        innerMsg.msgId = AbilityMsgId::CREATE;
+        innerMsg.want = static_cast<Want *>(AdapterMalloc(sizeof(Want)));
+        innerMsg.want->element = nullptr;
+        innerMsg.want->data = nullptr;
+        innerMsg.want->dataLength = 0;
+        ElementName elementName = {};
+        SetElementBundleName(&elementName, record->appName);
+        SetWantElement(innerMsg.want, elementName);
+        ClearElement(&elementName);
+        SetWantData(innerMsg.want, record->appPath, strlen(record->appPath) + 1);
     } else if (state == STATE_BACKGROUND) {
-        innerMsg.msgId = BACKGROUND;
+        innerMsg.msgId = AbilityMsgId::BACKGROUND;
     } else if (state == STATE_UNINITIALIZED) {
-        innerMsg.msgId = DESTROY;
+        innerMsg.msgId = AbilityMsgId::DESTROY;
     } else {
         innerMsg.msgId = (AbilityMsgId) state;
     }
     innerMsg.bundleName = record->appName;
     innerMsg.token = record->token;
     innerMsg.path = record->appPath;
+    innerMsg.abilityThread = record->abilityThread;
     if (record->abilityData != nullptr) {
         innerMsg.data = const_cast<void *>(record->abilityData->wantData);
         innerMsg.dataLength = record->abilityData->wantDataSize;

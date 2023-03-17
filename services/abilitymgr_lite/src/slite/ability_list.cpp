@@ -21,7 +21,7 @@
 namespace OHOS {
 namespace AbilitySlite {
 namespace {
-constexpr static uint16_t ABILITY_LIST_CAPACITY = 10240;
+constexpr uint16_t ABILITY_LIST_CAPACITY = 10240;
 }
 
 void AbilityList::Add(AbilityRecord *abilityRecord)

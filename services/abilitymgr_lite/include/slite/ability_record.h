@@ -13,13 +13,12 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_ABILITY_RECORD_H
-#define OHOS_ABILITY_RECORD_H
+#ifndef OHOS_ABILITY_SLITE_ABILITY_RECORD_H
+#define OHOS_ABILITY_SLITE_ABILITY_RECORD_H
 
-#ifdef __LITEOS_M__
-#include "cmsis_os.h"
-#endif
 #include "ability_info.h"
+#include "cmsis_os.h"
+#include "ability_thread.h"
 
 namespace OHOS {
 namespace AbilitySlite {
@@ -68,7 +67,7 @@ public:
     char *appName = nullptr;
     char *appPath = nullptr;
     AbilityData *abilityData = nullptr;
-    JsAppHost *jsAppHost = nullptr;
+    AbilityThread *abilityThread = nullptr;
     osMessageQueueId_t jsAppQueueId = nullptr;
     uint32_t taskId = 0;
     uint16_t token = 0;
@@ -77,4 +76,4 @@ public:
 };
 } // namespace AbilitySlite
 } // namespace OHOS
-#endif // OHOS_ABILITY_RECORD_H
+#endif // OHOS_ABILITY_SLITE_ABILITY_RECORD_H

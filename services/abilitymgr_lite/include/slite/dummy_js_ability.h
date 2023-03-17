@@ -13,17 +13,35 @@
  * limitations under the License.
  */
 
-#ifndef ABILITYLITE_SLITE_ABILITY_THREAD_H
-#define ABILITYLITE_SLITE_ABILITY_THREAD_H
+#ifndef OHOS_ABILITY_SLITE_DUMMY_JS_ABILITY_H
+#define OHOS_ABILITY_SLITE_DUMMY_JS_ABILITY_H
+
+#include "slite_ability.h"
+#include "js_ability.h"
 
 namespace OHOS {
 namespace AbilitySlite {
-class SliteAbilityThread {
+class DummyJsAbility : public SliteAbility {
 public:
-    SliteAbilityThread() = default;
+    DummyJsAbility() = default;
 
-    virtual ~SliteAbilityThread() = default;
+    ~DummyJsAbility() override;
+
+    void OnActive(const Want &want) override;
+
+    void OnBackground() override;
+
+    void OnInactive() override;
+
+private:
+    bool isBackground_ = false;
+    ACELite::JSAbility *jsAbility_ = nullptr;
 };
 } // namespace AbilitySlite
 } // namespace OHOS
-#endif // ABILITYLITE_SLITE_ABILITY_THREAD_H
+
+
+
+
+
+#endif // OHOS_ABILITY_SLITE_DUMMY_JS_ABILITY_H

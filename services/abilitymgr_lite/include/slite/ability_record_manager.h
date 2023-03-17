@@ -13,16 +13,16 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_ABILITY_SERVICE_H
-#define OHOS_ABILITY_SERVICE_H
+#ifndef OHOS_ABILITY_SLITE_ABILITY_SERVICE_H
+#define OHOS_ABILITY_SLITE_ABILITY_SERVICE_H
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "ability_list.h"
 #include "ability_record.h"
 #include "ability_stack.h"
 #include "adapter.h"
-#include "js_app_host.h"
+#include "js_ability_thread.h"
 #include "nocopyable.h"
 #include "want.h"
 #include "slite_ability.h"
@@ -123,4 +123,4 @@ private:
 };
 } // namespace AbilitySlite
 } // namespace OHOS
-#endif  // OHOS_ABILITY_SERVICE_H
+#endif  // OHOS_ABILITY_SLITE_ABILITY_SERVICE_H
