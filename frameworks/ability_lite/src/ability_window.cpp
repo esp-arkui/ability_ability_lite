@@ -80,7 +80,7 @@ void AbilityWindow::OnPostAbilityStop()
     EnsureLatestUIAttached();
 
     window_->UnbindRootView();
-    Window::DestoryWindow(window_);
+    Window::DestroyWindow(window_);
     window_ = nullptr;
 }
 } // namespace OHOS
