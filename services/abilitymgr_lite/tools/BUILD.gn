@@ -10,8 +10,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import("//build/lite/config/component/lite_component.gni")
-import("//build/lite/config/subsystem/aafwk/config.gni")
+import("//build/hb/config/component/lite_component.gni")
+import("//build/hb/config/subsystem/aafwk/config.gni")
 
 lite_component("tools_lite") {
   features = [ ":aa" ]
@@ -44,7 +44,7 @@ executable("aa") {
     "${aafwk_lite_path}/frameworks/abilitymgr_lite:aafwk_abilityManager_lite",
     "${appexecfwk_lite_path}/frameworks/bundle_lite:bundle",
     "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
-    "//build/lite/config/component/cJSON:cjson_shared",
+    "//build/hb/config/component/cJSON:cjson_shared",
     "//foundation/communication/ipc/interfaces/innerkits/c/ipc:ipc_single",
     "//foundation/distributeddatamgr/kv_store/interfaces/inner_api/kv_store:kv_store",
     "//foundation/systemabilitymgr/samgr_lite/samgr:samgr",

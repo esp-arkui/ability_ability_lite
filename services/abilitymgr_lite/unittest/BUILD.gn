@@ -11,8 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//build/lite/config/component/lite_component.gni")
-import("//build/lite/config/test.gni")
+import("//build/hb/config/component/lite_component.gni")
+import("//build/hb/config/test.gni")
 
 group("ability_test") {
   deps = [ "test_lv0/page_ability_test:ability_test_pageAbilityTest_group_lv0" ]
