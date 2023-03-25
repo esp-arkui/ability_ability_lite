@@ -100,7 +100,7 @@ lite_library("abilityms") {
     }
 
     if (enable_ohos_appexecfwk_feature_ability == true) {
-      deps += [ "//foundation/graphic/surface" ]
+      deps += [ "//foundation/graphic/surface_lite" ]
       defines += [ "ABILITY_WINDOW_SUPPORT" ]
     }
   }
@@ -141,7 +141,7 @@ lite_library("abilityms") {
     "//commonlibrary/utils_lite/memory/include",
     "//foundation/ability/dmsfwk_lite/interfaces/innerkits",
     "//foundation/communication/ipc/interfaces/innerkits/c/ipc/include",
-    "//foundation/graphic/wms/interfaces/innerkits",
+    "//foundation/window/window_manager_lite/interfaces/innerkits",
     "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/registry",
     "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/samgr",
     "//third_party/bounds_checking_function/include",
