@@ -43,123 +43,36 @@ typedef enum {
     STATE_JS_JUMP_JS,
 } AppState;
 
-class AbilityRecord {
+struct AbilityData {
+    AbilityData();
+
+    ~AbilityData();
+
+    void *wantData = nullptr;
+    uint16_t wantDataSize = 0;
+};
+
+struct AbilityRecord {
 public:
     AbilityRecord();
+
     ~AbilityRecord();
 
-    void SetAppName(const char *appName);
-    const char *GetAppName() const
-    {
-        return appName_;
-    }
+    void SetAppName(const char *name);
 
-    void SetAppPath(const char *appPath);
-    const char *GetAppPath() const
-    {
-        return appPath_;
-    }
+    void SetAppPath(const char *path);
 
-    void SetAppData(const void *appData, uint16_t dataLength);
-    const void *GetAppData() const
-    {
-        return appData_;
-    }
+    void SetWantData(const void *wantData, uint16_t wantDataSize);
 
-    void SetAbilityInfo(const AbilityInfo abilityInfo)
-    {
-        abilityInfo_ = abilityInfo;
-    }
-
-    AbilityInfo GetAbilityInfo() const
-    {
-        return abilityInfo_;
-    }
-
-    uint16_t GetDataLength() const
-    {
-        return dataLength_;
-    }
-
-    void SetState(const AbilityState state)
-    {
-        state_ = state;
-    }
-
-    AbilityState GetState() const
-    {
-        return state_;
-    }
-
-    bool IsAttached() const
-    {
-        return state_ != SCHEDULE_STOP;
-    }
-
-    void SetToken(uint16_t token)
-    {
-        token_ = token;
-    }
-    uint16_t GetToken() const
-    {
-        return token_;
-    }
-
-    void SetTaskId(uint32_t taskId)
-    {
-        taskId_ = taskId;
-    }
-
-    uint32_t GetTaskId() const
-    {
-        return taskId_;
-    }
-
-    void SetTerminated(bool isTerminated)
-    {
-        isTerminated_ = isTerminated;
-    }
-
-    bool IsTerminated() const
-    {
-        return isTerminated_;
-    }
-
-    void SetMessageQueueId(const osMessageQueueId_t jsAppQueueId)
-    {
-        jsAppQueueId_ = jsAppQueueId;
-    }
-
-    const osMessageQueueId_t& GetMessageQueueId() const
-    {
-        return jsAppQueueId_;
-    }
-
-    void SetJsAppHost(const JsAppHost *jsAppHost)
-    {
-        jsAppHost_ = const_cast<JsAppHost *>(jsAppHost);
-    }
-
-    const JsAppHost *GetJsAppHost() const
-    {
-        return jsAppHost_;
-    }
-
-    static void CopyAbilityRecord(AbilityRecord &abilityRecord, AbilityRecord &newAbilityRecord);
-
-private:
-    char *appName_ { nullptr };
-    char *appPath_ { nullptr };
-    AbilityInfo abilityInfo_;
-    void *appData_ { nullptr };
-    uint16_t dataLength_ { 0 };
-    AbilityState state_ { SCHEDULE_STOP };
-    uint16_t token_ { 0 };
-    uint32_t taskId_ { 0 };
-    osMessageQueueId_t jsAppQueueId_ { nullptr };
-    JsAppHost *jsAppHost_ { nullptr };
-    bool isTerminated_ = false;
+    char *appName = nullptr;
+    char *appPath = nullptr;
+    AbilityData *abilityData = nullptr;
+    JsAppHost *jsAppHost = nullptr;
+    osMessageQueueId_t jsAppQueueId = nullptr;
+    uint32_t taskId = 0;
+    uint16_t token = 0;
+    uint8_t state = SCHEDULE_STOP;
+    bool isTerminated = false;
 };
 } // namespace OHOS
-
 #endif // OHOS_ABILITY_RECORD_H

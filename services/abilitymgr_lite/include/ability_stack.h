@@ -27,7 +27,6 @@ public:
     ~AbilityStack() = default;
 
     const AbilityRecord *GetTopAbility() const;
-    int GetAllAbilities(AbilityRecord **abilityRecords);
     void PushAbility(AbilityRecord *record);
     void PopAbility();
     void Erase(AbilityRecord *record);
