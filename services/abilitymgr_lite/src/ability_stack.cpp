@@ -26,27 +26,6 @@ const AbilityRecord *AbilityStack::GetTopAbility() const
     return nullptr;
 }
 
-int AbilityStack::GetAllAbilities(AbilityRecord **abilityRecords)
-{
-    int size = abilityStack_.Size();
-    if (size == 0) {
-        *abilityRecords = nullptr;
-        return 0;
-    }
-
-    auto ars = new AbilityRecord[size];
-    *abilityRecords = ars;
-    for (auto node = abilityStack_.Begin(); node != abilityStack_.End(); node = node->next_) {
-        if (node->value_ == nullptr) {
-            continue;
-        }
-        AbilityRecord::CopyAbilityRecord(*(node->value_), *ars);
-        ars++;
-    }
-
-    return size;
-}
-
 void AbilityStack::PushAbility(AbilityRecord *record)
 {
     if (record != nullptr) {

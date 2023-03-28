@@ -16,8 +16,7 @@
 #include "abilityms_slite_client.h"
 
 #include "ability_errors.h"
-#include "ability_mgr_service.h"
-#include "ability_service.h"
+#include "ability_mgr_service_slite.h"
 #include "abilityms_log.h"
 #include "adapter.h"
 #include "cmsis_os2.h"
@@ -59,7 +58,7 @@ int AbilityMsClient::StartAbility(const Want *want) const
         return PARAM_CHECK_ERROR;
     }
 
-    AbilityMgrService *service = AbilityMgrService::GetInstance();
+    AbilityMgrServiceSlite *service = AbilityMgrServiceSlite::GetInstance();
     if (service == nullptr) {
         return PARAM_CHECK_ERROR;
     }
@@ -74,8 +73,8 @@ int AbilityMsClient::StartAbility(const Want *want) const
     info->dataLength = 0;
     SetWantElement(info, *(want->element));
     SetWantData(info, want->data, want->dataLength);
-    AbilityService::GetInstance().want_ = info;
-    AbilityService::GetInstance().curTask_ = LOS_CurTaskIDGet();
+    AbilityRecordManager::GetInstance().want_ = info;
+    AbilityRecordManager::GetInstance().curTask_ = LOS_CurTaskIDGet();
     Request request = {
         .msgId = START_ABILITY,
         .len = 0,
@@ -87,7 +86,7 @@ int AbilityMsClient::StartAbility(const Want *want) const
 
 int AbilityMsClient::TerminateAbility(uint64_t token) const
 {
-    AbilityMgrService *service = AbilityMgrService::GetInstance();
+    AbilityMgrServiceSlite *service = AbilityMgrServiceSlite::GetInstance();
     if (service == nullptr) {
         return PARAM_CHECK_ERROR;
     }
@@ -95,14 +94,14 @@ int AbilityMsClient::TerminateAbility(uint64_t token) const
         .msgId = TERMINATE_ABILITY,
         .len = 0,
         .data = nullptr,
-        .msgValue = static_cast<uint32_t>(token & 0xFFFF),
+        .msgValue = static_cast<uint32_t>(token & TRANSACTION_MSG_TOKEN_MASK),
     };
     return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
 }
 
 int AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int state) const
 {
-    AbilityMgrService *service = AbilityMgrService::GetInstance();
+    AbilityMgrServiceSlite *service = AbilityMgrServiceSlite::GetInstance();
     if (service == nullptr) {
         return PARAM_CHECK_ERROR;
     }
@@ -110,14 +109,15 @@ int AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int state) const
         .msgId = ABILITY_TRANSACTION_DONE,
         .len = 0,
         .data = nullptr,
-        .msgValue = static_cast<uint32_t>((token & 0xFFFF) | (state << 16)),
+        .msgValue = static_cast<uint32_t>((token & TRANSACTION_MSG_TOKEN_MASK) |
+                                          (state << TRANSACTION_MSG_STATE_OFFSET)),
     };
     return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
 }
 
 int AbilityMsClient::ForceStopBundle(uint64_t token) const
 {
-    AbilityMgrService *service = AbilityMgrService::GetInstance();
+    AbilityMgrServiceSlite *service = AbilityMgrServiceSlite::GetInstance();
     if (service == nullptr) {
         return PARAM_CHECK_ERROR;
     }
@@ -125,7 +125,7 @@ int AbilityMsClient::ForceStopBundle(uint64_t token) const
         .msgId = TERMINATE_APP,
         .len = 0,
         .data = nullptr,
-        .msgValue = static_cast<uint32_t>(token & 0xFFFF),
+        .msgValue = static_cast<uint32_t>(token & TRANSACTION_MSG_TOKEN_MASK),
     };
     return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
 }
@@ -140,7 +140,7 @@ ElementName *AbilityMsClient::GetTopAbility() const
 
 int AbilityMsClient::ForceStop(char *bundleName) const
 {
-    AbilityMgrService *service = AbilityMgrService::GetInstance();
+    AbilityMgrServiceSlite *service = AbilityMgrServiceSlite::GetInstance();
     if (service == nullptr) {
         return PARAM_CHECK_ERROR;
     }
