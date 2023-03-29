@@ -223,7 +223,7 @@ TEST_F(AbilityRecordManagerTest, StartAbilityNativeTest_002)
     LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 1);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_UNINITIALIZED);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_INACTIVE);
     // FIXME
     LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
@@ -274,7 +274,7 @@ TEST_F(AbilityRecordManagerTest, StartAbilityJsNativeTest_001)
     LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 2);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_UNINITIALIZED);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_INACTIVE);
     // FIXME
     LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
@@ -321,7 +321,7 @@ TEST_F(AbilityRecordManagerTest, StartAbilityJsNativeTest_002)
     LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 1);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_UNINITIALIZED);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_INACTIVE);
     // FIXME
     LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
@@ -365,7 +365,7 @@ TEST_F(AbilityRecordManagerTest, StartAbilityJsNativeTest_003)
     LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 1);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_UNINITIALIZED);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_INACTIVE);
     LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_BACKGROUND);
     ASSERT_EQ(g_nativeAbility.GetState(), STATE_BACKGROUND);
     ASSERT_EQ(g_nativeAbility.onBackgroundCallCount, onBackgroundCallCountOrig + 2);
@@ -378,7 +378,7 @@ TEST_F(AbilityRecordManagerTest, StartAbilityJsNativeTest_003)
     LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 2);
-    LocalSchedulerLifecycleDone(amsQueueId_, app2Token, STATE_UNINITIALIZED);
+    LocalSchedulerLifecycleDone(amsQueueId_, app2Token, STATE_INACTIVE);
     // FIXME
     LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
@@ -437,7 +437,7 @@ TEST_F(AbilityRecordManagerTest, StartAbilityNativeJsTest_001)
     LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 3);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_UNINITIALIZED);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_INACTIVE);
     // FIXME
     LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
@@ -499,7 +499,7 @@ TEST_F(AbilityRecordManagerTest, StartAbilityNativeJsTest_002)
     LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 2);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_UNINITIALIZED);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_INACTIVE);
     // FIXME
     LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
@@ -554,7 +554,7 @@ TEST_F(AbilityRecordManagerTest, StartAbilityNativeJsTest_003)
     LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 2);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_UNINITIALIZED);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_INACTIVE);
     LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_BACKGROUND);
     ASSERT_EQ(g_nativeAbility.GetState(), STATE_BACKGROUND);
     ASSERT_EQ(g_nativeAbility.onBackgroundCallCount, onBackgroundCallCountOrig + 2);
@@ -567,7 +567,7 @@ TEST_F(AbilityRecordManagerTest, StartAbilityNativeJsTest_003)
     LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 3);
-    LocalSchedulerLifecycleDone(amsQueueId_, app2Token, STATE_UNINITIALIZED);
+    LocalSchedulerLifecycleDone(amsQueueId_, app2Token, STATE_INACTIVE);
     // FIXME
     LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
     ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);

@@ -46,7 +46,6 @@ extern "C" {
 /* type definitions */
 typedef unsigned char          UINT8;
 typedef unsigned short         UINT16;
-typedef unsigned int           UINT32;
 typedef signed char            INT8;
 typedef signed short           INT16;
 typedef signed int             INT32;
@@ -59,7 +58,12 @@ typedef unsigned long long     UINT64;
 typedef signed long long       INT64;
 typedef unsigned int           UINTPTR;
 typedef signed int             INTPTR;
+#ifdef __M64__
+typedef uint64_t               UINT32;
+#else
+typedef unsigned int           UINT32;
 typedef UINT32                 size_t;
+#endif
 
 #define VOID          void
 #endif /* end of #ifndef LOS_TYPE_DEF */

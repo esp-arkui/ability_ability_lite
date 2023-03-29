@@ -32,9 +32,6 @@ target_link_libraries(abilityms_slite_client_test PUBLIC ${GTEST} Threads::Threa
 add_executable(ability_record_test ability_record_test.cpp ${ABILITY_LITE_SERVICES_SRC_DIR}/ability_record.cpp)
 target_link_libraries(ability_record_test PUBLIC ${GTEST} Threads::Threads ${SECUREC} ${MOCK} ${DEP})
 
-#add_executable(ability_thread_test ability_thread_test.cpp ${ABILITY_SERVICE_SRC})
-#target_link_libraries(ability_thread_test PUBLIC ${GTEST} Threads::Threads ${SECUREC} ${MOCK} ${DEP})
-
 add_executable(js_ability_thread_test js_ability_thread_test.cpp ${ABILITY_SERVICE_SRC})
 target_link_libraries(js_ability_thread_test PUBLIC ${GTEST} Threads::Threads ${SECUREC} ${MOCK} ${DEP})
 
@@ -42,5 +39,4 @@ set(GTEST_REPEAT 10)
 gtest_discover_tests(ability_record_manager_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT})
 gtest_discover_tests(abilityms_slite_client_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT})
 gtest_discover_tests(ability_record_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT})
-#gtest_discover_tests(ability_thread_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT})
 gtest_discover_tests(js_ability_thread_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT})

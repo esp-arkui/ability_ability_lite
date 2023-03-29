@@ -74,6 +74,34 @@ TEST_F(JsAbilityThreadTest, JsAbilityThreadInitTest)
     delete jsAbilityThread;
 }
 
+TEST_F(JsAbilityThreadTest, JsAbilityThreadNoReleaseTest)
+{
+    auto *jsAbilityThread = new JsAbilityThread();
+    AbilityRecord record;
+    record.appName = Utils::Strdup(APP1_BUNDLE_NAME);
+    record.token = TEST_TOKEN;
+    ASSERT_EQ(jsAbilityThread->InitAbilityThread(&record), ERR_OK);
+    osMessageQueueId_t messageQueueId = jsAbilityThread->messageQueueId_;
+    ASSERT_NE(messageQueueId, nullptr);
+
+    AbilityInnerMsg innerMsg3;
+    innerMsg3.token = TEST_TOKEN;
+    innerMsg3.msgId = AbilityMsgId::DESTROY;
+    innerMsg3.abilityThread = jsAbilityThread;
+    auto ret = osMessageQueuePut(messageQueueId, &innerMsg3, 0, 0);
+    ASSERT_EQ(ret, osOK);
+    Request request3;
+    uint8_t prio3 = 0;
+    ret = osMessageQueueGet(amsQueueId_, &request3, &prio3, osWaitForever);
+    ASSERT_EQ(ret, osOK);
+    ASSERT_EQ(request3.msgId, ABILITY_TRANSACTION_DONE);
+    uint32_t token3 = request3.msgValue & TRANSACTION_MSG_TOKEN_MASK;
+    uint32_t state3 = (request3.msgValue >> TRANSACTION_MSG_STATE_OFFSET) & TRANSACTION_MSG_STATE_MASK;
+    ASSERT_EQ(token3, TEST_TOKEN);
+    ASSERT_EQ(state3, STATE_INACTIVE);
+    delete jsAbilityThread;
+}
+
 TEST_F(JsAbilityThreadTest, JsAppTaskHandlerLifecycleTest)
 {
     auto *jsAbilityThread = new JsAbilityThread();
@@ -138,7 +166,7 @@ TEST_F(JsAbilityThreadTest, JsAppTaskHandlerLifecycleTest)
     uint32_t token3 = request3.msgValue & TRANSACTION_MSG_TOKEN_MASK;
     uint32_t state3 = (request3.msgValue >> TRANSACTION_MSG_STATE_OFFSET) & TRANSACTION_MSG_STATE_MASK;
     ASSERT_EQ(token3, TEST_TOKEN);
-    ASSERT_EQ(state3, STATE_UNINITIALIZED);
+    ASSERT_EQ(state3, STATE_INACTIVE);
 
     ASSERT_EQ(jsAbilityThread->ReleaseAbilityThread(), ERR_OK);
     ASSERT_EQ(jsAbilityThread->ReleaseAbilityThread(), PARAM_CHECK_ERROR);
@@ -200,7 +228,7 @@ TEST_F(JsAbilityThreadTest, JsAppTaskHandlerOtherTest)
     uint32_t token6 = request6.msgValue & TRANSACTION_MSG_TOKEN_MASK;
     uint32_t state6 = (request6.msgValue >> TRANSACTION_MSG_STATE_OFFSET) & TRANSACTION_MSG_STATE_MASK;
     ASSERT_EQ(token6, TEST_TOKEN);
-    ASSERT_EQ(state6, STATE_UNINITIALIZED);
+    ASSERT_EQ(state6, STATE_INACTIVE);
 
     ASSERT_EQ(jsAbilityThread->ReleaseAbilityThread(), ERR_OK);
     delete jsAbilityThread;
