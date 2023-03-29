@@ -21,6 +21,7 @@
 #include "ability_record.h"
 #include "ability_stack.h"
 #include "ability_state.h"
+#include "ability_thread_loader.h"
 #include "abilityms_log.h"
 #include "ability_manager_inner.h"
 #include "bundle_manager.h"
@@ -400,8 +401,10 @@ int32_t AbilityRecordManager::CreateAppTask(AbilityRecord *record)
         HILOG_ERROR(HILOG_MODULE_AAFWK, "CreateAppTask fail: null");
         return PARAM_NULL_ERROR;
     }
-
-    record->abilityThread = new JsAbilityThread;
+    record->abilityThread = AbilityThreadLoader::GetInstance().CreateAbilityThread(AbilityThreadCreatorType::JS_CREATOR);
+    if (record->abilityThread == nullptr) {
+        return MEMORY_MALLOC_ERROR;
+    }
     int32_t ret = record->abilityThread->InitAbilityThread(record);
     if (ret != ERR_OK) {
         delete record->abilityThread;

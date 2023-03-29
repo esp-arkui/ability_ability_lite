@@ -18,10 +18,15 @@
 #include "ability_errors.h"
 #include "ability_info.h"
 #include "ability_service_interface.h"
+#include "ability_thread_loader.h"
 #include "abilityms_log.h"
+#include "dummy_js_ability.h"
 #include "iunknown.h"
+#include "js_ability_thread.h"
+#include "native_ability_thread.h"
 #include "ohos_init.h"
 #include "samgr_lite.h"
+#include "slite_ability_loader.h"
 #include "want.h"
 
 namespace OHOS {
@@ -136,6 +141,8 @@ BOOL AbilityMgrServiceSlite::ServiceInitialize(Service *service, Identity identi
     }
     auto *abilityMgrService = static_cast<AbilityMgrServiceSlite *>(service);
     abilityMgrService->serviceIdentity_ = identity;
+    InitAbilityThreadLoad();
+    InitAbilityLoad();
     return TRUE;
 }
 
@@ -198,6 +205,35 @@ int32_t AbilityMgrServiceSlite::ForceStopBundle(uint64_t token)
 ElementName *AbilityMgrServiceSlite::GetTopAbility()
 {
     return AbilityRecordManager::GetInstance().GetTopAbility();
+}
+
+static AbilityThread *createJsAbilityThread()
+{
+    auto *jsThread = new JsAbilityThread();
+    return jsThread;
+}
+
+static AbilityThread *createNativeAbilityThread()
+{
+    auto *nativeThread = new NativeAbilityThread();
+    return nativeThread;
+}
+
+void AbilityMgrServiceSlite::InitAbilityThreadLoad()
+{
+    AbilityThreadLoader::GetInstance().SetCreatorFunc(AbilityThreadCreatorType::JS_CREATOR, createJsAbilityThread);
+    AbilityThreadLoader::GetInstance().SetCreatorFunc(AbilityThreadCreatorType::NATIVE_CREATOR, createNativeAbilityThread);
+}
+
+static SliteAbility *createJsAbility()
+{
+    SliteAbility *jsAbility = new DummyJsAbility();
+    return jsAbility;
+}
+
+void AbilityMgrServiceSlite::InitAbilityLoad()
+{
+    SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::JS_ABILITY, createJsAbility);
 }
 } // namespace AbilitySlite
 } // namespace OHOS

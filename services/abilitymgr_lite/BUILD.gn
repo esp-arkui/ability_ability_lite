@@ -26,7 +26,6 @@ lite_library("abilityms") {
       "src/slite/ability_thread.cpp",
       "src/slite/ability_thread_loader.cpp",
       "src/slite/js_ability_thread.cpp",
-      "src/slite/ability_thread_loader.cpp",
     ]
 
     if (defined(config_ohos_aafwk_ams_task_size) &&

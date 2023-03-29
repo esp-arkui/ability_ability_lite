@@ -59,6 +59,10 @@ private:
 
     static BOOL ServiceMessageHandle(Service *service, Request *request);
 
+    static void InitAbilityThreadLoad();
+
+    static void InitAbilityLoad();
+
 private:
     Identity serviceIdentity_ {};
     Identity featureIdentity_ {};

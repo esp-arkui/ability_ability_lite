@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+#include "native_ability_thread.h"
+
 #include "aafwk_event_error_id.h"
 #include "aafwk_event_error_code.h"
 #include "ability_manager_inner.h"
@@ -23,13 +25,16 @@
 #include "ability_thread.h"
 #include "abilityms_log.h"
 #include "los_task.h"
-#include "native_ability_thread.h"
+#include "slite_ability_loader.h"
 
 namespace OHOS {
 namespace AbilitySlite {
 
 constexpr int32_t APP_TASK_PRI = 25;
 constexpr int32_t QUEUE_LENGTH = 32;
+
+osMessageQueueId_t NativeAbilityThread::nativeQueueId = nullptr;
+uint32_t NativeAbilityThread::nativeTaskId = 0;
 
 NativeAbilityThread::NativeAbilityThread() = default;
 
@@ -50,17 +55,17 @@ int32_t NativeAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecor
         return PARAM_CHECK_ERROR;
     }
 
-    if (NativeQueneId == nullptr) {
-        NativeQueneId = osMessageQueueNew(QUEUE_LENGTH, sizeof(AbilityInnerMsg), nullptr);
+    if (nativeQueueId == nullptr) {
+        nativeQueueId = osMessageQueueNew(QUEUE_LENGTH, sizeof(AbilityInnerMsg), nullptr);
     }
-    messageQueueId_ = NativeQueneId;
+    messageQueueId_ = nativeQueueId;
     if (messageQueueId_ == nullptr) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "NativeAbilityThread init fail: messageQueueId is null");
         return MEMORY_MALLOC_ERROR;
     }
 
     HILOG_INFO(HILOG_MODULE_AAFWK, "CreateAppTask.");
-    if (NativeTaskId == 0) {
+    if (nativeTaskId == 0) {
         TSK_INIT_PARAM_S stTskInitParam = { 0 };
         LOS_TaskLock();
         stTskInitParam.pfnTaskEntry = (TSK_ENTRY_FUNC) (AbilityThread::AppTaskHandler);
@@ -69,7 +74,7 @@ int32_t NativeAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecor
         stTskInitParam.pcName = const_cast<char *>("AppTask");
         stTskInitParam.uwResved = 0;
         stTskInitParam.uwArg = reinterpret_cast<UINT32>((uintptr_t) messageQueueId_);
-        uint32_t ret = LOS_TaskCreate(&NativeTaskId, &stTskInitParam);
+        uint32_t ret = LOS_TaskCreate(&nativeTaskId, &stTskInitParam);
         if (ret != LOS_OK) {
             HILOG_ERROR(HILOG_MODULE_AAFWK, "NativeAbilityThread init fail: LOS_TaskCreate ret %{public}d", ret);
             osMessageQueueDelete(messageQueueId_);
@@ -77,12 +82,16 @@ int32_t NativeAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecor
             return CREATE_APPTASK_ERROR;
         }
     }
-    appTaskId_ = NativeTaskId;
+    appTaskId_ = nativeTaskId;
 
     state_ = AbilityThreadState::ABILITY_THREAD_INITIALIZED;
     token_ = abilityRecord->token;
     LOS_TaskUnlock();
-    ability_ = new NativeAbility();
+    ability_ = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::NATIVE_ABILITY);
+    if (ability_ == nullptr) {
+        HILOG_INFO(HILOG_MODULE_AAFWK, "NativeAbility create fail");
+        return MEMORY_MALLOC_ERROR;
+    }
     HILOG_INFO(HILOG_MODULE_AAFWK, "NativeAbilityThread init done");
     return ERR_OK;
 }

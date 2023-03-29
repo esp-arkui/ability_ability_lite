@@ -16,7 +16,7 @@
 #include "ability_thread_loader.h"
 
 namespace OHOS::AbilitySlite {
-void AbilityThreadLoader::SetCreatorFunc(AbilityThreadCreatorType type, AbilityCreatorFunc func)
+void AbilityThreadLoader::SetCreatorFunc(AbilityThreadCreatorType type, AbilityThreadCreatorFunc func)
 {
     if (func == nullptr) {
         return;
@@ -33,7 +33,7 @@ void AbilityThreadLoader::SetCreatorFunc(AbilityThreadCreatorType type, AbilityC
     }
 }
 
-SliteAbilityThread *AbilityThreadLoader::CreateAbilityThread(AbilityThreadCreatorType type) const
+AbilityThread *AbilityThreadLoader::CreateAbilityThread(AbilityThreadCreatorType type) const
 {
     if (AbilityThreadCreatorType::JS_CREATOR == type && jsAbilityThreadFunc_ != nullptr) {
         return jsAbilityThreadFunc_();

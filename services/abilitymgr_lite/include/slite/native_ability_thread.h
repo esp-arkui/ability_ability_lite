@@ -1,6 +1,17 @@
-//
-// Created by dian on 2023/3/25.
-//
+/*
+ * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #ifndef ABILITYLITE_NATIVE_ABILITY_THREAD_H
 #define ABILITYLITE_NATIVE_ABILITY_THREAD_H
@@ -9,9 +20,8 @@
 
 namespace OHOS {
 namespace AbilitySlite {
-class NativeAbilityThread: public AbilityThread{
+class NativeAbilityThread: public AbilityThread {
 public:
-
     NativeAbilityThread();
 
     ~NativeAbilityThread() override;
@@ -20,9 +30,8 @@ public:
 
     int32_t ReleaseAbilityThread() override;
 
-private:
-    static osMessageQueueId_t NativeQueneId;  //静态成员变量
-    static uint32_t NativeTaskId;  //静态成员变量
+    static osMessageQueueId_t nativeQueueId;
+    static uint32_t nativeTaskId;
 };
 }
 }
