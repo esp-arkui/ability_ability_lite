@@ -225,7 +225,7 @@ void AbilityMgrServiceSlite::InitAbilityThreadLoad()
     AbilityThreadLoader::GetInstance().SetCreatorFunc(AbilityThreadCreatorType::NATIVE_CREATOR, createNativeAbilityThread);
 }
 
-static SliteAbility *createJsAbility()
+static SliteAbility *createJsAbility(const char *bundleName)
 {
     SliteAbility *jsAbility = new DummyJsAbility();
     return jsAbility;

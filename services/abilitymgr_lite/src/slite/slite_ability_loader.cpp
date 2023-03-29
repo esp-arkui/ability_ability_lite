@@ -33,17 +33,17 @@ void SliteAbilityLoader::SetAbilityCreatorFunc(SliteAbilityType type, SliteAbili
     }
 }
 
-SliteAbility *SliteAbilityLoader::CreateAbility(SliteAbilityType type)
+SliteAbility *SliteAbilityLoader::CreateAbility(SliteAbilityType type, const char *bundleName)
 {
     switch (type) {
         case SliteAbilityType::JS_ABILITY:
             if (jsAbilityCreatorFunc_ != nullptr) {
-                return jsAbilityCreatorFunc_();
+                return jsAbilityCreatorFunc_(bundleName);
             }
             break;
         case SliteAbilityType::NATIVE_ABILITY:
             if (nativeAbilityCreatorFunc_ != nullptr) {
-                return nativeAbilityCreatorFunc_();
+                return nativeAbilityCreatorFunc_(bundleName);
             }
             break;
         default:

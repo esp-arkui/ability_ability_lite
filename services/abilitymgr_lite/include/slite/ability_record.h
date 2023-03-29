@@ -72,6 +72,7 @@ public:
     uint16_t token = 0;
     uint8_t state = SCHEDULE_STOP;
     bool isTerminated = false;
+    bool isNativeApp = false;
 };
 } // namespace AbilitySlite
 } // namespace OHOS

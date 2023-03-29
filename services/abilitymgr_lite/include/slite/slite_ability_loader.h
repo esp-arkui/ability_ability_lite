@@ -26,7 +26,7 @@ enum class SliteAbilityType {
     NATIVE_ABILITY,
 };
 
-using SliteAbilityCreatorFunc = SliteAbility*(*)();
+using SliteAbilityCreatorFunc = SliteAbility*(*)(const char* bundleName);
 
 class SliteAbilityLoader final {
 public:
@@ -42,7 +42,7 @@ public:
 
     void SetAbilityCreatorFunc(SliteAbilityType type, SliteAbilityCreatorFunc creator);
 
-    SliteAbility *CreateAbility(SliteAbilityType type);
+    SliteAbility *CreateAbility(SliteAbilityType type, const char *bundleName);
 private:
     SliteAbilityCreatorFunc jsAbilityCreatorFunc_ = nullptr;
     SliteAbilityCreatorFunc nativeAbilityCreatorFunc_ = nullptr;

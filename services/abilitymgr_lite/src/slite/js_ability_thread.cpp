@@ -72,7 +72,7 @@ int32_t JsAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecord)
         return CREATE_APPTASK_ERROR;
     }
     state_ = AbilityThreadState::ABILITY_THREAD_INITIALIZED;
-    ability_ = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::JS_ABILITY);
+    ability_ = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::JS_ABILITY, abilityRecord->appName);
     if (ability_ == nullptr) {
         HILOG_INFO(HILOG_MODULE_AAFWK, "JsAbility create fail");
         return MEMORY_MALLOC_ERROR;

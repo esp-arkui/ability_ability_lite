@@ -24,6 +24,7 @@
 #include "ability_thread_loader.h"
 #include "abilityms_log.h"
 #include "ability_manager_inner.h"
+#include "bms_helper.h"
 #include "bundle_manager.h"
 #include "cmsis_os.h"
 #ifdef OHOS_DMS_ENABLED
@@ -63,6 +64,7 @@ void AbilityRecordManager::StartLauncher()
     auto record = new AbilityRecord();
     record->SetAppName(LAUNCHER_BUNDLE_NAME);
     record->token = LAUNCHER_TOKEN;
+    record->isNativeApp = true;
     record->state = SCHEDULE_FOREGROUND;
     record->taskId = LOS_CurTaskIDGet();
     abilityList_.Add(record);
@@ -174,7 +176,7 @@ int32_t AbilityRecordManager::StartAbility(const Want *want)
 #if ((defined OHOS_APPEXECFWK_BMS_BUNDLEMANAGER) || (defined APP_PLATFORM_WATCHGT))
         AbilityInfo abilityInfo = { nullptr, nullptr };
         QueryAbilityInfo(want, &abilityInfo);
-        if (!IsValidAbility(&abilityInfo)) {
+        if (!(BMSHelper::GetInstance().IsNativeApp(bundleName) || IsValidAbility(&abilityInfo))) {
             APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_START_UNKNOWN_BUNDLE_INFO);
             ClearAbilityInfo(&abilityInfo);
             AdapterFree(info);
@@ -369,6 +371,7 @@ int32_t AbilityRecordManager::PreCheckStartAbility(
     record->SetAppName(bundleName);
     record->SetAppPath(path);
     record->SetWantData(data, dataLength);
+    record->isNativeApp = BMSHelper::GetInstance().IsNativeApp(bundleName);
     record->state = SCHEDULE_STOP;
     abilityList_.Add(record);
     if (pendingToken_ == 0 && CreateAppTask(record) != ERR_OK) {
@@ -401,7 +404,11 @@ int32_t AbilityRecordManager::CreateAppTask(AbilityRecord *record)
         HILOG_ERROR(HILOG_MODULE_AAFWK, "CreateAppTask fail: null");
         return PARAM_NULL_ERROR;
     }
-    record->abilityThread = AbilityThreadLoader::GetInstance().CreateAbilityThread(AbilityThreadCreatorType::JS_CREATOR);
+    if (record->isNativeApp) {
+        record->abilityThread = AbilityThreadLoader::GetInstance().CreateAbilityThread(AbilityThreadCreatorType::NATIVE_CREATOR);
+    } else {
+        record->abilityThread = AbilityThreadLoader::GetInstance().CreateAbilityThread(AbilityThreadCreatorType::JS_CREATOR);
+    }
     if (record->abilityThread == nullptr) {
         return MEMORY_MALLOC_ERROR;
     }

@@ -13,27 +13,35 @@
  * limitations under the License.
  */
 
-#ifndef ABILITYLITE_NATIVE_ABILITY_THREAD_H
-#define ABILITYLITE_NATIVE_ABILITY_THREAD_H
+#ifndef ABILITYLITE_BMS_HELPER_H
+#define ABILITYLITE_BMS_HELPER_H
 
-#include "ability_thread.h"
+#include <cstdint>
+#include "utils_list.h"
 
 namespace OHOS {
 namespace AbilitySlite {
-class NativeAbilityThread: public AbilityThread {
+class BMSHelper final {
 public:
-    NativeAbilityThread();
+    static BMSHelper &GetInstance()
+    {
+        static BMSHelper instance;
+        return instance;
+    }
 
-    ~NativeAbilityThread() override;
+    BMSHelper() = default;
 
-    int32_t InitAbilityThread(const AbilityRecord *abilityRecord) override;
+    ~BMSHelper();
 
-    int32_t ReleaseAbilityThread() override;
+    void RegisterBundleNames(List<char *> &names);
 
-    static osMessageQueueId_t nativeQueueId;
-    static UINT32 nativeTaskId;
+    void Erase();
+
+    bool IsNativeApp(const char *bundleName);
+private:
+    List<char *> bundleNames {};
 };
-}
-}
+} // namespace AbilitySlite
+} // namespace OHOS
 
-#endif //ABILITYLITE_NATIVE_ABILITY_THREAD_H
+#endif //ABILITYLITE_BMS_HELPER_H
