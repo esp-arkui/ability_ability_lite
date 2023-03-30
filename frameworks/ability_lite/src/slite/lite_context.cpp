@@ -27,5 +27,10 @@ int LiteContext::TerminateAbility()
 {
     return AbilityMsClient::GetInstance().TerminateAbility(token_);
 }
+
+void LiteContext::SetToken(uint64_t token)
+{
+    token_ = token;
+}
 } // namespace AbilitySlite
 } // namespace OHOS

@@ -660,6 +660,7 @@ int32_t AbilityRecordManager::SchedulerLifecycleDone(uint64_t token, int32_t sta
             OnBackgroundDone(token);
             break;
         }
+        case STATE_INACTIVE:
         case STATE_UNINITIALIZED: {
             OnDestroyDone(token);
             break;

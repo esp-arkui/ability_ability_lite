@@ -151,7 +151,7 @@ BOOL AbilityMgrServiceSlite::ServiceMessageHandle(Service *service, Request *req
     if (request == nullptr) {
         return FALSE;
     }
-    int ret = ERR_OK;
+    int32_t ret = ERR_OK;
     if (request->msgId == START_ABILITY) {
         ret = AbilityRecordManager::GetInstance().StartAbility(AbilityRecordManager::GetInstance().want_);
         AbilityRecordManager::GetInstance().CleanWant();

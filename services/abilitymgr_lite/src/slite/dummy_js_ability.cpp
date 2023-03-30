@@ -34,6 +34,7 @@ void DummyJsAbility::OnActive(const Want &want)
     }
     jsAbility_->Show();
     isBackground_ = true;
+    SliteAbility::OnActive(want);
 }
 
 void DummyJsAbility::OnBackground()
@@ -42,6 +43,7 @@ void DummyJsAbility::OnBackground()
         isBackground_ = true;
         jsAbility_->Hide();
     }
+    SliteAbility::OnBackground();
 }
 
 void DummyJsAbility::OnInactive()
@@ -52,6 +54,7 @@ void DummyJsAbility::OnInactive()
         }
         jsAbility_->TransferToDestroy();
     }
+    SliteAbility::OnInactive();
 }
 } // namespace AbilitySlite
 } // namespace OHOS

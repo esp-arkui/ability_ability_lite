@@ -31,7 +31,7 @@ public:
     int32_t ReleaseAbilityThread() override;
 
     static osMessageQueueId_t nativeQueueId;
-    static uint32_t nativeTaskId;
+    static UINT32 nativeTaskId;
 };
 }
 }

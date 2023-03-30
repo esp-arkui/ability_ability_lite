@@ -45,6 +45,8 @@ public:
      */
     int TerminateAbility();
 
+    void SetToken(uint64_t token);
+
 private:
     friend class SliteAbility;
 

@@ -18,6 +18,7 @@
 
 #include <cstdint>
 #include "cmsis_os2.h"
+#include "los_typedef.h"
 #include "slite_ability.h"
 
 namespace OHOS {
@@ -39,13 +40,12 @@ public:
 
     virtual int32_t ReleaseAbilityThread() = 0;
 
-    static void AppTaskHandler(uint32_t uwArg);
+    static void AppTaskHandler(UINT32 uwArg);
 
     osMessageQueueId_t messageQueueId_ = nullptr;
-    uint32_t appTaskId_ = 0;
+    UINT32 appTaskId_ = 0;
 
 protected:
-    uint16_t token_ = 0;
     AbilityThreadState state_ = AbilityThreadState::ABILITY_THREAD_UNINITIALIZED;
     SliteAbility *ability_ = nullptr;
 

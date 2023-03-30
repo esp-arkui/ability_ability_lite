@@ -37,7 +37,7 @@ AbilityThread::~AbilityThread()
     messageQueueId_ = nullptr;
 }
 
-void AbilityThread::AppTaskHandler(uint32_t uwArg)
+void AbilityThread::AppTaskHandler(UINT32 uwArg)
 {
     auto messageQueueId = reinterpret_cast<osMessageQueueId_t>(uwArg);
     if (messageQueueId == nullptr) {
@@ -89,7 +89,6 @@ int32_t AbilityThread::HandleCreate(const Want *want)
         return PARAM_NULL_ERROR;
     }
     ability_->OnActive(*want);
-    SchedulerLifecycleDone(token_, STATE_ACTIVE);
     return ERR_OK;
 }
 
@@ -104,7 +103,6 @@ int32_t AbilityThread::HandleBackground()
         return PARAM_NULL_ERROR;
     }
     ability_->OnBackground();
-    SchedulerLifecycleDone(token_, STATE_BACKGROUND);
     return ERR_OK;
 }
 
@@ -114,7 +112,6 @@ int32_t AbilityThread::HandleDestroy()
         return PARAM_NULL_ERROR;
     }
     ability_->OnInactive();
-    SchedulerLifecycleDone(token_, STATE_UNINITIALIZED);
     return ERR_OK;
 }
 } // namespace AbilitySlite

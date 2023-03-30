@@ -34,7 +34,7 @@ constexpr int32_t APP_TASK_PRI = 25;
 constexpr int32_t QUEUE_LENGTH = 32;
 
 osMessageQueueId_t NativeAbilityThread::nativeQueueId = nullptr;
-uint32_t NativeAbilityThread::nativeTaskId = 0;
+UINT32 NativeAbilityThread::nativeTaskId = 0;
 
 NativeAbilityThread::NativeAbilityThread() = default;
 
@@ -85,13 +85,13 @@ int32_t NativeAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecor
     appTaskId_ = nativeTaskId;
 
     state_ = AbilityThreadState::ABILITY_THREAD_INITIALIZED;
-    token_ = abilityRecord->token;
-    LOS_TaskUnlock();
     ability_ = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::NATIVE_ABILITY);
     if (ability_ == nullptr) {
         HILOG_INFO(HILOG_MODULE_AAFWK, "NativeAbility create fail");
         return MEMORY_MALLOC_ERROR;
     }
+    ability_->SetToken(abilityRecord->token);
+    LOS_TaskUnlock();
     HILOG_INFO(HILOG_MODULE_AAFWK, "NativeAbilityThread init done");
     return ERR_OK;
 }

@@ -71,13 +71,13 @@ int32_t JsAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecord)
         return CREATE_APPTASK_ERROR;
     }
     state_ = AbilityThreadState::ABILITY_THREAD_INITIALIZED;
-    token_ = abilityRecord->token;
-    LOS_TaskUnlock();
     ability_ = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::JS_ABILITY);
     if (ability_ == nullptr) {
         HILOG_INFO(HILOG_MODULE_AAFWK, "JsAbility create fail");
         return MEMORY_MALLOC_ERROR;
     }
+    ability_->SetToken(abilityRecord->token);
+    LOS_TaskUnlock();
     HILOG_INFO(HILOG_MODULE_AAFWK, "JsAbilityThread init done");
     return ERR_OK;
 }
