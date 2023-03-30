@@ -37,8 +37,6 @@ struct AbilityInnerMsg {
     AbilityThread *abilityThread = nullptr;
     Want *want = nullptr;
     uint16_t token = 0;
-    const char *bundleName = nullptr;
-    const char *path = nullptr;
     void *data = nullptr;
     uint16_t dataLength = 0;
 };

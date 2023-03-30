@@ -14,6 +14,7 @@
  */
 
 #include "dummy_js_ability.h"
+#include "js_async_work.h"
 
 namespace OHOS {
 namespace AbilitySlite {
@@ -39,7 +40,7 @@ void DummyJsAbility::OnBackground()
 
 void DummyJsAbility::OnDestroy()
 {
-    JsAsyncWork::SetAppQueueHandler(nullptr);
+    ACELite::JsAsyncWork::SetAppQueueHandler(nullptr);
     // the TE owner will be JS application after JS application start up except for it's lying in background,
     // call render once to make sure the last TE message is processed properly
     if (!isBackground_) {

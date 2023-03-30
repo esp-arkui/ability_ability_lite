@@ -72,6 +72,7 @@ int AbilityMsClient::StartAbility(const Want *want) const
     info->element = nullptr;
     info->data = nullptr;
     info->dataLength = 0;
+    info->appPath = nullptr;
     SetWantElement(info, *(want->element));
     SetWantData(info, want->data, want->dataLength);
     AbilityRecordManager::GetInstance().want_ = info;

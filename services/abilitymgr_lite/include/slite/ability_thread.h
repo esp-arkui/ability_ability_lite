@@ -18,7 +18,7 @@
 
 #include <cstdint>
 #include "cmsis_os2.h"
-#include "los_typedef.h"
+#include "los_task.h"
 #include "slite_ability.h"
 
 namespace OHOS {

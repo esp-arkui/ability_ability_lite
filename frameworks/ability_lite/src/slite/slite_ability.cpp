@@ -19,7 +19,7 @@
 
 namespace OHOS {
 namespace AbilitySlite {
-void SliteAbility::OnStart(const Want &want)
+void SliteAbility::OnCreate(const Want &want)
 {
     abilityState_ = SLITE_STATE_INITIAL;
     (void) AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, SLITE_STATE_INITIAL);

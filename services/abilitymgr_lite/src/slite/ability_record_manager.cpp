@@ -622,6 +622,7 @@ int32_t AbilityRecordManager::SchedulerLifecycleInner(const AbilityRecord *recor
     info->element = nullptr;
     info->data = nullptr;
     info->dataLength = 0;
+    info->appPath = nullptr;
 
     ElementName elementName = {};
     SetElementBundleName(&elementName, LAUNCHER_BUNDLE_NAME);
@@ -729,6 +730,7 @@ Want *AbilityRecordManager::CreateWant(const AbilityRecord *record)
     SetElementBundleName(&elementName, record->appName);
     SetWantElement(want, elementName);
     ClearElement(&elementName);
+    return want;
 }
 
 ElementName *AbilityRecordManager::GetTopAbility()

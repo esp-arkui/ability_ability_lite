@@ -22,6 +22,9 @@
 #include "ability_inner_message.h"
 #include "adapter.h"
 
+extern "C" void LP_TaskBegin();
+extern "C" void LP_TaskEnd();
+
 namespace OHOS {
 namespace AbilitySlite {
 
