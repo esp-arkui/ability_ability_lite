@@ -20,7 +20,7 @@
 #include "ability_inner_message.h"
 #include "ability_record.h"
 #include "ability_stack.h"
-#include "ability_state.h"
+#include "slite_ability_state.h"
 #include "ability_thread_loader.h"
 #include "abilityms_log.h"
 #include "ability_manager_inner.h"
@@ -63,11 +63,11 @@ void AbilityRecordManager::StartLauncher()
     auto record = new AbilityRecord();
     record->SetAppName(LAUNCHER_BUNDLE_NAME);
     record->token = LAUNCHER_TOKEN;
-    record->state = SCHEDULE_ACTIVE;
+    record->state = SCHEDULE_FOREGROUND;
     record->taskId = LOS_CurTaskIDGet();
     abilityList_.Add(record);
     abilityStack_.PushAbility(record);
-    (void) SchedulerLifecycleInner(record, STATE_ACTIVE);
+    (void) SchedulerLifecycleInner(record, SLITE_STATE_FOREGROUND);
 }
 
 void AbilityRecordManager::CleanWant()
@@ -234,9 +234,9 @@ int32_t AbilityRecordManager::StartAbility(AbilitySvcInfo *info)
         UpdateRecord(info);
         if (topToken != LAUNCHER_TOKEN && topRecord->state != SCHEDULE_BACKGROUND) {
             HILOG_INFO(HILOG_MODULE_AAFWK, "Change Js app to background.");
-            (void) SchedulerLifecycleInner(topRecord, STATE_BACKGROUND);
+            (void) SchedulerLifecycleInner(topRecord, SLITE_STATE_BACKGROUND);
         } else {
-            (void) SchedulerLifecycle(LAUNCHER_TOKEN, STATE_ACTIVE);
+            (void) SchedulerLifecycle(LAUNCHER_TOKEN, SLITE_STATE_FOREGROUND);
         }
         return ERR_OK;
     }
@@ -251,7 +251,7 @@ int32_t AbilityRecordManager::StartAbility(AbilitySvcInfo *info)
         if (strcmp(info->bundleName, topRecord->appName) == 0) {
             if (topRecord->state == SCHEDULE_BACKGROUND) {
                 HILOG_INFO(HILOG_MODULE_AAFWK, "StartAbility Resume app when background.");
-                (void) SchedulerLifecycle(LAUNCHER_TOKEN, STATE_BACKGROUND);
+                (void) SchedulerLifecycle(LAUNCHER_TOKEN, SLITE_STATE_BACKGROUND);
                 return ERR_OK;
             }
             HILOG_INFO(HILOG_MODULE_AAFWK, "Js app already started or starting.");
@@ -280,7 +280,7 @@ int32_t AbilityRecordManager::TerminateAbility(uint16_t token)
         // if js is in background, the launcher goes back to background and js goes to active
         if (topToken != token && topRecord->state == SCHEDULE_BACKGROUND) {
             HILOG_INFO(HILOG_MODULE_AAFWK, "Resume Js app [%{public}u]", topToken);
-            return SchedulerLifecycle(LAUNCHER_TOKEN, STATE_BACKGROUND);
+            return SchedulerLifecycle(LAUNCHER_TOKEN, SLITE_STATE_BACKGROUND);
         }
         return ERR_OK;
     }
@@ -292,7 +292,7 @@ int32_t AbilityRecordManager::TerminateAbility(uint16_t token)
     }
     topRecord->isTerminated = true;
     // TerminateAbility top js
-    return SchedulerLifecycleInner(topRecord, STATE_BACKGROUND);
+    return SchedulerLifecycleInner(topRecord, SLITE_STATE_BACKGROUND);
 }
 
 int32_t AbilityRecordManager::ForceStopBundle(uint16_t token)
@@ -313,8 +313,8 @@ int32_t AbilityRecordManager::ForceStopBundle(uint16_t token)
     if (launcherRecord == nullptr) {
         return PARAM_NULL_ERROR;
     }
-    if (launcherRecord->state != SCHEDULE_ACTIVE) {
-        return SchedulerLifecycle(LAUNCHER_TOKEN, STATE_ACTIVE);
+    if (launcherRecord->state != SCHEDULE_FOREGROUND) {
+        return SchedulerLifecycle(LAUNCHER_TOKEN, SLITE_STATE_FOREGROUND);
     }
     return ERR_OK;
 }
@@ -353,10 +353,10 @@ int32_t AbilityRecordManager::PreCheckStartAbility(
     }
     auto curRecord = abilityList_.Get(bundleName);
     if (curRecord != nullptr) {
-        if (curRecord->state == SCHEDULE_ACTIVE) {
+        if (curRecord->state == SCHEDULE_FOREGROUND) {
             HILOG_ERROR(HILOG_MODULE_AAFWK, "PreCheckStartAbility current state active.");
         } else if (curRecord->state == SCHEDULE_BACKGROUND) {
-            SchedulerLifecycle(LAUNCHER_TOKEN, STATE_BACKGROUND);
+            SchedulerLifecycle(LAUNCHER_TOKEN, SLITE_STATE_BACKGROUND);
         }
         return ERR_OK;
     }
@@ -413,18 +413,18 @@ int32_t AbilityRecordManager::CreateAppTask(AbilityRecord *record)
     }
     record->taskId = record->abilityThread->appTaskId_;
     record->jsAppQueueId = record->abilityThread->messageQueueId_;
-    record->state = SCHEDULE_INACTIVE;
+    record->state = SCHEDULE_STOP;
     abilityStack_.PushAbility(record);
     APP_EVENT(MT_ACE_APP_START);
     if (nativeAbility_ != nullptr) {
-        if (SchedulerLifecycle(LAUNCHER_TOKEN, STATE_BACKGROUND) != 0) {
+        if (SchedulerLifecycle(LAUNCHER_TOKEN, SLITE_STATE_BACKGROUND) != 0) {
             APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_START_LAUNCHER_EXIT_FAILED);
             HILOG_INFO(HILOG_MODULE_AAFWK, "CreateAppTask Fail to hide launcher");
             abilityStack_.PopAbility();
             return SCHEDULER_LIFECYCLE_ERROR;
         }
     } else {
-        SchedulerLifecycle(record->token, STATE_ACTIVE);
+        SchedulerLifecycle(record->token, SLITE_STATE_INITIAL);
     }
     return ERR_OK;
 }
@@ -462,27 +462,33 @@ void AbilityRecordManager::DeleteRecordInfo(uint16_t token)
     delete record;
 }
 
-void AbilityRecordManager::OnActiveDone(uint16_t token)
+void AbilityRecordManager::OnCreateDone(uint16_t token)
 {
-    HILOG_INFO(HILOG_MODULE_AAFWK, "OnActiveDone [%{public}u]", token);
-    SetAbilityState(token, SCHEDULE_ACTIVE);
+    SetAbilityState(token, SCHEDULE_INITED);
+    SchedulerLifecycle(token, SLITE_STATE_FOREGROUND);
+}
+
+void AbilityRecordManager::OnForegroundDone(uint16_t token)
+{
+    HILOG_INFO(HILOG_MODULE_AAFWK, "OnForegroundDone [%{public}u]", token);
+    SetAbilityState(token, SCHEDULE_FOREGROUND);
     auto topRecord = const_cast<AbilityRecord *>(abilityStack_.GetTopAbility());
     if (topRecord == nullptr) {
         return;
     }
 
-    // the launcher active
+    // the launcher foreground
     if (token == LAUNCHER_TOKEN) {
-        if (nativeAbility_ == nullptr || nativeAbility_->GetState() != STATE_ACTIVE) {
+        if (nativeAbility_ == nullptr || nativeAbility_->GetState() != SLITE_STATE_FOREGROUND) {
             HILOG_ERROR(HILOG_MODULE_AAFWK, "native ability is in wrong state : %{public}d",
                 nativeAbility_->GetState());
             return;
         }
         if (topRecord->token != LAUNCHER_TOKEN) {
-            int abilityState = STATE_UNINITIALIZED;
-            if (topRecord->state == SCHEDULE_ACTIVE) {
+            int abilityState = SLITE_STATE_UNINITIALIZED;
+            if (topRecord->state == SCHEDULE_FOREGROUND) {
                 HILOG_ERROR(HILOG_MODULE_AAFWK,
-                    "js is in active state, native state is %{public}d", abilityState);
+                    "js is in foreground state, native state is %{public}d", abilityState);
                 OnDestroyDone(topRecord->token);
                 return;
             }
@@ -493,7 +499,7 @@ void AbilityRecordManager::OnActiveDone(uint16_t token)
                 abilityStack_.PopAbility();
                 DeleteRecordInfo(topRecord->token);
             } else if (topRecord->isTerminated) {
-                (void) SchedulerLifecycleInner(topRecord, STATE_UNINITIALIZED);
+                (void) SchedulerLifecycleInner(topRecord, SLITE_STATE_UNINITIALIZED);
             }
         }
         return;
@@ -516,13 +522,17 @@ void AbilityRecordManager::OnBackgroundDone(uint16_t token)
     if (token != LAUNCHER_TOKEN) {
         if (topRecord->token == token) {
             APP_EVENT(MT_ACE_APP_BACKGROUND);
-            (void) SchedulerLifecycle(LAUNCHER_TOKEN, STATE_ACTIVE);
+            (void) SchedulerLifecycle(LAUNCHER_TOKEN, SLITE_STATE_FOREGROUND);
         }
         return;
     }
     // the launcher background
     if (topRecord->token != LAUNCHER_TOKEN) {
-        (void) SchedulerLifecycleInner(topRecord, STATE_ACTIVE);
+        if (topRecord->state == SCHEDULE_STOP) {
+            (void) SchedulerLifecycleInner(topRecord, SLITE_STATE_INITIAL);
+        } else {
+            (void) SchedulerLifecycleInner(topRecord, SLITE_STATE_FOREGROUND);
+        }
         if (GetCleanAbilityDataFlag()) {
             HILOG_INFO(HILOG_MODULE_AAFWK, "OnBackgroundDone clean launcher record data");
             AbilityRecord *record = abilityList_.Get(token);
@@ -555,7 +565,7 @@ void AbilityRecordManager::OnDestroyDone(uint16_t token)
 
     // no pending token
     if (pendingToken_ == 0) {
-        (void) SchedulerLifecycle(LAUNCHER_TOKEN, STATE_ACTIVE);
+        (void) SchedulerLifecycle(LAUNCHER_TOKEN, SLITE_STATE_FOREGROUND);
         return;
     }
 
@@ -567,7 +577,7 @@ void AbilityRecordManager::OnDestroyDone(uint16_t token)
     if (CreateAppTask(record) != ERR_OK) {
         abilityList_.Erase(pendingToken_);
         delete record;
-        (void) SchedulerLifecycle(LAUNCHER_TOKEN, STATE_ACTIVE);
+        (void) SchedulerLifecycle(LAUNCHER_TOKEN, SLITE_STATE_FOREGROUND);
     }
     pendingToken_ = 0;
 }
@@ -634,11 +644,11 @@ void AbilityRecordManager::SchedulerAbilityLifecycle(SliteAbility *ability, cons
         return;
     }
     switch (state) {
-        case STATE_ACTIVE: {
-            ability->OnActive(want);
+        case SLITE_STATE_FOREGROUND: {
+            ability->OnForeground(want);
             break;
         }
-        case STATE_BACKGROUND: {
+        case SLITE_STATE_BACKGROUND: {
             ability->OnBackground();
             break;
         }
@@ -652,16 +662,19 @@ void AbilityRecordManager::SchedulerAbilityLifecycle(SliteAbility *ability, cons
 int32_t AbilityRecordManager::SchedulerLifecycleDone(uint64_t token, int32_t state)
 {
     switch (state) {
-        case STATE_ACTIVE: {
-            OnActiveDone(token);
+        case SLITE_STATE_INITIAL: {
+            OnCreateDone(token);
             break;
         }
-        case STATE_BACKGROUND: {
+        case SLITE_STATE_FOREGROUND: {
+            OnForegroundDone(token);
+            break;
+        }
+        case SLITE_STATE_BACKGROUND: {
             OnBackgroundDone(token);
             break;
         }
-        case STATE_INACTIVE:
-        case STATE_UNINITIALIZED: {
+        case SLITE_STATE_UNINITIALIZED: {
             OnDestroyDone(token);
             break;
         }
@@ -679,27 +692,19 @@ bool AbilityRecordManager::SendMsgToJsAbility(int32_t state, const AbilityRecord
     }
 
     AbilityInnerMsg innerMsg;
-    if (state == STATE_ACTIVE) {
+    if (state == SLITE_STATE_INITIAL) {
         innerMsg.msgId = AbilityMsgId::CREATE;
-        innerMsg.want = static_cast<Want *>(AdapterMalloc(sizeof(Want)));
-        innerMsg.want->element = nullptr;
-        innerMsg.want->data = nullptr;
-        innerMsg.want->dataLength = 0;
-        ElementName elementName = {};
-        SetElementBundleName(&elementName, record->appName);
-        SetWantElement(innerMsg.want, elementName);
-        ClearElement(&elementName);
-        SetWantData(innerMsg.want, record->appPath, strlen(record->appPath) + 1);
-    } else if (state == STATE_BACKGROUND) {
+        innerMsg.want = CreateWant(record);
+    } else if (state == SLITE_STATE_FOREGROUND) {
+        innerMsg.msgId = AbilityMsgId::FOREGROUND;
+        innerMsg.want = CreateWant(record);
+    } else if (state == SLITE_STATE_BACKGROUND) {
         innerMsg.msgId = AbilityMsgId::BACKGROUND;
-    } else if (state == STATE_UNINITIALIZED) {
+    } else if (state == SLITE_STATE_UNINITIALIZED) {
         innerMsg.msgId = AbilityMsgId::DESTROY;
     } else {
         innerMsg.msgId = (AbilityMsgId) state;
     }
-    innerMsg.bundleName = record->appName;
-    innerMsg.token = record->token;
-    innerMsg.path = record->appPath;
     innerMsg.abilityThread = record->abilityThread;
     if (record->abilityData != nullptr) {
         innerMsg.data = const_cast<void *>(record->abilityData->wantData);
@@ -711,6 +716,19 @@ bool AbilityRecordManager::SendMsgToJsAbility(int32_t state, const AbilityRecord
     osMessageQueueId_t appQueueId = record->jsAppQueueId;
     osStatus_t ret = osMessageQueuePut(appQueueId, static_cast<void *>(&innerMsg), 0, 0);
     return ret == osOK;
+}
+
+Want *AbilityRecordManager::CreateWant(const AbilityRecord *record)
+{
+    Want * want = static_cast<Want *>(AdapterMalloc(sizeof(Want)));
+    want->element = nullptr;
+    want->data = nullptr;
+    want->dataLength = 0;
+    want->appPath = OHOS::Utils::Strdup(record->appPath);
+    ElementName elementName = {};
+    SetElementBundleName(&elementName, record->appName);
+    SetWantElement(want, elementName);
+    ClearElement(&elementName);
 }
 
 ElementName *AbilityRecordManager::GetTopAbility()
@@ -725,13 +743,13 @@ ElementName *AbilityRecordManager::GetTopAbility()
         AdapterFree(element);
         return nullptr;
     }
-    if (topRecord->token == LAUNCHER_TOKEN || launcherRecord->state == SCHEDULE_ACTIVE) {
+    if (topRecord->token == LAUNCHER_TOKEN || launcherRecord->state == SCHEDULE_FOREGROUND) {
         SetElementBundleName(element, LAUNCHER_BUNDLE_NAME);
         return element;
     }
 
     // case js active or background when launcher not active
-    if (topRecord->state == SCHEDULE_ACTIVE || topRecord->state == SCHEDULE_BACKGROUND) {
+    if (topRecord->state == SCHEDULE_FOREGROUND || topRecord->state == SCHEDULE_BACKGROUND) {
         SetElementBundleName(element, topRecord->appName);
     }
     return element;

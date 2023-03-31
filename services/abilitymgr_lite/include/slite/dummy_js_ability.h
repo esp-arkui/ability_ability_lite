@@ -25,17 +25,19 @@ class DummyJsAbility : public SliteAbility {
 public:
     DummyJsAbility() = default;
 
-    ~DummyJsAbility() override;
+    virtual ~DummyJsAbility() = default;
 
-    void OnActive(const Want &want) override;
+    void OnCreate(const Want &want) override;
+
+    void OnForeground(const Want &want) override;
 
     void OnBackground() override;
 
-    void OnInactive() override;
+    void OnDestroy() override;
 
 private:
     bool isBackground_ = false;
-    ACELite::JSAbility *jsAbility_ = nullptr;
+    ACELite::JSAbility jsAbility_;
 };
 } // namespace AbilitySlite
 } // namespace OHOS

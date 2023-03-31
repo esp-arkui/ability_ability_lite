@@ -14,33 +14,38 @@
  */
 
 #include "slite_ability.h"
-#include "ability_state.h"
+#include "slite_ability_state.h"
 #include "abilityms_slite_client.h"
 
 namespace OHOS {
 namespace AbilitySlite {
 void SliteAbility::OnStart(const Want &want)
 {
-    abilityState_ = STATE_INITIAL;
-    (void) AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, STATE_INITIAL);
+    abilityState_ = SLITE_STATE_INITIAL;
+    (void) AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, SLITE_STATE_INITIAL);
 }
 
-void SliteAbility::OnInactive()
+void SliteAbility::OnForeground(const Want &want)
 {
-    abilityState_ = STATE_INACTIVE;
-    (void) AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, STATE_INACTIVE);
-}
-
-void SliteAbility::OnActive(const Want &want)
-{
-    abilityState_ = STATE_ACTIVE;
-    (void) AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, STATE_ACTIVE);
+    abilityState_ = SLITE_STATE_FOREGROUND;
+    (void) AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, SLITE_STATE_FOREGROUND);
 }
 
 void SliteAbility::OnBackground()
 {
-    abilityState_ = STATE_BACKGROUND;
-    (void) AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, STATE_BACKGROUND);
+    abilityState_ = SLITE_STATE_BACKGROUND;
+    (void) AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, SLITE_STATE_BACKGROUND);
+}
+
+void SliteAbility::OnDestroy()
+{
+    abilityState_ = SLITE_STATE_UNINITIALIZED;
+    (void) AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, SLITE_STATE_UNINITIALIZED);
+}
+
+void SliteAbility::HandleExtraMessage(const void *innerMsg)
+{
+    return;
 }
 
 int SliteAbility::GetState() const

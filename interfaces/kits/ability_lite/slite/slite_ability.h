@@ -40,48 +40,42 @@ public:
     virtual ~SliteAbility() = default;
 
     /**
-     * @brief Called when this ability is started. You must override this function if you want to perform some
+     * @brief Called when this ability is created. You must override this function if you want to perform some
      *        initialization operations during ability startup.
      *
      * This function can be called only once in the entire lifecycle of an ability.
      * @param want Indicates the {@link Want} structure containing startup information about the ability.
      */
-    virtual void OnStart(const Want &want);
+    virtual void OnCreate(const Want &want);
 
     /**
-     * @brief Called when this ability enters the <b>STATE_INACTIVE</b> state.
+     * @brief Called when this ability enters the <b>SLITE_STATE_FOREGROUND</b> state.
      *
-     * <b>STATE_INACTIVE</b> is an instantaneous state. The ability in this state may be visible but does not have
-     * focus. You can override this function to implement your own processing logic.
-     */
-    virtual void OnInactive();
-
-    /**
-     * @brief Called when this ability enters the <b>STATE_ACTIVE</b> state.
-     *
-     * The ability in the <b>STATE_ACTIVE</b> state is visible and has focus.
+     * The ability in the <b>SLITE_STATE_FOREGROUND</b> state is visible and has focus.
      * You can override this function to implement your own processing logic.
      *
      * @param want Indicates the {@link Want} structure containing activation information about the ability.
      */
-    virtual void OnActive(const Want &want);
+    virtual void OnForeground(const Want &want);
 
     /**
-     * @brief Called when this ability enters the <b>STATE_BACKGROUND</b> state.
+     * @brief Called when this ability enters the <b>SLITE_STATE_BACKGROUND</b> state.
      *
      *
-     * The ability in the <b>STATE_BACKGROUND</b> state is invisible.
+     * The ability in the <b>SLITE_STATE_BACKGROUND</b> state is invisible.
      * You can override this function to implement your own processing logic.
      */
     virtual void OnBackground();
 
     /**
-     * @brief Called when this ability enters the <b>STATE_STOP</b> state.
+     * @brief Called when this ability enters the <b>SLITE_STATE_UNINITIALIZED</b> state.
      *
-     * The ability in the <b>STATE_STOP</b> is being destroyed.
+     * The ability in the <b>SLITE_STATE_UNINITIALIZED</b> is being destroyed.
      * You can override this function to implement your own processing logic.
      */
-    virtual void OnStop();
+    virtual void OnDestroy();
+
+    virtual void HandleExtraMessage(const void *innerMsg);
 
     int GetState() const;
 

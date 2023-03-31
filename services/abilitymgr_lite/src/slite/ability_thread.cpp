@@ -17,7 +17,7 @@
 
 #include "ability_errors.h"
 #include "ability_manager_inner.h"
-#include "ability_state.h"
+#include "slite_ability_state.h"
 #include "los_task.h"
 #include "ability_inner_message.h"
 #include "adapter.h"
@@ -64,7 +64,10 @@ void AbilityThread::AppTaskHandler(UINT32 uwArg)
                 innerMsg.want = nullptr;
                 break;
             case AbilityMsgId::FOREGROUND:
-                abilityThread->HandleForeground();
+                abilityThread->HandleForeground(innerMsg.want);
+                ClearWant(innerMsg.want);
+                AdapterFree(innerMsg.want);
+                innerMsg.want = nullptr;
                 break;
             case AbilityMsgId::BACKGROUND:
                 abilityThread->HandleBackground();
@@ -88,12 +91,19 @@ int32_t AbilityThread::HandleCreate(const Want *want)
     if (want == nullptr) {
         return PARAM_NULL_ERROR;
     }
-    ability_->OnActive(*want);
+    ability_->OnCreate(*want);
     return ERR_OK;
 }
 
-int32_t AbilityThread::HandleForeground()
+int32_t AbilityThread::HandleForeground(const Want *want)
 {
+    if (ability_ == nullptr) {
+        return PARAM_NULL_ERROR;
+    }
+    if (want == nullptr) {
+        return PARAM_NULL_ERROR;
+    }
+    ability_->OnForeground(*want);
     return ERR_OK;
 }
 
@@ -111,7 +121,7 @@ int32_t AbilityThread::HandleDestroy()
     if (ability_ == nullptr) {
         return PARAM_NULL_ERROR;
     }
-    ability_->OnInactive();
+    ability_->OnDestroy();
     return ERR_OK;
 }
 } // namespace AbilitySlite

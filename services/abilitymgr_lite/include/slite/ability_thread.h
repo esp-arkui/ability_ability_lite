@@ -52,11 +52,11 @@ protected:
 private:
     int32_t HandleCreate(const Want *want);
 
-    int32_t HandleDestroy();
-
-    int32_t HandleForeground();
+    int32_t HandleForeground(const Want *want);
 
     int32_t HandleBackground();
+
+    int32_t HandleDestroy();
 };
 } // namespace AbilitySlite
 } // namespace OHOS

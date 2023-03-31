@@ -29,8 +29,7 @@ constexpr int FAIL_CALLBACK_ERRORCODE = 200;
 /* States-feedback from launcher to AMS */
 typedef enum {
     SCHEDULE_INITED,
-    SCHEDULE_INACTIVE,
-    SCHEDULE_ACTIVE,
+    SCHEDULE_FOREGROUND,
     SCHEDULE_BACKGROUND,
     SCHEDULE_STOP
 } AbilityState;

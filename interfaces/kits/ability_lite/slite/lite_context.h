@@ -47,9 +47,7 @@ public:
 
     void SetToken(uint64_t token);
 
-private:
-    friend class SliteAbility;
-
+protected:
     uint64_t token_ { 0 };
 };
 } // namespace AbilitySlite

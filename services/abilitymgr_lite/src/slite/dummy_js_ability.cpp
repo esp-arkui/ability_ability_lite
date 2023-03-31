@@ -17,44 +17,36 @@
 
 namespace OHOS {
 namespace AbilitySlite {
-DummyJsAbility::~DummyJsAbility()
+void DummyJsAbility::OnCreate(const Want &want)
 {
-    delete jsAbility_;
-    jsAbility_ = nullptr;
+    jsAbility_.Launch(want.appPath, want.element->bundleName, token_);
+    SliteAbility::OnCreate(want);
 }
 
-void DummyJsAbility::OnActive(const Want &want)
+void DummyJsAbility::OnForeground(const Want &want)
 {
-    if (jsAbility_ == nullptr) {
-        jsAbility_ = new ACELite::JSAbility();
-        if (jsAbility_ == nullptr) {
-            return;
-        }
-        // jsAbility_->Launch;
-    }
-    jsAbility_->Show();
-    isBackground_ = true;
-    SliteAbility::OnActive(want);
+    jsAbility_.Show();
+    isBackground_ = false;
+    SliteAbility::OnForeground(want);
 }
 
 void DummyJsAbility::OnBackground()
 {
-    if (jsAbility_ != nullptr) {
-        isBackground_ = true;
-        jsAbility_->Hide();
-    }
+    isBackground_ = true;
+    jsAbility_.Hide();
     SliteAbility::OnBackground();
 }
 
-void DummyJsAbility::OnInactive()
+void DummyJsAbility::OnDestroy()
 {
-    if (jsAbility_ != nullptr) {
-        if (!isBackground_) {
-            jsAbility_->HandleRenderTick();
-        }
-        jsAbility_->TransferToDestroy();
+    JsAsyncWork::SetAppQueueHandler(nullptr);
+    // the TE owner will be JS application after JS application start up except for it's lying in background,
+    // call render once to make sure the last TE message is processed properly
+    if (!isBackground_) {
+        jsAbility_.HandleRenderTick();
     }
-    SliteAbility::OnInactive();
+    jsAbility_.TransferToDestroy();
+    SliteAbility::OnDestroy();
 }
 } // namespace AbilitySlite
 } // namespace OHOS

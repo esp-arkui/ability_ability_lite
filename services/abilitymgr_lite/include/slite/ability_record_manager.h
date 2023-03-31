@@ -26,7 +26,7 @@
 #include "nocopyable.h"
 #include "want.h"
 #include "slite_ability.h"
-#include "ability_state.h"
+#include "slite_ability_state.h"
 
 namespace OHOS {
 namespace AbilitySlite {
@@ -96,7 +96,9 @@ private:
 
     int32_t CreateAppTask(AbilityRecord *record);
 
-    void OnActiveDone(uint16_t token);
+    void OnCreateDone(uint16_t token);
+
+    void OnForegroundDone(uint16_t token);
 
     void OnBackgroundDone(uint16_t token);
 
@@ -115,11 +117,13 @@ private:
     bool IsValidAbility(AbilityInfo *abilityInfo);
     bool IsLauncher(const char *bundleName);
 
+    Want *CreateWant(const AbilityRecord *record);
+
     uint16_t pendingToken_ { 0 };
     AbilityList abilityList_ {};
     AbilityStack abilityStack_ {};
     SliteAbility *nativeAbility_ = nullptr;
-    static LifecycleFuncStr lifecycleFuncList_[STATE_BACKGROUND + 1];
+    // static LifecycleFuncStr lifecycleFuncList_[STATE_BACKGROUND + 1];
 };
 } // namespace AbilitySlite
 } // namespace OHOS

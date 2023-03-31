@@ -21,7 +21,7 @@
 #include "ability_errors.h"
 #include "ability_inner_message.h"
 #include "ability_record_manager.h"
-#include "ability_state.h"
+#include "slite_ability_state.h"
 #include "ability_thread.h"
 #include "abilityms_log.h"
 #include "los_task.h"
