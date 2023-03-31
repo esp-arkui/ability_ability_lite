@@ -20,14 +20,65 @@
 #include "ability_service_interface.h"
 #include "bundle_manager.h"
 #include "js_ability_thread.h"
-#include "los_task.h"
 #include "utils.h"
 
 using namespace OHOS;
 using namespace OHOS::AbilitySlite;
+namespace {
 constexpr int32_t QUEUE_LENGTH = 32;
-constexpr int32_t APP_TASK_PRI = 25;
 constexpr uint16_t TEST_TOKEN = 123;
+
+uint32_t AbilityMsgIdToState(AbilityMsgId id)
+{
+    switch (id) {
+        case AbilityMsgId::CREATE:
+            return SLITE_STATE_INITIAL;
+        case AbilityMsgId::FOREGROUND:
+            return SLITE_STATE_FOREGROUND;
+        case AbilityMsgId::BACKGROUND:
+            return SLITE_STATE_BACKGROUND;
+        case AbilityMsgId::DESTROY:
+            return SLITE_STATE_UNINITIALIZED;
+        default:
+            return SLITE_STATE_UNKNOWN;
+    }
+}
+
+void LocalSchedulerLifecycleDone(osMessageQueueId_t amsQueueId, osMessageQueueId_t messageQueueId,
+    AbilityThread *abilityThread, AbilityMsgId id, Want *want = nullptr)
+{
+    AbilityInnerMsg innerMsg;
+    innerMsg.token = TEST_TOKEN;
+    innerMsg.msgId = id;
+    innerMsg.abilityThread = abilityThread;
+    innerMsg.want = want;
+    auto ret = osMessageQueuePut(messageQueueId, &innerMsg, 0, 0);
+    ASSERT_EQ(ret, osOK);
+    Request request;
+    uint8_t prio = 0;
+    ret = osMessageQueueGet(amsQueueId, &request, &prio, osWaitForever);
+    ASSERT_EQ(ret, osOK);
+    ASSERT_EQ(request.msgId, ABILITY_TRANSACTION_DONE);
+    uint32_t token = request.msgValue & TRANSACTION_MSG_TOKEN_MASK;
+    uint32_t state = (request.msgValue >> TRANSACTION_MSG_STATE_OFFSET) & TRANSACTION_MSG_STATE_MASK;
+    ASSERT_EQ(token, TEST_TOKEN);
+    ASSERT_EQ(state, AbilityMsgIdToState(id));
+}
+
+Want *InitWant()
+{
+    auto *want = (Want *) AdapterMalloc(sizeof(Want));
+    want->data = nullptr;
+    want->dataLength = 0;
+    want->appPath = Utils::Strdup(APP_BUNDLE_PATH);
+    want->element = (ElementName *) AdapterMalloc(sizeof(ElementName));
+    want->element->bundleName = Utils::Strdup(APP1_BUNDLE_NAME);
+    want->element->abilityName = nullptr;
+    want->element->deviceId = nullptr;
+    return want;
+}
+}
+
 
 class JsAbilityThreadTest : public ::testing::Test {
 protected:
@@ -84,21 +135,7 @@ TEST_F(JsAbilityThreadTest, JsAbilityThreadNoReleaseTest)
     osMessageQueueId_t messageQueueId = jsAbilityThread->messageQueueId_;
     ASSERT_NE(messageQueueId, nullptr);
 
-    AbilityInnerMsg innerMsg3;
-    innerMsg3.token = TEST_TOKEN;
-    innerMsg3.msgId = AbilityMsgId::DESTROY;
-    innerMsg3.abilityThread = jsAbilityThread;
-    auto ret = osMessageQueuePut(messageQueueId, &innerMsg3, 0, 0);
-    ASSERT_EQ(ret, osOK);
-    Request request3;
-    uint8_t prio3 = 0;
-    ret = osMessageQueueGet(amsQueueId_, &request3, &prio3, osWaitForever);
-    ASSERT_EQ(ret, osOK);
-    ASSERT_EQ(request3.msgId, ABILITY_TRANSACTION_DONE);
-    uint32_t token3 = request3.msgValue & TRANSACTION_MSG_TOKEN_MASK;
-    uint32_t state3 = (request3.msgValue >> TRANSACTION_MSG_STATE_OFFSET) & TRANSACTION_MSG_STATE_MASK;
-    ASSERT_EQ(token3, TEST_TOKEN);
-    ASSERT_EQ(state3, STATE_INACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, AbilityMsgId::DESTROY);
     delete jsAbilityThread;
 }
 
@@ -112,61 +149,10 @@ TEST_F(JsAbilityThreadTest, JsAppTaskHandlerLifecycleTest)
     osMessageQueueId_t messageQueueId = jsAbilityThread->messageQueueId_;
     ASSERT_NE(messageQueueId, nullptr);
 
-    AbilityInnerMsg innerMsg1;
-    innerMsg1.msgId = AbilityMsgId::CREATE;
-    innerMsg1.bundleName = "";
-    innerMsg1.path = "";
-    innerMsg1.abilityThread = jsAbilityThread;
-    innerMsg1.want = (Want *) AdapterMalloc(sizeof(Want));
-    innerMsg1.want->data = nullptr;
-    innerMsg1.want->dataLength = 0;
-    innerMsg1.want->element = (ElementName *) AdapterMalloc(sizeof(ElementName));
-    innerMsg1.want->element->bundleName = Utils::Strdup(APP1_BUNDLE_NAME);
-    innerMsg1.want->element->abilityName = nullptr;
-    innerMsg1.want->element->deviceId = nullptr;
-    auto ret = osMessageQueuePut(messageQueueId, &innerMsg1, 0, 0);
-    ASSERT_EQ(ret, osOK);
-    Request request1;
-    uint8_t prio1 = 0;
-    ret = osMessageQueueGet(amsQueueId_, &request1, &prio1, osWaitForever);
-    ASSERT_EQ(ret, osOK);
-    ASSERT_EQ(request1.msgId, ABILITY_TRANSACTION_DONE);
-    uint32_t token1 = request1.msgValue & TRANSACTION_MSG_TOKEN_MASK;
-    uint32_t state1 = (request1.msgValue >> TRANSACTION_MSG_STATE_OFFSET) & TRANSACTION_MSG_STATE_MASK;
-    ASSERT_EQ(token1, TEST_TOKEN);
-    ASSERT_EQ(state1, STATE_ACTIVE);
-
-    AbilityInnerMsg innerMsg2;
-    innerMsg2.token = TEST_TOKEN;
-    innerMsg2.msgId = AbilityMsgId::BACKGROUND;
-    innerMsg2.abilityThread = jsAbilityThread;
-    ret = osMessageQueuePut(messageQueueId, &innerMsg2, 0, 0);
-    ASSERT_EQ(ret, osOK);
-    Request request2;
-    uint8_t prio2 = 0;
-    ret = osMessageQueueGet(amsQueueId_, &request2, &prio2, osWaitForever);
-    ASSERT_EQ(ret, osOK);
-    ASSERT_EQ(request2.msgId, ABILITY_TRANSACTION_DONE);
-    uint32_t token2 = request2.msgValue & TRANSACTION_MSG_TOKEN_MASK;
-    uint32_t state2 = (request2.msgValue >> TRANSACTION_MSG_STATE_OFFSET) & TRANSACTION_MSG_STATE_MASK;
-    ASSERT_EQ(token2, TEST_TOKEN);
-    ASSERT_EQ(state2, STATE_BACKGROUND);
-
-    AbilityInnerMsg innerMsg3;
-    innerMsg3.token = TEST_TOKEN;
-    innerMsg3.msgId = AbilityMsgId::DESTROY;
-    innerMsg3.abilityThread = jsAbilityThread;
-    ret = osMessageQueuePut(messageQueueId, &innerMsg3, 0, 0);
-    ASSERT_EQ(ret, osOK);
-    Request request3;
-    uint8_t prio3 = 0;
-    ret = osMessageQueueGet(amsQueueId_, &request3, &prio3, osWaitForever);
-    ASSERT_EQ(ret, osOK);
-    ASSERT_EQ(request3.msgId, ABILITY_TRANSACTION_DONE);
-    uint32_t token3 = request3.msgValue & TRANSACTION_MSG_TOKEN_MASK;
-    uint32_t state3 = (request3.msgValue >> TRANSACTION_MSG_STATE_OFFSET) & TRANSACTION_MSG_STATE_MASK;
-    ASSERT_EQ(token3, TEST_TOKEN);
-    ASSERT_EQ(state3, STATE_INACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, AbilityMsgId::CREATE, InitWant());
+    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, AbilityMsgId::FOREGROUND, InitWant());
+    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, AbilityMsgId::BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, AbilityMsgId::DESTROY);
 
     ASSERT_EQ(jsAbilityThread->ReleaseAbilityThread(), ERR_OK);
     ASSERT_EQ(jsAbilityThread->ReleaseAbilityThread(), PARAM_CHECK_ERROR);
@@ -175,7 +161,7 @@ TEST_F(JsAbilityThreadTest, JsAppTaskHandlerLifecycleTest)
 
 TEST_F(JsAbilityThreadTest, JsAppTaskHandlerOtherTest)
 {
-    auto* jsAbilityThread = new JsAbilityThread();
+    auto *jsAbilityThread = new JsAbilityThread();
     AbilityRecord record;
     record.appName = Utils::Strdup(APP1_BUNDLE_NAME);
     record.token = TEST_TOKEN;
@@ -183,53 +169,16 @@ TEST_F(JsAbilityThreadTest, JsAppTaskHandlerOtherTest)
     osMessageQueueId_t messageQueueId = jsAbilityThread->messageQueueId_;
     ASSERT_NE(messageQueueId, nullptr);
 
-    AbilityInnerMsg innerMsg1;
-    innerMsg1.msgId = AbilityMsgId::CREATE;
-    innerMsg1.bundleName = "";
-    innerMsg1.path = "";
-    innerMsg1.abilityThread = jsAbilityThread;
-    innerMsg1.want = (Want *) AdapterMalloc(sizeof(Want));
-    innerMsg1.want->data = nullptr;
-    innerMsg1.want->dataLength = 0;
-    innerMsg1.want->element = (ElementName *) AdapterMalloc(sizeof(ElementName));
-    innerMsg1.want->element->bundleName = Utils::Strdup(APP1_BUNDLE_NAME);
-    innerMsg1.want->element->abilityName = nullptr;
-    innerMsg1.want->element->deviceId = nullptr;
-    auto ret = osMessageQueuePut(messageQueueId, &innerMsg1, 0, 0);
-    ASSERT_EQ(ret, osOK);
-    Request request1;
-    uint8_t prio1 = 0;
-    ret = osMessageQueueGet(amsQueueId_, &request1, &prio1, osWaitForever);
-    ASSERT_EQ(ret, osOK);
-    ASSERT_EQ(request1.msgId, ABILITY_TRANSACTION_DONE);
-    uint32_t token1 = request1.msgValue & TRANSACTION_MSG_TOKEN_MASK;
-    uint32_t state1 = (request1.msgValue >> TRANSACTION_MSG_STATE_OFFSET) & TRANSACTION_MSG_STATE_MASK;
-    ASSERT_EQ(token1, TEST_TOKEN);
-    ASSERT_EQ(state1, STATE_ACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, AbilityMsgId::CREATE, InitWant());
 
     AbilityInnerMsg innerMsg5;
     innerMsg5.token = TEST_TOKEN;
     innerMsg5.msgId = AbilityMsgId::UNKNOWN;
     innerMsg5.abilityThread = jsAbilityThread;
-    ret = osMessageQueuePut(messageQueueId, &innerMsg5, 0, 0);
+    auto ret = osMessageQueuePut(messageQueueId, &innerMsg5, 0, 0);
     ASSERT_EQ(ret, osOK);
 
-    AbilityInnerMsg innerMsg6;
-    innerMsg6.token = TEST_TOKEN;
-    innerMsg6.msgId = AbilityMsgId::DESTROY;
-    innerMsg6.abilityThread = jsAbilityThread;
-    ret = osMessageQueuePut(messageQueueId, &innerMsg6, 0, 0);
-    ASSERT_EQ(ret, osOK);
-    Request request6;
-    uint8_t prio6 = 0;
-    ret = osMessageQueueGet(amsQueueId_, &request6, &prio6, osWaitForever);
-    ASSERT_EQ(ret, osOK);
-    ASSERT_EQ(request6.msgId, ABILITY_TRANSACTION_DONE);
-    uint32_t token6 = request6.msgValue & TRANSACTION_MSG_TOKEN_MASK;
-    uint32_t state6 = (request6.msgValue >> TRANSACTION_MSG_STATE_OFFSET) & TRANSACTION_MSG_STATE_MASK;
-    ASSERT_EQ(token6, TEST_TOKEN);
-    ASSERT_EQ(state6, STATE_INACTIVE);
-
+    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, AbilityMsgId::DESTROY);
     ASSERT_EQ(jsAbilityThread->ReleaseAbilityThread(), ERR_OK);
     delete jsAbilityThread;
 }

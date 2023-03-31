@@ -25,26 +25,22 @@
 
 using namespace OHOS;
 using namespace OHOS::AbilitySlite;
+
+namespace {
 constexpr int32_t QUEUE_LENGTH = 32;
 constexpr char LAUNCHER_BUNDLE_NAME[] = "com.ohos.launcher";
 
-namespace {
 class NativeAbility : public SliteAbility {
 public:
-    void OnStart(const Want &want) override
+    void OnCreate(const Want &want) override
     {
-        SliteAbility::OnStart(want);
+        SliteAbility::OnCreate(want);
     }
 
-    void OnInactive() override
+    void OnForeground(const Want &want) override
     {
-        SliteAbility::OnInactive();
-    }
-
-    void OnActive(const Want &want) override
-    {
-        onActiveCallCount++;
-        SliteAbility::OnActive(want);
+        onForegroundCallCount++;
+        SliteAbility::OnForeground(want);
     }
 
     void OnBackground() override
@@ -53,19 +49,20 @@ public:
         SliteAbility::OnBackground();
     }
 
-    void OnStop() override
+    void OnDestroy() override
     {
-        SliteAbility::OnStop();
+        SliteAbility::OnDestroy();
     }
 
-    uint32_t onActiveCallCount { 0 };
+    uint32_t onForegroundCallCount { 0 };
     uint32_t onBackgroundCallCount { 0 };
 };
 
 NativeAbility g_nativeAbility;
 uint32_t tokenCount = 0;
 
-void LocalSchedulerLifecycleDone(osMessageQueueId_t amsQueueId,uint64_t tokenExpect, uint32_t stateExpect) {
+void LocalSchedulerLifecycleDone(osMessageQueueId_t amsQueueId, uint64_t tokenExpect, uint32_t stateExpect)
+{
     AbilityRecordManager &abilityService = AbilityRecordManager::GetInstance();
     Request request;
     uint8_t prio = 0;
@@ -106,7 +103,7 @@ protected:
             AbilityRecordManager &abilityService = AbilityRecordManager::GetInstance();
             abilityService.setNativeAbility(&g_nativeAbility);
             abilityService.StartLauncher();
-            LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
+            LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
         });
     }
 
@@ -133,6 +130,7 @@ TEST_F(AbilityRecordManagerTest, StartAbilityDefaultTest_001)
     want->data = nullptr;
     want->dataLength = 0;
     want->element = nullptr;
+    want->appPath = nullptr;
     ASSERT_EQ(abilityService.StartAbility(want), PARAM_NULL_ERROR);
     want->element = (ElementName *) AdapterMalloc(sizeof(ElementName));
     want->element->bundleName = nullptr;
@@ -176,6 +174,7 @@ TEST_F(AbilityRecordManagerTest, StartAbilityNativeTest_001)
     ASSERT_NE(want, nullptr);
     want->data = nullptr;
     want->dataLength = 0;
+    want->appPath = nullptr;
     want->element = (ElementName *) AdapterMalloc(sizeof(ElementName));
     ASSERT_NE(want->element, nullptr);
     want->element->bundleName = Utils::Strdup(LAUNCHER_BUNDLE_NAME);
@@ -183,11 +182,11 @@ TEST_F(AbilityRecordManagerTest, StartAbilityNativeTest_001)
     want->element->abilityName = nullptr;
     want->element->deviceId = nullptr;
 
-    uint32_t onActiveCallCountOrig = g_nativeAbility.onActiveCallCount;
+    uint32_t onForegroundCallCountOrig = g_nativeAbility.onForegroundCallCount;
     ASSERT_EQ(abilityService.StartAbility(want), ERR_OK);
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 1);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 1);
 
     ClearWant(want);
     AdapterFree(want);
@@ -203,31 +202,33 @@ TEST_F(AbilityRecordManagerTest, StartAbilityNativeTest_002)
     Want *want = (Want *) AdapterMalloc(sizeof(Want));
     want->data = nullptr;
     want->dataLength = 0;
+    want->appPath = Utils::Strdup(APP_BUNDLE_PATH);
     want->element = (ElementName *) AdapterMalloc(sizeof(ElementName));
     want->element->bundleName = Utils::Strdup(APP1_BUNDLE_NAME);
     want->element->abilityName = nullptr;
     want->element->deviceId = nullptr;
     uint32_t onBackgroundCallCountOrig = g_nativeAbility.onBackgroundCallCount;
-    uint32_t onActiveCallCountOrig = g_nativeAbility.onActiveCallCount;
+    uint32_t onForegroundCallCountOrig = g_nativeAbility.onForegroundCallCount;
     ASSERT_EQ(abilityService.StartAbility(want), ERR_OK);
     uint32_t app1Token = ++tokenCount;
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_BACKGROUND);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_BACKGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_BACKGROUND);
     ASSERT_EQ(g_nativeAbility.onBackgroundCallCount, onBackgroundCallCountOrig + 1);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_ACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_INITIAL);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_FOREGROUND);
     TestTopAbility(APP1_BUNDLE_NAME);
 
     // terminate app1
     ASSERT_EQ(abilityService.TerminateAbility(app1Token), ERR_OK);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_BACKGROUND);
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 1);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_INACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 1);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_UNINITIALIZED);
     // FIXME
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 2);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 2);
     TestTopAbility(LAUNCHER_BUNDLE_NAME);
 
     ClearWant(want);
@@ -244,41 +245,43 @@ TEST_F(AbilityRecordManagerTest, StartAbilityJsNativeTest_001)
     Want *want = (Want *) AdapterMalloc(sizeof(Want));
     want->data = nullptr;
     want->dataLength = 0;
+    want->appPath = nullptr;
     want->element = (ElementName *) AdapterMalloc(sizeof(ElementName));
     want->element->bundleName = Utils::Strdup(APP1_BUNDLE_NAME);
     want->element->abilityName = nullptr;
     want->element->deviceId = nullptr;
     uint32_t onBackgroundCallCountOrig = g_nativeAbility.onBackgroundCallCount;
-    uint32_t onActiveCallCountOrig = g_nativeAbility.onActiveCallCount;
+    uint32_t onForegroundCallCountOrig = g_nativeAbility.onForegroundCallCount;
     ASSERT_EQ(abilityService.StartAbility(want), ERR_OK);
     uint32_t app1Token = ++tokenCount;
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_BACKGROUND);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_BACKGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_BACKGROUND);
     ASSERT_EQ(g_nativeAbility.onBackgroundCallCount, onBackgroundCallCountOrig + 1);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_ACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_INITIAL);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_FOREGROUND);
     TestTopAbility(APP1_BUNDLE_NAME);
 
     ClearElement(want->element);
     want->element->bundleName = Utils::Strdup(LAUNCHER_BUNDLE_NAME);
     // start native
     ASSERT_EQ(abilityService.StartAbility(want), ERR_OK);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_BACKGROUND);
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 1);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 1);
     TestTopAbility(LAUNCHER_BUNDLE_NAME);
 
     // terminate app1
     ASSERT_EQ(abilityService.TerminateAbility(app1Token), ERR_OK);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_BACKGROUND);
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 2);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_INACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 2);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_UNINITIALIZED);
     // FIXME
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 3);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 3);
     TestTopAbility(LAUNCHER_BUNDLE_NAME);
 
     ClearWant(want);
@@ -295,18 +298,20 @@ TEST_F(AbilityRecordManagerTest, StartAbilityJsNativeTest_002)
     Want *want = (Want *) AdapterMalloc(sizeof(Want));
     want->data = nullptr;
     want->dataLength = 0;
+    want->appPath = nullptr;
     want->element = (ElementName *) AdapterMalloc(sizeof(ElementName));
     want->element->bundleName = Utils::Strdup(APP1_BUNDLE_NAME);
     want->element->abilityName = nullptr;
     want->element->deviceId = nullptr;
     uint32_t onBackgroundCallCountOrig = g_nativeAbility.onBackgroundCallCount;
-    uint32_t onActiveCallCountOrig = g_nativeAbility.onActiveCallCount;
+    uint32_t onForegroundCallCountOrig = g_nativeAbility.onForegroundCallCount;
     ASSERT_EQ(abilityService.StartAbility(want), ERR_OK);
     uint32_t app1Token = ++tokenCount;
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_BACKGROUND);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_BACKGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_BACKGROUND);
     ASSERT_EQ(g_nativeAbility.onBackgroundCallCount, onBackgroundCallCountOrig + 1);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_ACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_INITIAL);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_FOREGROUND);
     TestTopAbility(APP1_BUNDLE_NAME);
 
     // start native
@@ -317,15 +322,15 @@ TEST_F(AbilityRecordManagerTest, StartAbilityJsNativeTest_002)
 
     // terminate app1
     ASSERT_EQ(abilityService.TerminateAbility(app1Token), ERR_OK);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_BACKGROUND);
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 1);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_INACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 1);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_UNINITIALIZED);
     // FIXME
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 2);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 2);
     TestTopAbility(LAUNCHER_BUNDLE_NAME);
 
     ClearWant(want);
@@ -342,18 +347,20 @@ TEST_F(AbilityRecordManagerTest, StartAbilityJsNativeTest_003)
     Want *want = (Want *) AdapterMalloc(sizeof(Want));
     want->data = nullptr;
     want->dataLength = 0;
+    want->appPath = nullptr;
     want->element = (ElementName *) AdapterMalloc(sizeof(ElementName));
     want->element->bundleName = Utils::Strdup(APP1_BUNDLE_NAME);
     want->element->abilityName = nullptr;
     want->element->deviceId = nullptr;
     uint32_t onBackgroundCallCountOrig = g_nativeAbility.onBackgroundCallCount;
-    uint32_t onActiveCallCountOrig = g_nativeAbility.onActiveCallCount;
+    uint32_t onForegroundCallCountOrig = g_nativeAbility.onForegroundCallCount;
     ASSERT_EQ(abilityService.StartAbility(want), ERR_OK);
     uint32_t app1Token = ++tokenCount;
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_BACKGROUND);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_BACKGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_BACKGROUND);
     ASSERT_EQ(g_nativeAbility.onBackgroundCallCount, onBackgroundCallCountOrig + 1);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_ACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_INITIAL);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_FOREGROUND);
     TestTopAbility(APP1_BUNDLE_NAME);
 
     // start app2
@@ -361,28 +368,29 @@ TEST_F(AbilityRecordManagerTest, StartAbilityJsNativeTest_003)
     want->element->bundleName = Utils::Strdup(APP2_BUNDLE_NAME);
     ASSERT_EQ(abilityService.StartAbility(want), ERR_OK);
     uint32_t app2Token = ++tokenCount;
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_BACKGROUND);
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 1);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_INACTIVE);
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_BACKGROUND);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 1);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_UNINITIALIZED);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_BACKGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_BACKGROUND);
     ASSERT_EQ(g_nativeAbility.onBackgroundCallCount, onBackgroundCallCountOrig + 2);
-    LocalSchedulerLifecycleDone(amsQueueId_, app2Token, STATE_ACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, app2Token, SLITE_STATE_INITIAL);
+    LocalSchedulerLifecycleDone(amsQueueId_, app2Token, SLITE_STATE_FOREGROUND);
     TestTopAbility(APP2_BUNDLE_NAME);
 
     // terminate app2
     ASSERT_EQ(abilityService.TerminateAbility(app2Token), ERR_OK);
-    LocalSchedulerLifecycleDone(amsQueueId_, app2Token, STATE_BACKGROUND);
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 2);
-    LocalSchedulerLifecycleDone(amsQueueId_, app2Token, STATE_INACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, app2Token, SLITE_STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 2);
+    LocalSchedulerLifecycleDone(amsQueueId_, app2Token, SLITE_STATE_UNINITIALIZED);
     // FIXME
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 3);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 3);
     TestTopAbility(LAUNCHER_BUNDLE_NAME);
 
     ClearWant(want);
@@ -399,49 +407,51 @@ TEST_F(AbilityRecordManagerTest, StartAbilityNativeJsTest_001)
     Want *want = (Want *) AdapterMalloc(sizeof(Want));
     want->data = nullptr;
     want->dataLength = 0;
+    want->appPath = nullptr;
     want->element = (ElementName *) AdapterMalloc(sizeof(ElementName));
     want->element->bundleName = Utils::Strdup(APP1_BUNDLE_NAME);
     want->element->abilityName = nullptr;
     want->element->deviceId = nullptr;
     uint32_t onBackgroundCallCountOrig = g_nativeAbility.onBackgroundCallCount;
-    uint32_t onActiveCallCountOrig = g_nativeAbility.onActiveCallCount;
+    uint32_t onForegroundCallCountOrig = g_nativeAbility.onForegroundCallCount;
     ASSERT_EQ(abilityService.StartAbility(want), ERR_OK);
     uint32_t app1Token = ++tokenCount;
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_BACKGROUND);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_BACKGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_BACKGROUND);
     ASSERT_EQ(g_nativeAbility.onBackgroundCallCount, onBackgroundCallCountOrig + 1);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_ACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_INITIAL);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_FOREGROUND);
     TestTopAbility(APP1_BUNDLE_NAME);
 
     // start native
     ClearElement(want->element);
     want->element->bundleName = Utils::Strdup(LAUNCHER_BUNDLE_NAME);
     ASSERT_EQ(abilityService.StartAbility(want), ERR_OK);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_BACKGROUND);
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 1);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 1);
     TestTopAbility(LAUNCHER_BUNDLE_NAME);
 
     // start native
     ASSERT_EQ(abilityService.StartAbility(want), ERR_OK);
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 2);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 2);
     TestTopAbility(LAUNCHER_BUNDLE_NAME);
 
     // terminate app1
     ASSERT_EQ(abilityService.TerminateAbility(app1Token), ERR_OK);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_BACKGROUND);
     // FIXME
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 3);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_INACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 3);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_UNINITIALIZED);
     // FIXME
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 4);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 4);
     TestTopAbility(LAUNCHER_BUNDLE_NAME);
 
     ClearWant(want);
@@ -458,52 +468,54 @@ TEST_F(AbilityRecordManagerTest, StartAbilityNativeJsTest_002)
     Want *want = (Want *) AdapterMalloc(sizeof(Want));
     want->data = nullptr;
     want->dataLength = 0;
+    want->appPath = nullptr;
     want->element = (ElementName *) AdapterMalloc(sizeof(ElementName));
     want->element->bundleName = Utils::Strdup(APP1_BUNDLE_NAME);
     want->element->abilityName = nullptr;
     want->element->deviceId = nullptr;
     uint32_t onBackgroundCallCountOrig = g_nativeAbility.onBackgroundCallCount;
-    uint32_t onActiveCallCountOrig = g_nativeAbility.onActiveCallCount;
+    uint32_t onForegroundCallCountOrig = g_nativeAbility.onForegroundCallCount;
     ASSERT_EQ(abilityService.StartAbility(want), ERR_OK);
     uint32_t app1Token = ++tokenCount;
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_BACKGROUND);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_BACKGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_BACKGROUND);
     ASSERT_EQ(g_nativeAbility.onBackgroundCallCount, onBackgroundCallCountOrig + 1);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_ACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_INITIAL);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_FOREGROUND);
     TestTopAbility(APP1_BUNDLE_NAME);
 
     // start native
     ClearElement(want->element);
     want->element->bundleName = Utils::Strdup(LAUNCHER_BUNDLE_NAME);
     ASSERT_EQ(abilityService.StartAbility(want), ERR_OK);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_BACKGROUND);
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 1);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 1);
     TestTopAbility(LAUNCHER_BUNDLE_NAME);
 
     // start app1
     ClearElement(want->element);
     want->element->bundleName = Utils::Strdup(APP1_BUNDLE_NAME);
     ASSERT_EQ(abilityService.StartAbility(want), ERR_OK);
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_BACKGROUND);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_BACKGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_BACKGROUND);
     ASSERT_EQ(g_nativeAbility.onBackgroundCallCount, onBackgroundCallCountOrig + 2);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_ACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_FOREGROUND);
     TestTopAbility(APP1_BUNDLE_NAME);
 
     // terminate app1
     ASSERT_EQ(abilityService.TerminateAbility(app1Token), ERR_OK);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_BACKGROUND);
     // FIXME
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 2);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_INACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 2);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_UNINITIALIZED);
     // FIXME
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 3);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 3);
     TestTopAbility(LAUNCHER_BUNDLE_NAME);
 
     ClearWant(want);
@@ -520,28 +532,30 @@ TEST_F(AbilityRecordManagerTest, StartAbilityNativeJsTest_003)
     Want *want = (Want *) AdapterMalloc(sizeof(Want));
     want->data = nullptr;
     want->dataLength = 0;
+    want->appPath = nullptr;
     want->element = (ElementName *) AdapterMalloc(sizeof(ElementName));
     want->element->bundleName = Utils::Strdup(APP1_BUNDLE_NAME);
     want->element->abilityName = nullptr;
     want->element->deviceId = nullptr;
     uint32_t onBackgroundCallCountOrig = g_nativeAbility.onBackgroundCallCount;
-    uint32_t onActiveCallCountOrig = g_nativeAbility.onActiveCallCount;
+    uint32_t onForegroundCallCountOrig = g_nativeAbility.onForegroundCallCount;
     ASSERT_EQ(abilityService.StartAbility(want), ERR_OK);
     uint32_t app1Token = ++tokenCount;
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_BACKGROUND);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_BACKGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_BACKGROUND);
     ASSERT_EQ(g_nativeAbility.onBackgroundCallCount, onBackgroundCallCountOrig + 1);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_ACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_INITIAL);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_FOREGROUND);
     TestTopAbility(APP1_BUNDLE_NAME);
 
     // start native
     ClearElement(want->element);
     want->element->bundleName = Utils::Strdup(LAUNCHER_BUNDLE_NAME);
     ASSERT_EQ(abilityService.StartAbility(want), ERR_OK);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_BACKGROUND);
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 1);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 1);
     TestTopAbility(LAUNCHER_BUNDLE_NAME);
 
     // start app2
@@ -550,28 +564,29 @@ TEST_F(AbilityRecordManagerTest, StartAbilityNativeJsTest_003)
     ASSERT_EQ(abilityService.StartAbility(want), ERR_OK);
     uint32_t app2Token = ++tokenCount;
     // FIXME
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_BACKGROUND);
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 2);
-    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, STATE_INACTIVE);
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_BACKGROUND);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 2);
+    LocalSchedulerLifecycleDone(amsQueueId_, app1Token, SLITE_STATE_UNINITIALIZED);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_BACKGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_BACKGROUND);
     ASSERT_EQ(g_nativeAbility.onBackgroundCallCount, onBackgroundCallCountOrig + 2);
-    LocalSchedulerLifecycleDone(amsQueueId_, app2Token, STATE_ACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, app2Token, SLITE_STATE_INITIAL);
+    LocalSchedulerLifecycleDone(amsQueueId_, app2Token, SLITE_STATE_FOREGROUND);
     TestTopAbility(APP2_BUNDLE_NAME);
 
     // terminate app2
     ASSERT_EQ(abilityService.TerminateAbility(app2Token), ERR_OK);
-    LocalSchedulerLifecycleDone(amsQueueId_, app2Token, STATE_BACKGROUND);
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 3);
-    LocalSchedulerLifecycleDone(amsQueueId_, app2Token, STATE_INACTIVE);
+    LocalSchedulerLifecycleDone(amsQueueId_, app2Token, SLITE_STATE_BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 3);
+    LocalSchedulerLifecycleDone(amsQueueId_, app2Token, SLITE_STATE_UNINITIALIZED);
     // FIXME
-    LocalSchedulerLifecycleDone(amsQueueId_, 0, STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.GetState(), STATE_ACTIVE);
-    ASSERT_EQ(g_nativeAbility.onActiveCallCount, onActiveCallCountOrig + 4);
+    LocalSchedulerLifecycleDone(amsQueueId_, 0, SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.GetState(), SLITE_STATE_FOREGROUND);
+    ASSERT_EQ(g_nativeAbility.onForegroundCallCount, onForegroundCallCountOrig + 4);
     TestTopAbility(LAUNCHER_BUNDLE_NAME);
 
     ClearWant(want);

@@ -30,20 +30,15 @@ constexpr char LAUNCHER_BUNDLE_NAME[] = "com.ohos.launcher";
 
 class NativeAbility : public SliteAbility {
 public:
-    void OnStart(const Want &want) override
+    void OnCreate(const Want &want) override
     {
-        SliteAbility::OnStart(want);
+        SliteAbility::OnCreate(want);
     }
 
-    void OnInactive() override
+    void OnForeground(const Want &want) override
     {
-        SliteAbility::OnInactive();
-    }
-
-    void OnActive(const Want &want) override
-    {
-        onActiveDone = true;
-        SliteAbility::OnActive(want);
+        onForegroundDone = true;
+        SliteAbility::OnForeground(want);
     }
 
     void OnBackground() override
@@ -52,27 +47,27 @@ public:
         SliteAbility::OnBackground();
     }
 
-    void OnStop() override
+    void OnDestroy() override
     {
-        SliteAbility::OnStop();
+        SliteAbility::OnDestroy();
     }
 
     void ResetOnActiveDoneFlag()
     {
-        onActiveDone = false;
+        onForegroundDone = false;
     }
 
     bool WaitOnActiveDone()
     {
-        while (!onActiveDone) {
+        while (!onForegroundDone) {
             usleep(50000); // sleep 50ms
         }
-        onActiveDone = false;
+        onForegroundDone = false;
         return true;
     }
 
 private:
-    std::atomic<bool> onActiveDone { false };
+    std::atomic<bool> onForegroundDone { false };
     std::atomic<bool> onBackgroundDone { false };
 };
 
@@ -104,6 +99,7 @@ TEST_F(AbilityMsClientTest, AbilityMsClientTest)
     ASSERT_NE(want, nullptr);
     want->data = nullptr;
     want->dataLength = 0;
+    want->appPath = nullptr;
     want->element = (ElementName *) AdapterMalloc(sizeof(ElementName));
     ASSERT_NE(want->element, nullptr);
     want->element->bundleName = Utils::Strdup(LAUNCHER_BUNDLE_NAME);
