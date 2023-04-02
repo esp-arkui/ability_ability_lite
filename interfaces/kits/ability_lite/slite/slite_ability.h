@@ -16,6 +16,7 @@
 #ifndef OHOS_SLITE_ABILITY_H
 #define OHOS_SLITE_ABILITY_H
 
+#include "ability_inner_message.h"
 #include "lite_context.h"
 #include "want.h"
 
@@ -75,7 +76,7 @@ public:
      */
     virtual void OnDestroy();
 
-    virtual void HandleExtraMessage(const void *innerMsg);
+    virtual void HandleExtraMessage(const AbilityInnerMsg &innerMsg);
 
     int GetState() const;
 

@@ -25,7 +25,7 @@ class DummyJsAbility : public SliteAbility {
 public:
     DummyJsAbility() = default;
 
-    virtual ~DummyJsAbility() = default;
+    ~DummyJsAbility() override = default;
 
     void OnCreate(const Want &want) override;
 
@@ -34,6 +34,8 @@ public:
     void OnBackground() override;
 
     void OnDestroy() override;
+
+    void HandleExtraMessage(const AbilityInnerMsg &innerMsg) override;
 
 private:
     bool isBackground_ = false;

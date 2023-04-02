@@ -49,5 +49,24 @@ void DummyJsAbility::OnDestroy()
     jsAbility_.TransferToDestroy();
     SliteAbility::OnDestroy();
 }
+
+void DummyJsAbility::HandleExtraMessage(const AbilityInnerMsg &innerMsg)
+{
+    switch (innerMsg.msgId) {
+        case AbilityMsgId::BACKPRESSED:
+            jsAbility_.BackPressed();
+            break;
+        case AbilityMsgId::ASYNCWORK: {
+            auto* work = reinterpret_cast<ACELite::AsyncWork *>(innerMsg.data);
+            ACELite::JsAsyncWork::ExecuteAsyncWork(work);
+            break;
+        }
+        case AbilityMsgId::TE_EVENT:
+            jsAbility_.HandleRenderTick();
+            break;
+        default:
+            break;
+    }
+}
 } // namespace AbilitySlite
 } // namespace OHOS

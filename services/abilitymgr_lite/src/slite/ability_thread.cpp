@@ -80,6 +80,7 @@ void AbilityThread::AppTaskHandler(UINT32 uwArg)
                 LP_TaskEnd();
                 return; // here exit the loop, and abort all messages afterwards
             default:
+                abilityThread->ability_->HandleExtraMessage(innerMsg);
                 break;
         }
         LP_TaskEnd();

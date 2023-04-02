@@ -21,6 +21,7 @@
 #include "ability_manager_inner.h"
 #include "dummy_js_ability.h"
 #include "js_ability.h"
+#include "js_async_work.h"
 #include "los_task.h"
 #include "slite_ability_loader.h"
 
@@ -77,6 +78,7 @@ int32_t JsAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecord)
         return MEMORY_MALLOC_ERROR;
     }
     ability_->SetToken(abilityRecord->token);
+    ACELite::JsAsyncWork::SetAppQueueHandler(messageQueueId_);
     LOS_TaskUnlock();
     HILOG_INFO(HILOG_MODULE_AAFWK, "JsAbilityThread init done");
     return ERR_OK;
@@ -84,6 +86,7 @@ int32_t JsAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecord)
 
 int32_t JsAbilityThread::ReleaseAbilityThread()
 {
+    ACELite::JsAsyncWork::SetAppQueueHandler(nullptr);
     if (state_ != AbilityThreadState::ABILITY_THREAD_INITIALIZED) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "JsAbilityThread release fail, the AbilityThread is not inited");
         return PARAM_CHECK_ERROR;

@@ -21,19 +21,22 @@
 
 namespace OHOS {
 namespace AbilitySlite {
-enum class AbilityMsgId {
+enum AbilityMsgId {
     UNKNOWN,
     CREATE,
     FOREGROUND,
     BACKGROUND,
     DESTROY,
+    BACKPRESSED,
+    ASYNCWORK,
+    TE_EVENT,
     MSG_ID_MAX,
 };
 
 class AbilityThread;
 
 struct AbilityInnerMsg {
-    AbilityMsgId msgId = AbilityMsgId::UNKNOWN;
+    uint32_t msgId = UNKNOWN;
     AbilityThread *abilityThread = nullptr;
     Want *want = nullptr;
     uint16_t token = 0;
