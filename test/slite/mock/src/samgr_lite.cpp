@@ -22,6 +22,7 @@
 #include <atomic>
 #include <functional>
 
+#include "adapter.h"
 #include "cmsis_os2.h"
 #include "securec.h"
 
@@ -87,6 +88,9 @@ public:
                 return;
             }
             service_->MessageHandle(service_, &request);
+            if (request.data != nullptr) {
+                AdapterFree(request.data);
+            }
         }
     }
 

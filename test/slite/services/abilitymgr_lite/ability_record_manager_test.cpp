@@ -122,7 +122,6 @@ std::once_flag AbilityRecordManagerTest::onceFlag {};
 TEST_F(AbilityRecordManagerTest, StartAbilityDefaultTest_001)
 {
     AbilityRecordManager &abilityService = AbilityRecordManager::GetInstance();
-    ASSERT_EQ(abilityService.want_, nullptr);
     ASSERT_EQ(abilityService.curTask_, 0u);
     Want *want = nullptr;
     ASSERT_EQ(abilityService.StartAbility(want), PARAM_NULL_ERROR);

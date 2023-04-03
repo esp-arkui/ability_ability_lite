@@ -28,16 +28,16 @@ namespace {
 constexpr int32_t QUEUE_LENGTH = 32;
 constexpr uint16_t TEST_TOKEN = 123;
 
-uint32_t AbilityMsgIdToState(AbilityMsgId id)
+uint32_t AbilityMsgIdToState(SliteAbilityMsgId id)
 {
     switch (id) {
-        case AbilityMsgId::CREATE:
+        case SliteAbilityMsgId::CREATE:
             return SLITE_STATE_INITIAL;
-        case AbilityMsgId::FOREGROUND:
+        case SliteAbilityMsgId::FOREGROUND:
             return SLITE_STATE_FOREGROUND;
-        case AbilityMsgId::BACKGROUND:
+        case SliteAbilityMsgId::BACKGROUND:
             return SLITE_STATE_BACKGROUND;
-        case AbilityMsgId::DESTROY:
+        case SliteAbilityMsgId::DESTROY:
             return SLITE_STATE_UNINITIALIZED;
         default:
             return SLITE_STATE_UNKNOWN;
@@ -45,9 +45,9 @@ uint32_t AbilityMsgIdToState(AbilityMsgId id)
 }
 
 void LocalSchedulerLifecycleDone(osMessageQueueId_t amsQueueId, osMessageQueueId_t messageQueueId,
-    AbilityThread *abilityThread, AbilityMsgId id, Want *want = nullptr)
+    AbilityThread *abilityThread, SliteAbilityMsgId id, Want *want = nullptr)
 {
-    AbilityInnerMsg innerMsg;
+    SliteAbilityInnerMsg innerMsg;
     innerMsg.token = TEST_TOKEN;
     innerMsg.msgId = id;
     innerMsg.abilityThread = abilityThread;
@@ -135,7 +135,7 @@ TEST_F(JsAbilityThreadTest, JsAbilityThreadNoReleaseTest)
     osMessageQueueId_t messageQueueId = jsAbilityThread->messageQueueId_;
     ASSERT_NE(messageQueueId, nullptr);
 
-    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, AbilityMsgId::DESTROY);
+    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, SliteAbilityMsgId::DESTROY);
     delete jsAbilityThread;
 }
 
@@ -149,10 +149,10 @@ TEST_F(JsAbilityThreadTest, JsAppTaskHandlerLifecycleTest)
     osMessageQueueId_t messageQueueId = jsAbilityThread->messageQueueId_;
     ASSERT_NE(messageQueueId, nullptr);
 
-    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, AbilityMsgId::CREATE, InitWant());
-    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, AbilityMsgId::FOREGROUND, InitWant());
-    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, AbilityMsgId::BACKGROUND);
-    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, AbilityMsgId::DESTROY);
+    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, SliteAbilityMsgId::CREATE, InitWant());
+    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, SliteAbilityMsgId::FOREGROUND, InitWant());
+    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, SliteAbilityMsgId::BACKGROUND);
+    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, SliteAbilityMsgId::DESTROY);
 
     ASSERT_EQ(jsAbilityThread->ReleaseAbilityThread(), ERR_OK);
     ASSERT_EQ(jsAbilityThread->ReleaseAbilityThread(), PARAM_CHECK_ERROR);
@@ -169,16 +169,16 @@ TEST_F(JsAbilityThreadTest, JsAppTaskHandlerOtherTest)
     osMessageQueueId_t messageQueueId = jsAbilityThread->messageQueueId_;
     ASSERT_NE(messageQueueId, nullptr);
 
-    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, AbilityMsgId::CREATE, InitWant());
+    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, SliteAbilityMsgId::CREATE, InitWant());
 
-    AbilityInnerMsg innerMsg5;
+    SliteAbilityInnerMsg innerMsg5;
     innerMsg5.token = TEST_TOKEN;
-    innerMsg5.msgId = AbilityMsgId::UNKNOWN;
+    innerMsg5.msgId = SliteAbilityMsgId::UNKNOWN;
     innerMsg5.abilityThread = jsAbilityThread;
     auto ret = osMessageQueuePut(messageQueueId, &innerMsg5, 0, 0);
     ASSERT_EQ(ret, osOK);
 
-    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, AbilityMsgId::DESTROY);
+    LocalSchedulerLifecycleDone(amsQueueId_, messageQueueId, jsAbilityThread, SliteAbilityMsgId::DESTROY);
     ASSERT_EQ(jsAbilityThread->ReleaseAbilityThread(), ERR_OK);
     delete jsAbilityThread;
 }

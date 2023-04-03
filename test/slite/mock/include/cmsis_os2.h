@@ -447,7 +447,7 @@ uint32_t osThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout);
 /// Wait for Timeout (Time Delay).
 /// \param[in]     ticks         \ref CMSIS_RTOS_TimeOutValue "time ticks" value
 /// \return status code that indicates the execution status of the function.
-osStatus_t osDelay (uint32_t ticks);
+// osStatus_t osDelay (uint32_t ticks);
 
 /// Wait until specified time.
 /// \param[in]     ticks         absolute time in ticks

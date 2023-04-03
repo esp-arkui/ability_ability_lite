@@ -14,7 +14,7 @@
  */
 
 #include <gtest/gtest.h>
-#include "dummy_js_ability.h"
+#include "slite_ace_ability.h"
 #include "slite_ability.h"
 #include "slite_ability_loader.h"
 
@@ -43,7 +43,7 @@ static constexpr char LAUNCHER_BUNDLE_NAME[] = "com.ohos.launcher";
 
 static SliteAbility *createJsAbilityThread(const char *bundleName)
 {
-    auto *jsAbility = new DummyJsAbility();
+    auto *jsAbility = new OHOS::ACELite::SliteAceAbility();
     return jsAbility;
 }
 
