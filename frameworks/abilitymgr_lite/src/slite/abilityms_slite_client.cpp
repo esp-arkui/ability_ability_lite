@@ -16,7 +16,6 @@
 #include "abilityms_slite_client.h"
 
 #include "ability_errors.h"
-#include "ability_mgr_service_slite.h"
 #include "abilityms_log.h"
 #include "adapter.h"
 #include "cmsis_os2.h"
@@ -59,12 +58,15 @@ int AbilityMsClient::StartAbility(const Want *want) const
         return PARAM_CHECK_ERROR;
     }
 
-    AbilityMgrServiceSlite *service = AbilityMgrServiceSlite::GetInstance();
-    if (service == nullptr) {
+    if (identity_ == nullptr) {
         return PARAM_CHECK_ERROR;
     }
 
-    // 申请want内存，在服务端用完释放
+    // 申请内存，在服务端用完释放
+    auto *data = static_cast<StartAbilityData *>(AdapterMalloc(sizeof(StartAbilityData)));
+    if (data == nullptr) {
+        return MEMORY_MALLOC_ERROR;
+    }
     Want *info = static_cast<Want *>(AdapterMalloc(sizeof(Want)));
     if (info == nullptr) {
         return MEMORY_MALLOC_ERROR;
@@ -75,21 +77,20 @@ int AbilityMsClient::StartAbility(const Want *want) const
     info->appPath = nullptr;
     SetWantElement(info, *(want->element));
     SetWantData(info, want->data, want->dataLength);
-    AbilityRecordManager::GetInstance().want_ = info;
-    AbilityRecordManager::GetInstance().curTask_ = LOS_CurTaskIDGet();
+    data->want = info;
+    data->curTask = LOS_CurTaskIDGet();
     Request request = {
         .msgId = START_ABILITY,
-        .len = 0,
-        .data = nullptr,
+        .len = sizeof(StartAbilityData),
+        .data = data,
         .msgValue = 0,
     };
-    return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
+    return SAMGR_SendRequest(identity_, &request, nullptr);
 }
 
 int AbilityMsClient::TerminateAbility(uint64_t token) const
 {
-    AbilityMgrServiceSlite *service = AbilityMgrServiceSlite::GetInstance();
-    if (service == nullptr) {
+    if (identity_ == nullptr) {
         return PARAM_CHECK_ERROR;
     }
     Request request = {
@@ -98,13 +99,12 @@ int AbilityMsClient::TerminateAbility(uint64_t token) const
         .data = nullptr,
         .msgValue = static_cast<uint32_t>(token & TRANSACTION_MSG_TOKEN_MASK),
     };
-    return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
+    return SAMGR_SendRequest(identity_, &request, nullptr);
 }
 
 int AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int state) const
 {
-    AbilityMgrServiceSlite *service = AbilityMgrServiceSlite::GetInstance();
-    if (service == nullptr) {
+    if (identity_ == nullptr) {
         return PARAM_CHECK_ERROR;
     }
     Request request = {
@@ -114,13 +114,12 @@ int AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int state) const
         .msgValue = static_cast<uint32_t>((token & TRANSACTION_MSG_TOKEN_MASK) |
                                           (state << TRANSACTION_MSG_STATE_OFFSET)),
     };
-    return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
+    return SAMGR_SendRequest(identity_, &request, nullptr);
 }
 
 int AbilityMsClient::ForceStopBundle(uint64_t token) const
 {
-    AbilityMgrServiceSlite *service = AbilityMgrServiceSlite::GetInstance();
-    if (service == nullptr) {
+    if (identity_ == nullptr) {
         return PARAM_CHECK_ERROR;
     }
     Request request = {
@@ -129,7 +128,7 @@ int AbilityMsClient::ForceStopBundle(uint64_t token) const
         .data = nullptr,
         .msgValue = static_cast<uint32_t>(token & TRANSACTION_MSG_TOKEN_MASK),
     };
-    return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
+    return SAMGR_SendRequest(identity_, &request, nullptr);
 }
 
 ElementName *AbilityMsClient::GetTopAbility() const
@@ -142,8 +141,7 @@ ElementName *AbilityMsClient::GetTopAbility() const
 
 int AbilityMsClient::ForceStop(char *bundleName) const
 {
-    AbilityMgrServiceSlite *service = AbilityMgrServiceSlite::GetInstance();
-    if (service == nullptr) {
+    if (identity_ == nullptr) {
         return PARAM_CHECK_ERROR;
     }
     char *name = Utils::Strdup(bundleName);
@@ -153,7 +151,12 @@ int AbilityMsClient::ForceStop(char *bundleName) const
         .data = reinterpret_cast<void *>(name),
     };
 
-    return SAMGR_SendRequest(service->GetIdentity(), &request, nullptr);
+    return SAMGR_SendRequest(identity_, &request, nullptr);
+}
+
+void AbilityMsClient::SetServiceIdentity(const Identity *identity)
+{
+    identity_ = identity;
 }
 } // namespace AbilitySlite
 } // namespace OHOS

@@ -25,18 +25,17 @@ lite_library("abilitymanager") {
     ]
 
     deps = [
-      "${appexecfwk_lite_path}/frameworks/bundle_lite:bundle",
       "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_static",
-      "//foundation/arkui/ace_engine_lite/frameworks:ace_lite",
     ]
 
     include_dirs = [
       "${aafwk_lite_path}/interfaces/inner_api/abilitymgr_lite",
       "${aafwk_lite_path}/interfaces/inner_api/abilitymgr_lite/slite",
+      "${aafwk_lite_path}/interfaces/kits/ability_lite",
       "${aafwk_lite_path}/interfaces/kits/ability_lite/slite",
       "${aafwk_lite_path}/interfaces/kits/want_lite",
-      "${aafwk_lite_path}/services/abilitymgr_lite/include/slite",
       "${aafwk_lite_path}/services/abilitymgr_lite/include/util",
+      "${appexecfwk_lite_path}/interfaces/kits/bundle_lite",
       "${appexecfwk_lite_path}/utils/bundle_lite",
       "//commonlibrary/utils_lite/include",
       "//commonlibrary/utils_lite/memory/include",

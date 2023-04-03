@@ -46,6 +46,7 @@ void AbilityThread::AppTaskHandler(UINT32 uwArg)
     if (messageQueueId == nullptr) {
         return;
     }
+    AbilityThread *defaultAbilityThread = nullptr;
 
     for (;;) {
         AbilityInnerMsg innerMsg;
@@ -56,11 +57,15 @@ void AbilityThread::AppTaskHandler(UINT32 uwArg)
         }
         AbilityThread *abilityThread = innerMsg.abilityThread;
         if (abilityThread == nullptr) {
-            continue;
+            if (defaultAbilityThread == nullptr) {
+                continue;
+            }
+            abilityThread = defaultAbilityThread;
         }
         LP_TaskBegin();
         switch (innerMsg.msgId) {
             case AbilityMsgId::CREATE:
+                defaultAbilityThread = abilityThread;
                 abilityThread->HandleCreate(innerMsg.want);
                 ClearWant(innerMsg.want);
                 AdapterFree(innerMsg.want);
@@ -80,7 +85,9 @@ void AbilityThread::AppTaskHandler(UINT32 uwArg)
                 LP_TaskEnd();
                 return; // here exit the loop, and abort all messages afterwards
             default:
-                abilityThread->ability_->HandleExtraMessage(innerMsg);
+                if (abilityThread->ability_ != nullptr) {
+                    abilityThread->ability_->HandleExtraMessage(innerMsg);
+                }
                 break;
         }
         LP_TaskEnd();

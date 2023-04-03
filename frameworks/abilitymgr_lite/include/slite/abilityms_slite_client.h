@@ -22,6 +22,11 @@
 
 namespace OHOS {
 namespace AbilitySlite {
+struct StartAbilityData {
+    Want *want = nullptr;
+    uint32_t curTask = 0;
+};
+
 class AbilityMsClient {
 public:
     static AbilityMsClient &GetInstance()
@@ -46,10 +51,13 @@ public:
 
     ElementName *GetTopAbility() const;
 
+    void SetServiceIdentity(const Identity *identity);
+
 private:
     AbilityMsClient() = default;
 
     AmsSliteInterface *amsProxy_ { nullptr };
+    const Identity *identity_ { nullptr };
 
     DISALLOW_COPY_AND_MOVE(AbilityMsClient);
 };

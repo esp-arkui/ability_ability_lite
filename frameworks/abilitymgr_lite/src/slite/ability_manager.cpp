@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "ability_manager.h"
+#include "slite/ability_manager.h"
 #include "abilityms_slite_client.h"
 
 extern "C" {

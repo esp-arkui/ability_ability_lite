@@ -19,6 +19,7 @@
 #include "ability_info.h"
 #include "ability_service_interface.h"
 #include "ability_thread_loader.h"
+#include "abilityms_slite_client.h"
 #include "abilityms_log.h"
 #include "dummy_js_ability.h"
 #include "iunknown.h"
@@ -143,6 +144,7 @@ BOOL AbilityMgrServiceSlite::ServiceInitialize(Service *service, Identity identi
     abilityMgrService->serviceIdentity_ = identity;
     InitAbilityThreadLoad();
     InitAbilityLoad();
+    AbilityMsClient::GetInstance().SetServiceIdentity(&abilityMgrService->serviceIdentity_);
     return TRUE;
 }
 
@@ -153,9 +155,17 @@ BOOL AbilityMgrServiceSlite::ServiceMessageHandle(Service *service, Request *req
     }
     int32_t ret = ERR_OK;
     if (request->msgId == START_ABILITY) {
-        ret = AbilityRecordManager::GetInstance().StartAbility(AbilityRecordManager::GetInstance().want_);
-        AbilityRecordManager::GetInstance().CleanWant();
-        AbilityRecordManager::GetInstance().curTask_ = 0;
+        auto *data = static_cast<StartAbilityData *>(request->data);
+        if (data == nullptr) {
+            return FALSE;
+        }
+        AbilityRecordManager::GetInstance().curTask_ = data->curTask;
+        ret = AbilityRecordManager::GetInstance().StartAbility(data->want);
+        ClearWant(data->want);
+        AdapterFree(data->want);
+        AdapterFree(request->data);
+        request->data = nullptr;
+        request->len = 0;
     } else if (request->msgId == ABILITY_TRANSACTION_DONE) {
         uint32_t token = request->msgValue & TRANSACTION_MSG_TOKEN_MASK;
         uint32_t state = (request->msgValue >> TRANSACTION_MSG_STATE_OFFSET) & TRANSACTION_MSG_STATE_MASK;

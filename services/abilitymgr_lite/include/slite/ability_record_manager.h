@@ -70,9 +70,6 @@ public:
 
     void StartLauncher();
 
-    void CleanWant();
-
-    Want *want_ = nullptr;
     uint32_t curTask_ = 0;
 
 private:

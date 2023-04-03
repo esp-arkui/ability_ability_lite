@@ -72,12 +72,6 @@ void AbilityRecordManager::StartLauncher()
     (void) SchedulerLifecycleInner(record, SLITE_STATE_FOREGROUND);
 }
 
-void AbilityRecordManager::CleanWant()
-{
-    ClearWant(want_);
-    AdapterFree(want_);
-}
-
 bool AbilityRecordManager::IsValidAbility(AbilityInfo *abilityInfo)
 {
     if (abilityInfo == nullptr) {
