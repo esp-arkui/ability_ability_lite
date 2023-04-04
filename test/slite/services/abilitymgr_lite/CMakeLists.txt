@@ -35,8 +35,24 @@ target_link_libraries(ability_record_test PUBLIC ${GTEST} Threads::Threads ${SEC
 add_executable(js_ability_thread_test js_ability_thread_test.cpp ${ABILITY_SERVICE_SRC})
 target_link_libraries(js_ability_thread_test PUBLIC ${GTEST} Threads::Threads ${SECUREC} ${MOCK} ${DEP})
 
+add_executable(ability_list_test ability_list_test.cpp ${ABILITY_SERVICE_SRC})
+target_link_libraries(ability_list_test PUBLIC ${GTEST} Threads::Threads ${SECUREC} ${MOCK} ${DEP})
+
+add_executable(ability_thread_loader_test ability_thread_loader_test.cpp ${ABILITY_SERVICE_SRC})
+target_link_libraries(ability_thread_loader_test PUBLIC ${GTEST} Threads::Threads ${SECUREC} ${MOCK} ${DEP})
+
+add_executable(bms_helper_test bms_helper_test.cpp ${ABILITY_SERVICE_SRC})
+target_link_libraries(bms_helper_test PUBLIC ${GTEST} Threads::Threads ${SECUREC} ${MOCK} ${DEP})
+
+add_executable(slite_ability_loader_test slite_ability_loader_test.cpp ${ABILITY_SERVICE_SRC})
+target_link_libraries(slite_ability_loader_test PUBLIC ${GTEST} Threads::Threads ${SECUREC} ${MOCK} ${DEP})
+
 set(GTEST_REPEAT 10)
 gtest_discover_tests(ability_record_manager_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT})
 gtest_discover_tests(abilityms_slite_client_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT})
 gtest_discover_tests(ability_record_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT})
 gtest_discover_tests(js_ability_thread_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT})
+gtest_discover_tests(ability_list_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT})
+gtest_discover_tests(ability_thread_loader_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT})
+gtest_discover_tests(bms_helper_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT})
+gtest_discover_tests(slite_ability_loader_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT})

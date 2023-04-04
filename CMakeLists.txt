@@ -15,7 +15,6 @@ string(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE)
 
 # compiler flags
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_C_STANDARD 17)
 set(CMAKE_SKIP_INSTALL_RPATH TRUE)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fsigned-char -ftree-vectorize -funroll-loops -Wno-unused-variable")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c17 -fsigned-char -ftree-vectorize -funroll-loops -Wno-unused-variable")
