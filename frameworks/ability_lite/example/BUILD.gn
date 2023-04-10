@@ -53,7 +53,7 @@ lite_library("hiability") {
   defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
 
   if (enable_ohos_appexecfwk_feature_ability == true) {
-    deps += [ "//foundation/graphic/ui:lite_ui" ]
+    deps += [ "//foundation/graphic/ui:ui_lite" ]
     defines += [
       "ENABLE_WINDOW=1",
       "ABILITY_WINDOW_SUPPORT",
