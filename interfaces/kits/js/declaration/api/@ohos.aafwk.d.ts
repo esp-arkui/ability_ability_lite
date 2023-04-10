@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import { AsyncCallback, ErrorCallback } from './basic';
+import { AsyncCallback, ErrorCallback } from './@ohos.base';
 import {Want} from "//interface_sdk-js/api/phone/app/want";
 
 /**
