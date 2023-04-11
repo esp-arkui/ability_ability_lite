@@ -50,18 +50,18 @@ void DummyJsAbility::OnDestroy()
     SliteAbility::OnDestroy();
 }
 
-void DummyJsAbility::HandleExtraMessage(const AbilityInnerMsg &innerMsg)
+void DummyJsAbility::HandleExtraMessage(const SliteAbilityInnerMsg &innerMsg)
 {
     switch (innerMsg.msgId) {
-        case AbilityMsgId::BACKPRESSED:
+        case SliteAbilityMsgId::BACKPRESSED:
             jsAbility_.BackPressed();
             break;
-        case AbilityMsgId::ASYNCWORK: {
+        case SliteAbilityMsgId::ASYNCWORK: {
             auto* work = reinterpret_cast<ACELite::AsyncWork *>(innerMsg.data);
             ACELite::JsAsyncWork::ExecuteAsyncWork(work);
             break;
         }
-        case AbilityMsgId::TE_EVENT:
+        case SliteAbilityMsgId::TE_EVENT:
             jsAbility_.HandleRenderTick();
             break;
         default:

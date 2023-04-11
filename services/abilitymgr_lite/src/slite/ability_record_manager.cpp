@@ -693,19 +693,19 @@ bool AbilityRecordManager::SendMsgToJsAbility(int32_t state, const AbilityRecord
         return false;
     }
 
-    AbilityInnerMsg innerMsg;
+    SliteAbilityInnerMsg innerMsg;
     if (state == SLITE_STATE_INITIAL) {
-        innerMsg.msgId = AbilityMsgId::CREATE;
+        innerMsg.msgId = SliteAbilityMsgId::CREATE;
         innerMsg.want = CreateWant(record);
     } else if (state == SLITE_STATE_FOREGROUND) {
-        innerMsg.msgId = AbilityMsgId::FOREGROUND;
+        innerMsg.msgId = SliteAbilityMsgId::FOREGROUND;
         innerMsg.want = CreateWant(record);
     } else if (state == SLITE_STATE_BACKGROUND) {
-        innerMsg.msgId = AbilityMsgId::BACKGROUND;
+        innerMsg.msgId = SliteAbilityMsgId::BACKGROUND;
     } else if (state == SLITE_STATE_UNINITIALIZED) {
-        innerMsg.msgId = AbilityMsgId::DESTROY;
+        innerMsg.msgId = SliteAbilityMsgId::DESTROY;
     } else {
-        innerMsg.msgId = (AbilityMsgId) state;
+        innerMsg.msgId = (SliteAbilityMsgId) state;
     }
     innerMsg.abilityThread = record->abilityThread;
     if (record->abilityData != nullptr) {

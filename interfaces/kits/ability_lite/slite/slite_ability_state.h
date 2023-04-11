@@ -24,7 +24,7 @@ namespace AbilitySlite {
  * @since 1.0
  * @version 1.0
  */
-enum SlitAbilityState {
+enum SliteAbilityState {
     SLITE_STATE_UNKNOWN,
     /**
      * Uninitialized state: An ability is in this state when it has not been initialized.

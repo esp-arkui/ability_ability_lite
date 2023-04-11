@@ -21,7 +21,7 @@
 
 namespace OHOS {
 namespace AbilitySlite {
-enum AbilityMsgId {
+enum SliteAbilityMsgId {
     UNKNOWN,
     CREATE,
     FOREGROUND,
@@ -35,8 +35,8 @@ enum AbilityMsgId {
 
 class AbilityThread;
 
-struct AbilityInnerMsg {
-    uint32_t msgId = UNKNOWN;
+struct SliteAbilityInnerMsg {
+    SliteAbilityMsgId msgId = UNKNOWN;
     AbilityThread *abilityThread = nullptr;
     Want *want = nullptr;
     uint16_t token = 0;

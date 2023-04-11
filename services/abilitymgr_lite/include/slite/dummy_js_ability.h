@@ -35,7 +35,7 @@ public:
 
     void OnDestroy() override;
 
-    void HandleExtraMessage(const AbilityInnerMsg &innerMsg) override;
+    void HandleExtraMessage(const SliteAbilityInnerMsg &innerMsg) override;
 
 private:
     bool isBackground_ = false;

@@ -43,7 +43,7 @@ void SliteAbility::OnDestroy()
     (void) AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, SLITE_STATE_UNINITIALIZED);
 }
 
-void SliteAbility::HandleExtraMessage(const AbilityInnerMsg &innerMsg)
+void SliteAbility::HandleExtraMessage(const SliteAbilityInnerMsg &innerMsg)
 {
 }
 

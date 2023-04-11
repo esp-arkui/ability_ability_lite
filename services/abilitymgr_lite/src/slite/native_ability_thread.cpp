@@ -56,7 +56,7 @@ int32_t NativeAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecor
     }
 
     if (nativeQueueId == nullptr) {
-        nativeQueueId = osMessageQueueNew(QUEUE_LENGTH, sizeof(AbilityInnerMsg), nullptr);
+        nativeQueueId = osMessageQueueNew(QUEUE_LENGTH, sizeof(SliteAbilityInnerMsg), nullptr);
     }
     messageQueueId_ = nativeQueueId;
     if (messageQueueId_ == nullptr) {

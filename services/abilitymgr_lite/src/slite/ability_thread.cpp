@@ -49,7 +49,7 @@ void AbilityThread::AppTaskHandler(UINT32 uwArg)
     AbilityThread *defaultAbilityThread = nullptr;
 
     for (;;) {
-        AbilityInnerMsg innerMsg;
+        SliteAbilityInnerMsg innerMsg;
         uint8_t prio = 0;
         osStatus_t ret = osMessageQueueGet(messageQueueId, &innerMsg, &prio, osWaitForever);
         if (ret != osOK) {
@@ -64,23 +64,23 @@ void AbilityThread::AppTaskHandler(UINT32 uwArg)
         }
         LP_TaskBegin();
         switch (innerMsg.msgId) {
-            case AbilityMsgId::CREATE:
+            case SliteAbilityMsgId::CREATE:
                 defaultAbilityThread = abilityThread;
                 abilityThread->HandleCreate(innerMsg.want);
                 ClearWant(innerMsg.want);
                 AdapterFree(innerMsg.want);
                 innerMsg.want = nullptr;
                 break;
-            case AbilityMsgId::FOREGROUND:
+            case SliteAbilityMsgId::FOREGROUND:
                 abilityThread->HandleForeground(innerMsg.want);
                 ClearWant(innerMsg.want);
                 AdapterFree(innerMsg.want);
                 innerMsg.want = nullptr;
                 break;
-            case AbilityMsgId::BACKGROUND:
+            case SliteAbilityMsgId::BACKGROUND:
                 abilityThread->HandleBackground();
                 break;
-            case AbilityMsgId::DESTROY:
+            case SliteAbilityMsgId::DESTROY:
                 abilityThread->HandleDestroy();
                 LP_TaskEnd();
                 return; // here exit the loop, and abort all messages afterwards

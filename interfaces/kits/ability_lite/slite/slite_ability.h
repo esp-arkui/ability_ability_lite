@@ -76,7 +76,7 @@ public:
      */
     virtual void OnDestroy();
 
-    virtual void HandleExtraMessage(const AbilityInnerMsg &innerMsg);
+    virtual void HandleExtraMessage(const SliteAbilityInnerMsg &innerMsg);
 
     int GetState() const;
 

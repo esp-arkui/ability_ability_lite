@@ -50,7 +50,7 @@ int32_t JsAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecord)
         return PARAM_CHECK_ERROR;
     }
 
-    messageQueueId_ = osMessageQueueNew(QUEUE_LENGTH, sizeof(AbilityInnerMsg), nullptr);
+    messageQueueId_ = osMessageQueueNew(QUEUE_LENGTH, sizeof(SliteAbilityInnerMsg), nullptr);
     if (messageQueueId_ == nullptr) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "JsAbilityThread init fail: messageQueueId is null");
         return MEMORY_MALLOC_ERROR;
