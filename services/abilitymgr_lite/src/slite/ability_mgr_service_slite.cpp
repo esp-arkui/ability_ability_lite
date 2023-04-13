@@ -18,13 +18,21 @@
 #include "ability_errors.h"
 #include "ability_info.h"
 #include "ability_service_interface.h"
+#include "ability_thread_loader.h"
+#include "abilityms_slite_client.h"
 #include "abilityms_log.h"
+#include "dummy_js_ability.h"
 #include "iunknown.h"
+#include "js_ability_thread.h"
+#include "native_ability_thread.h"
 #include "ohos_init.h"
 #include "samgr_lite.h"
-#include "want_utils.h"
+#include "slite_ability_loader.h"
+#include "slite_ace_ability.h"
+#include "want.h"
 
 namespace OHOS {
+namespace AbilitySlite {
 typedef struct {
     INHERIT_IUNKNOWNENTRY(AmsSliteInterface);
     AbilityMgrServiceSlite *ams;
@@ -135,6 +143,9 @@ BOOL AbilityMgrServiceSlite::ServiceInitialize(Service *service, Identity identi
     }
     auto *abilityMgrService = static_cast<AbilityMgrServiceSlite *>(service);
     abilityMgrService->serviceIdentity_ = identity;
+    InitAbilityThreadLoad();
+    InitAbilityLoad();
+    AbilityMsClient::GetInstance().SetServiceIdentity(&abilityMgrService->serviceIdentity_);
     return TRUE;
 }
 
@@ -143,11 +154,19 @@ BOOL AbilityMgrServiceSlite::ServiceMessageHandle(Service *service, Request *req
     if (request == nullptr) {
         return FALSE;
     }
-    int ret = ERR_OK;
+    int32_t ret = ERR_OK;
     if (request->msgId == START_ABILITY) {
-        ret = AbilityRecordManager::GetInstance().StartAbility(AbilityRecordManager::GetInstance().want_);
-        AbilityRecordManager::GetInstance().CleanWant();
-        AbilityRecordManager::GetInstance().curTask_ = 0;
+        auto *data = static_cast<StartAbilityData *>(request->data);
+        if (data == nullptr) {
+            return FALSE;
+        }
+        AbilityRecordManager::GetInstance().curTask_ = data->curTask;
+        ret = AbilityRecordManager::GetInstance().StartAbility(data->want);
+        ClearWant(data->want);
+        AdapterFree(data->want);
+        AdapterFree(request->data);
+        request->data = nullptr;
+        request->len = 0;
     } else if (request->msgId == ABILITY_TRANSACTION_DONE) {
         uint32_t token = request->msgValue & TRANSACTION_MSG_TOKEN_MASK;
         uint32_t state = (request->msgValue >> TRANSACTION_MSG_STATE_OFFSET) & TRANSACTION_MSG_STATE_MASK;
@@ -198,4 +217,35 @@ ElementName *AbilityMgrServiceSlite::GetTopAbility()
 {
     return AbilityRecordManager::GetInstance().GetTopAbility();
 }
+
+static AbilityThread *createJsAbilityThread()
+{
+    auto *jsThread = new JsAbilityThread();
+    return jsThread;
+}
+
+static AbilityThread *createNativeAbilityThread()
+{
+    auto *nativeThread = new NativeAbilityThread();
+    return nativeThread;
+}
+
+void AbilityMgrServiceSlite::InitAbilityThreadLoad()
+{
+    AbilityThreadLoader::GetInstance().SetCreatorFunc(AbilityThreadCreatorType::JS_CREATOR, createJsAbilityThread);
+    AbilityThreadLoader::GetInstance().SetCreatorFunc(AbilityThreadCreatorType::NATIVE_CREATOR,
+        createNativeAbilityThread);
+}
+
+static SliteAbility *createJsAbility(const char *bundleName)
+{
+    SliteAbility *jsAbility = new DummyJsAbility();
+    return jsAbility;
+}
+
+void AbilityMgrServiceSlite::InitAbilityLoad()
+{
+    SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::JS_ABILITY, createJsAbility);
+}
+} // namespace AbilitySlite
 } // namespace OHOS

@@ -20,9 +20,11 @@
 #include "want.h"
 
 namespace OHOS {
+namespace AbilitySlite {
 class LiteContext {
 public:
     LiteContext() = default;
+
     ~LiteContext() = default;
 
     /**
@@ -42,10 +44,13 @@ public:
      * @return Returns <b>0</b> if the operation is successful; returns <b>-1</b> otherwise.
      */
     int TerminateAbility();
-private:
-    friend class SliteAbility;
+
+    void SetToken(uint64_t token);
+
+protected:
     uint64_t token_ { 0 };
 };
-} //  OHOS
-
+} // namespace AbilitySlite
+using AbilitySlite::LiteContext;
+} // namespace OHOS
 #endif //  OHOS_LITE_CONTEXT_H

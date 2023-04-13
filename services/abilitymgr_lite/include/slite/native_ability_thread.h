@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Huawei Device Co., Ltd.
+ * Copyright (c) 2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,27 +13,27 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_ABILITY_LIST_H
-#define OHOS_ABILITY_LIST_H
+#ifndef ABILITYLITE_NATIVE_ABILITY_THREAD_H
+#define ABILITYLITE_NATIVE_ABILITY_THREAD_H
 
-#include "ability_record.h"
-#include "utils_list.h"
+#include "ability_thread.h"
 
 namespace OHOS {
-class AbilityList {
+namespace AbilitySlite {
+class NativeAbilityThread : public AbilityThread {
 public:
-    AbilityList() = default;
-    ~AbilityList() = default;
+    NativeAbilityThread();
 
-    void Add(AbilityRecord *abilityRecord);
-    AbilityRecord *Get(uint16_t token) const;
-    AbilityRecord *Get(const char *bundleName) const;
-    AbilityRecord *GetByTaskId(uint32_t taskId) const;
-    void Erase(uint16_t token);
+    ~NativeAbilityThread() override;
 
-private:
-    List<AbilityRecord *> abilityList_ {};
+    int32_t InitAbilityThread(const AbilityRecord *abilityRecord) override;
+
+    int32_t ReleaseAbilityThread() override;
+
+    static osMessageQueueId_t nativeQueueId;
+    static UINT32 nativeTaskId;
 };
-} // namespace OHOS
+}
+}
 
-#endif // OHOS_ABILITY_LIST_H
+#endif //ABILITYLITE_NATIVE_ABILITY_THREAD_H
