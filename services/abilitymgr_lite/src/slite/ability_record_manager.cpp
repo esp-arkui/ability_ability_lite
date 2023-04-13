@@ -399,9 +399,11 @@ int32_t AbilityRecordManager::CreateAppTask(AbilityRecord *record)
         return PARAM_NULL_ERROR;
     }
     if (record->isNativeApp) {
-        record->abilityThread = AbilityThreadLoader::GetInstance().CreateAbilityThread(AbilityThreadCreatorType::NATIVE_CREATOR);
+        record->abilityThread = AbilityThreadLoader::GetInstance().CreateAbilityThread(
+            AbilityThreadCreatorType::NATIVE_CREATOR);
     } else {
-        record->abilityThread = AbilityThreadLoader::GetInstance().CreateAbilityThread(AbilityThreadCreatorType::JS_CREATOR);
+        record->abilityThread = AbilityThreadLoader::GetInstance().CreateAbilityThread(
+            AbilityThreadCreatorType::JS_CREATOR);
     }
     if (record->abilityThread == nullptr) {
         return MEMORY_MALLOC_ERROR;
@@ -722,7 +724,7 @@ bool AbilityRecordManager::SendMsgToJsAbility(int32_t state, const AbilityRecord
 
 Want *AbilityRecordManager::CreateWant(const AbilityRecord *record)
 {
-    Want * want = static_cast<Want *>(AdapterMalloc(sizeof(Want)));
+    Want *want = static_cast<Want *>(AdapterMalloc(sizeof(Want)));
     want->element = nullptr;
     want->data = nullptr;
     want->dataLength = 0;

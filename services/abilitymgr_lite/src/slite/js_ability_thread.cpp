@@ -29,7 +29,7 @@ namespace OHOS {
 namespace AbilitySlite {
 constexpr uint16_t APP_TASK_PRI = 25;
 constexpr uint32_t QUEUE_LENGTH = 32;
-static char JS_APP_TASK[] = "JsAppTask";
+static char g_jsAppTask[] = "JsAppTask";
 
 JsAbilityThread::JsAbilityThread() = default;
 
@@ -61,7 +61,7 @@ int32_t JsAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecord)
     stTskInitParam.pfnTaskEntry = (TSK_ENTRY_FUNC) (AbilityThread::AppTaskHandler);
     stTskInitParam.uwStackSize = TASK_STACK_SIZE;
     stTskInitParam.usTaskPrio = OS_TASK_PRIORITY_LOWEST - APP_TASK_PRI;
-    stTskInitParam.pcName = JS_APP_TASK;
+    stTskInitParam.pcName = g_jsAppTask;
     stTskInitParam.uwResved = 0;
     stTskInitParam.uwArg = reinterpret_cast<uintptr_t>(messageQueueId_);
     uint32_t ret = LOS_TaskCreate(&appTaskId_, &stTskInitParam);

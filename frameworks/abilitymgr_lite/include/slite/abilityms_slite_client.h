@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,9 +16,9 @@
 #ifndef OHOS_ABILITYMS_SLITE_CLIENT_H
 #define OHOS_ABILITYMS_SLITE_CLIENT_H
 
+#include "ability_service_interface.h"
 #include "nocopyable.h"
 #include "want.h"
-#include "ability_service_interface.h"
 
 namespace OHOS {
 namespace AbilitySlite {
@@ -39,15 +39,15 @@ public:
 
     bool Initialize() const;
 
-    int StartAbility(const Want *want) const;
+    int32_t StartAbility(const Want *want) const;
 
-    int TerminateAbility(uint64_t token) const;
+    int32_t TerminateAbility(uint64_t token) const;
 
-    int SchedulerLifecycleDone(uint64_t token, int state) const;
+    int32_t SchedulerLifecycleDone(uint64_t token, int state) const;
 
-    int ForceStopBundle(uint64_t token) const;
+    int32_t ForceStopBundle(uint64_t token) const;
 
-    int ForceStop(char *bundleName) const;
+    int32_t ForceStop(char *bundleName) const;
 
     ElementName *GetTopAbility() const;
 

@@ -20,7 +20,7 @@
 
 namespace OHOS {
 namespace AbilitySlite {
-class NativeAbilityThread: public AbilityThread {
+class NativeAbilityThread : public AbilityThread {
 public:
     NativeAbilityThread();
 

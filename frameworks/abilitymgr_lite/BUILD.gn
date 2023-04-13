@@ -24,9 +24,7 @@ lite_library("abilitymanager") {
       "src/slite/abilityms_slite_client.cpp",
     ]
 
-    deps = [
-      "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_static",
-    ]
+    deps = [ "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_static" ]
 
     include_dirs = [
       "${aafwk_lite_path}/interfaces/inner_api/abilitymgr_lite",

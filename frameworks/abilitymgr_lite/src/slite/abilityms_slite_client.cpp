@@ -52,7 +52,7 @@ bool AbilityMsClient::Initialize() const
     return false;
 }
 
-int AbilityMsClient::StartAbility(const Want *want) const
+int32_t AbilityMsClient::StartAbility(const Want *want) const
 {
     if (want == nullptr || want->element == nullptr || !Initialize()) {
         return PARAM_CHECK_ERROR;
@@ -62,7 +62,7 @@ int AbilityMsClient::StartAbility(const Want *want) const
         return PARAM_CHECK_ERROR;
     }
 
-    // 申请内存，在服务端用完释放
+    // The data and info will be freed in the service
     auto *data = static_cast<StartAbilityData *>(AdapterMalloc(sizeof(StartAbilityData)));
     if (data == nullptr) {
         return MEMORY_MALLOC_ERROR;
@@ -88,7 +88,7 @@ int AbilityMsClient::StartAbility(const Want *want) const
     return SAMGR_SendRequest(identity_, &request, nullptr);
 }
 
-int AbilityMsClient::TerminateAbility(uint64_t token) const
+int32_t AbilityMsClient::TerminateAbility(uint64_t token) const
 {
     if (identity_ == nullptr) {
         return PARAM_CHECK_ERROR;
@@ -102,7 +102,7 @@ int AbilityMsClient::TerminateAbility(uint64_t token) const
     return SAMGR_SendRequest(identity_, &request, nullptr);
 }
 
-int AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int state) const
+int32_t AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int state) const
 {
     if (identity_ == nullptr) {
         return PARAM_CHECK_ERROR;
@@ -117,7 +117,7 @@ int AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int state) const
     return SAMGR_SendRequest(identity_, &request, nullptr);
 }
 
-int AbilityMsClient::ForceStopBundle(uint64_t token) const
+int32_t AbilityMsClient::ForceStopBundle(uint64_t token) const
 {
     if (identity_ == nullptr) {
         return PARAM_CHECK_ERROR;
@@ -139,7 +139,7 @@ ElementName *AbilityMsClient::GetTopAbility() const
     return amsProxy_->GetTopAbility();
 }
 
-int AbilityMsClient::ForceStop(char *bundleName) const
+int32_t AbilityMsClient::ForceStop(char *bundleName) const
 {
     if (identity_ == nullptr) {
         return PARAM_CHECK_ERROR;
@@ -147,7 +147,7 @@ int AbilityMsClient::ForceStop(char *bundleName) const
     char *name = Utils::Strdup(bundleName);
     Request request = {
         .msgId = TERMINATE_APP_BY_BUNDLENAME,
-        .len = (int16) strlen(name),
+        .len = (int16)strlen(name),
         .data = reinterpret_cast<void *>(name),
     };
 

@@ -85,7 +85,8 @@ int32_t NativeAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecor
     appTaskId_ = nativeTaskId;
 
     state_ = AbilityThreadState::ABILITY_THREAD_INITIALIZED;
-    ability_ = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::NATIVE_ABILITY, abilityRecord->appName);
+    ability_ = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::NATIVE_ABILITY,
+        abilityRecord->appName);
     if (ability_ == nullptr) {
         HILOG_INFO(HILOG_MODULE_AAFWK, "NativeAbility create fail");
         return MEMORY_MALLOC_ERROR;

@@ -43,9 +43,4 @@ private:
 };
 } // namespace AbilitySlite
 } // namespace OHOS
-
-
-
-
-
 #endif // OHOS_ABILITY_SLITE_DUMMY_JS_ABILITY_H

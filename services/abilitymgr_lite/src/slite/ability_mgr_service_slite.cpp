@@ -21,6 +21,7 @@
 #include "ability_thread_loader.h"
 #include "abilityms_slite_client.h"
 #include "abilityms_log.h"
+#include "dummy_js_ability.h"
 #include "iunknown.h"
 #include "js_ability_thread.h"
 #include "native_ability_thread.h"
@@ -232,12 +233,13 @@ static AbilityThread *createNativeAbilityThread()
 void AbilityMgrServiceSlite::InitAbilityThreadLoad()
 {
     AbilityThreadLoader::GetInstance().SetCreatorFunc(AbilityThreadCreatorType::JS_CREATOR, createJsAbilityThread);
-    AbilityThreadLoader::GetInstance().SetCreatorFunc(AbilityThreadCreatorType::NATIVE_CREATOR, createNativeAbilityThread);
+    AbilityThreadLoader::GetInstance().SetCreatorFunc(AbilityThreadCreatorType::NATIVE_CREATOR,
+        createNativeAbilityThread);
 }
 
 static SliteAbility *createJsAbility(const char *bundleName)
 {
-    SliteAbility *jsAbility = new ACELite::SliteAceAbility();
+    SliteAbility *jsAbility = new DummyJsAbility();
     return jsAbility;
 }
 

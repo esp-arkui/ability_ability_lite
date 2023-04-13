@@ -120,7 +120,6 @@ private:
     AbilityList abilityList_ {};
     AbilityStack abilityStack_ {};
     SliteAbility *nativeAbility_ = nullptr;
-    // static LifecycleFuncStr lifecycleFuncList_[STATE_BACKGROUND + 1];
 };
 } // namespace AbilitySlite
 } // namespace OHOS
