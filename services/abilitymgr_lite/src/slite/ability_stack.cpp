@@ -18,6 +18,7 @@
 #include "ability_record.h"
 
 namespace OHOS {
+namespace AbilitySlite {
 const AbilityRecord *AbilityStack::GetTopAbility() const
 {
     if (abilityStack_.Size() != 0) {
@@ -53,4 +54,5 @@ void AbilityStack::Erase(AbilityRecord *record)
         node = node->next_;
     }
 }
+} // namespace AbilitySlite
 } // namespace OHOS

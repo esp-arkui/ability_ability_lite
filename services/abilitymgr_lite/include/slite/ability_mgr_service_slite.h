@@ -13,14 +13,15 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_ABILITY_MGR_SERVICE_SLITE_H
-#define OHOS_ABILITY_MGR_SERVICE_SLITE_H
+#ifndef OHOS_ABILITY_SLITE_ABILITY_MGR_SERVICE_SLITE_H
+#define OHOS_ABILITY_SLITE_ABILITY_MGR_SERVICE_SLITE_H
 
 #include "ability_record_manager.h"
 #include "feature.h"
 #include "nocopyable.h"
 
 namespace OHOS {
+namespace AbilitySlite {
 class AbilityMgrServiceSlite : public Service, public Feature {
 public:
     static AbilityMgrServiceSlite *GetInstance();
@@ -58,10 +59,15 @@ private:
 
     static BOOL ServiceMessageHandle(Service *service, Request *request);
 
+    static void InitAbilityThreadLoad();
+
+    static void InitAbilityLoad();
+
 private:
     Identity serviceIdentity_ {};
     Identity featureIdentity_ {};
     DISALLOW_COPY_AND_MOVE(AbilityMgrServiceSlite);
 };
+} // namespace AbilitySlite
 } // namespace OHOS
-#endif // OHOS_ABILITY_MGR_SERVICE_SLITE_H
+#endif // OHOS_ABILITY_SLITE_ABILITY_MGR_SERVICE_SLITE_H

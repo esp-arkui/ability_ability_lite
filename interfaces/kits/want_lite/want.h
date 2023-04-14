@@ -75,6 +75,8 @@ typedef struct {
      * Data length
      */
     uint16_t dataLength;
+
+    const char *appPath;
 } Want;
 
 #ifdef __cplusplus

@@ -69,6 +69,7 @@ void ClearWant(Want *want)
 #ifdef OHOS_APPEXECFWK_BMS_BUNDLEMANAGER
     AdapterFree(want->sid);
 #endif
+    AdapterFree(want->appPath);
     AdapterFree(want->data);
 }
 

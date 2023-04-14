@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Huawei Device Co., Ltd.
+ * Copyright (c) 2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,26 +13,35 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_ABILITY_STACK_H
-#define OHOS_ABILITY_STACK_H
+#ifndef ABILITYLITE_BMS_HELPER_H
+#define ABILITYLITE_BMS_HELPER_H
 
-#include "ability_record.h"
+#include <cstdint>
 #include "utils_list.h"
-#include <new>
 
 namespace OHOS {
-class AbilityStack {
+namespace AbilitySlite {
+class BMSHelper final {
 public:
-    AbilityStack() = default;
-    ~AbilityStack() = default;
+    static BMSHelper &GetInstance()
+    {
+        static BMSHelper instance;
+        return instance;
+    }
 
-    const AbilityRecord *GetTopAbility() const;
-    void PushAbility(AbilityRecord *record);
-    void PopAbility();
-    void Erase(AbilityRecord *record);
+    BMSHelper() = default;
 
+    ~BMSHelper();
+
+    void RegisterBundleNames(List<char *> &names);
+
+    void Erase();
+
+    bool IsNativeApp(const char *bundleName);
 private:
-    List<AbilityRecord *> abilityStack_ {};
+    List<char *> bundleNames {};
 };
+} // namespace AbilitySlite
 } // namespace OHOS
-#endif  // OHOS_ABILITY_STACK_H
+
+#endif //ABILITYLITE_BMS_HELPER_H
