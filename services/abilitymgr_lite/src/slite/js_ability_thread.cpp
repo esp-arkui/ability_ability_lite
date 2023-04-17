@@ -29,7 +29,7 @@ namespace OHOS {
 namespace AbilitySlite {
 constexpr uint16_t APP_TASK_PRI = 25;
 constexpr uint32_t QUEUE_LENGTH = 32;
-static char g_jsAppTask[] = "JsAppTask";
+static char g_jsAppTask[] = "AppTask";
 
 JsAbilityThread::JsAbilityThread() = default;
 
