@@ -43,6 +43,9 @@ public:
     void SetAbilityCreatorFunc(SliteAbilityType type, SliteAbilityCreatorFunc creator);
 
     SliteAbility *CreateAbility(SliteAbilityType type, const char *bundleName);
+
+    void UnsetAbilityCreatorFunc(SliteAbilityType type);
+
 private:
     SliteAbilityCreatorFunc jsAbilityCreatorFunc_ = nullptr;
     SliteAbilityCreatorFunc nativeAbilityCreatorFunc_ = nullptr;
