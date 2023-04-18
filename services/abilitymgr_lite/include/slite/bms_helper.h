@@ -18,9 +18,19 @@
 
 #include <cstdint>
 #include "utils_list.h"
+#include "bundle_manager.h"
+#include "want.h"
 
 namespace OHOS {
 namespace AbilitySlite {
+struct AbilitySvcInfo {
+    char *bundleName;
+    char *path;
+    void *data;
+    bool isNativeApp;
+    uint16_t dataLength;
+};
+
 class BMSHelper final {
 public:
     static BMSHelper &GetInstance()
@@ -33,13 +43,17 @@ public:
 
     ~BMSHelper();
 
-    void RegisterBundleNames(List<char *> &names);
+    void RegisterBundleNames(const List<char *> &names);
 
     void Erase();
 
     bool IsNativeApp(const char *bundleName);
+
+    uint8_t QueryAbilitySvcInfo(const Want *want, AbilitySvcInfo *svcInfo);
+
+    bool IsValidAbility(const AbilityInfo *abilityInfo);
 private:
-    List<char *> bundleNames {};
+    List<char *> bundleNames_ {};
 };
 } // namespace AbilitySlite
 } // namespace OHOS

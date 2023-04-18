@@ -22,6 +22,7 @@
 #include "ability_record.h"
 #include "ability_stack.h"
 #include "adapter.h"
+#include "bms_helper.h"
 #include "js_ability_thread.h"
 #include "nocopyable.h"
 #include "want.h"
@@ -30,12 +31,6 @@
 
 namespace OHOS {
 namespace AbilitySlite {
-struct AbilitySvcInfo {
-    char *bundleName;
-    char *path;
-    void *data;
-    uint16_t dataLength;
-};
 
 class AbilityRecordManager : public NoCopyable {
 public:
@@ -111,7 +106,6 @@ private:
 
     int32_t ForceStopBundleInner(uint16_t token);
 
-    bool IsValidAbility(AbilityInfo *abilityInfo);
     bool IsLauncher(const char *bundleName);
 
     Want *CreateWant(const AbilityRecord *record);
