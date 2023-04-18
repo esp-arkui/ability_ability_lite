@@ -58,9 +58,10 @@ TEST_F(SliteAbilityLoaderTest, SliteAbilityLoaderSetNull)
 {
     SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::JS_ABILITY, nullptr);
     SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::NATIVE_ABILITY, nullptr);
+    SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(static_cast<SliteAbilityType>(3), createJsAbilityThread);
     SliteAbility *jsA = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::JS_ABILITY, LAUNCHER_BUNDLE_NAME);
     ASSERT_EQ(jsA, nullptr);
-    SliteAbility *naA = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::JS_ABILITY, LAUNCHER_BUNDLE_NAME);
+    SliteAbility *naA = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::NATIVE_ABILITY, LAUNCHER_BUNDLE_NAME);
     ASSERT_EQ(naA, nullptr);
 }
 
@@ -71,11 +72,19 @@ TEST_F(SliteAbilityLoaderTest, SliteAbilityLoader)
     SliteAbility *jsA = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::JS_ABILITY, LAUNCHER_BUNDLE_NAME);
     ASSERT_NE(jsA, nullptr);
     delete jsA;
-    SliteAbility *naA = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::JS_ABILITY, LAUNCHER_BUNDLE_NAME);
+    SliteAbility *naA = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::NATIVE_ABILITY, LAUNCHER_BUNDLE_NAME);
     ASSERT_NE(naA, nullptr);
     MyNativeAbility *myNativeAbility = static_cast<MyNativeAbility *>(naA);
     ASSERT_EQ(myNativeAbility->getNativeTest(), 200);
     delete naA;
+}
+
+TEST_F(SliteAbilityLoaderTest, SliteAbilityLoaderGetWithOtherType)
+{
+    SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::JS_ABILITY, createJsAbilityThread);
+    SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::NATIVE_ABILITY, createNativeAbilityThread);
+    SliteAbility *ability = SliteAbilityLoader::GetInstance().CreateAbility(static_cast<SliteAbilityType>(3), LAUNCHER_BUNDLE_NAME);
+    ASSERT_EQ(ability, nullptr);
 }
 
 int main(int argc, char **argv)
