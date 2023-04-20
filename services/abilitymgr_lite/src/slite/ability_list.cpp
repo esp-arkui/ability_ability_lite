@@ -80,7 +80,6 @@ AbilityRecord *AbilityList::GetByTaskId(uint32_t taskId) const
             return record;
         }
     }
-
     return nullptr;
 }
 

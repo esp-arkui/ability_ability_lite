@@ -72,20 +72,6 @@ void AbilityRecordManager::StartLauncher()
     (void) SchedulerLifecycleInner(record, SLITE_STATE_FOREGROUND);
 }
 
-bool AbilityRecordManager::IsValidAbility(AbilityInfo *abilityInfo)
-{
-    if (abilityInfo == nullptr) {
-        return false;
-    }
-    if (abilityInfo->bundleName == nullptr || abilityInfo->srcPath == nullptr) {
-        return false;
-    }
-    if (strlen(abilityInfo->bundleName) == 0 || strlen(abilityInfo->srcPath) == 0) {
-        return false;
-    }
-    return true;
-}
-
 bool AbilityRecordManager::IsLauncher(const char *bundleName)
 {
     size_t len = strlen(bundleName);
@@ -160,7 +146,6 @@ int32_t AbilityRecordManager::StartAbility(const Want *want)
         HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability Service AbilitySvcInfo is null");
         return PARAM_NULL_ERROR;
     }
-
     if (IsLauncher(bundleName)) {
         // Launcher
         info->bundleName = Utils::Strdup(bundleName);
@@ -168,25 +153,17 @@ int32_t AbilityRecordManager::StartAbility(const Want *want)
     } else {
         // JS APP
 #if ((defined OHOS_APPEXECFWK_BMS_BUNDLEMANAGER) || (defined APP_PLATFORM_WATCHGT))
-        AbilityInfo abilityInfo = { nullptr, nullptr };
-        QueryAbilityInfo(want, &abilityInfo);
-        if (!(BMSHelper::GetInstance().IsNativeApp(bundleName) || IsValidAbility(&abilityInfo))) {
-            APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_START_UNKNOWN_BUNDLE_INFO);
-            ClearAbilityInfo(&abilityInfo);
-            AdapterFree(info);
-            HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability Service returned bundleInfo is not valid");
-            return PARAM_NULL_ERROR;
+        uint8_t queryRet = BMSHelper::GetInstance().QueryAbilitySvcInfo(want, info);
+        if (queryRet != ERR_OK) {
+            HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability BMS Helper return abilitySvcInfo failed");
+            return PARAM_CHECK_ERROR;
         }
-        info->bundleName = OHOS::Utils::Strdup(abilityInfo.bundleName);
-        info->path = OHOS::Utils::Strdup(abilityInfo.srcPath);
-        ClearAbilityInfo(&abilityInfo);
 #else
         info->bundleName = Utils::Strdup(bundleName);
         // Here users assign want->data with js app path.
         info->path = Utils::Strdup((const char *)want->data);
 #endif
     }
-
     info->data = OHOS::Utils::Memdup(want->data, want->dataLength);
     info->dataLength = want->dataLength;
     auto ret = StartAbility(info);
