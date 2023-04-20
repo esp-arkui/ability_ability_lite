@@ -36,6 +36,8 @@ public:
     void RegisterBundleNames(List<char *> &names);
 
     void Erase();
+    
+    void tesaa();
 
     bool IsNativeApp(const char *bundleName);
 private:
