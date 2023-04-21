@@ -36,7 +36,7 @@ namespace AbilitySlite {
  */
 class SliteAbility : public LiteContext {
 public:
-    SliteAbility(const char *bundleName);
+    SliteAbility(const char *bundleName = nullptr);
 
     virtual ~SliteAbility();
 
