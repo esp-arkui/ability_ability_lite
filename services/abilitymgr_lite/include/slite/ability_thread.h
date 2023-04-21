@@ -21,8 +21,12 @@
 #include "los_task.h"
 #include "slite_ability.h"
 
+extern "C" void LP_TaskBegin();
+extern "C" void LP_TaskEnd();
+
 namespace OHOS {
 namespace AbilitySlite {
+constexpr char LAUNCHER_BUNDLE_NAME[] = "com.ohos.launcher";
 class AbilityRecord;
 enum class AbilityThreadState : int8_t {
     ABILITY_THREAD_UNINITIALIZED,
@@ -40,16 +44,6 @@ public:
 
     virtual int32_t ReleaseAbilityThread() = 0;
 
-    static void AppTaskHandler(UINT32 uwArg);
-
-    osMessageQueueId_t messageQueueId_ = nullptr;
-    UINT32 appTaskId_ = 0;
-
-protected:
-    AbilityThreadState state_ = AbilityThreadState::ABILITY_THREAD_UNINITIALIZED;
-    SliteAbility *ability_ = nullptr;
-
-private:
     int32_t HandleCreate(const Want *want);
 
     int32_t HandleForeground(const Want *want);
@@ -57,6 +51,13 @@ private:
     int32_t HandleBackground();
 
     int32_t HandleDestroy();
+
+    osMessageQueueId_t messageQueueId_ = nullptr;
+    UINT32 appTaskId_ = 0;
+    SliteAbility *ability_ = nullptr;
+
+protected:
+    AbilityThreadState state_ = AbilityThreadState::ABILITY_THREAD_UNINITIALIZED;
 };
 } // namespace AbilitySlite
 } // namespace OHOS

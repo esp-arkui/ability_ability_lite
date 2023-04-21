@@ -15,12 +15,15 @@
 
 #include "native_ability_thread.h"
 
+#include <string.h>
+
 #include "aafwk_event_error_id.h"
 #include "aafwk_event_error_code.h"
 #include "ability_manager_inner.h"
 #include "ability_errors.h"
 #include "ability_inner_message.h"
 #include "ability_record_manager.h"
+#include "adapter.h"
 #include "slite_ability_state.h"
 #include "ability_thread.h"
 #include "abilityms_log.h"
@@ -29,12 +32,13 @@
 
 namespace OHOS {
 namespace AbilitySlite {
-
+static char NATIVE_APP_TASK[] = "NativeAppTask";
 constexpr int32_t APP_TASK_PRI = 25;
 constexpr int32_t QUEUE_LENGTH = 32;
 
 osMessageQueueId_t NativeAbilityThread::nativeQueueId = nullptr;
 UINT32 NativeAbilityThread::nativeTaskId = 0;
+SliteAbility *NativeAbilityThread::LauncherAbility_ = nullptr;
 
 NativeAbilityThread::NativeAbilityThread() = default;
 
@@ -68,10 +72,10 @@ int32_t NativeAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecor
     if (nativeTaskId == 0) {
         TSK_INIT_PARAM_S stTskInitParam = { 0 };
         LOS_TaskLock();
-        stTskInitParam.pfnTaskEntry = (TSK_ENTRY_FUNC) (AbilityThread::AppTaskHandler);
+        stTskInitParam.pfnTaskEntry = (TSK_ENTRY_FUNC) (NativeAbilityThread::NativeAppTaskHandler);
         stTskInitParam.uwStackSize = TASK_STACK_SIZE;
         stTskInitParam.usTaskPrio = OS_TASK_PRIORITY_LOWEST - APP_TASK_PRI;
-        stTskInitParam.pcName = const_cast<char *>("AppTask");
+        stTskInitParam.pcName = NATIVE_APP_TASK;
         stTskInitParam.uwResved = 0;
         stTskInitParam.uwArg = reinterpret_cast<UINT32>((uintptr_t) messageQueueId_);
         uint32_t ret = LOS_TaskCreate(&nativeTaskId, &stTskInitParam);
@@ -83,10 +87,25 @@ int32_t NativeAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecor
         }
     }
     appTaskId_ = nativeTaskId;
-
     state_ = AbilityThreadState::ABILITY_THREAD_INITIALIZED;
-    ability_ = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::NATIVE_ABILITY,
-        abilityRecord->appName);
+    if (LauncherAbility_ != nullptr) {
+        if (LauncherAbility_->bundleName_ == nullptr) {
+            return PARAM_NULL_ERROR;
+        }
+        if (strcmp(LauncherAbility_->bundleName_, abilityRecord->appName) != 0) {
+            ability_ = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::NATIVE_ABILITY,
+                abilityRecord->appName);
+        } else {
+            ability_ = LauncherAbility_;
+        }
+    } else {
+        if (strcmp(abilityRecord->appName, LAUNCHER_BUNDLE_NAME) == 0) {
+            LauncherAbility_ = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::NATIVE_ABILITY,
+                abilityRecord->appName);
+        }
+        ability_ = LauncherAbility_;
+    }
+
     if (ability_ == nullptr) {
         HILOG_INFO(HILOG_MODULE_AAFWK, "NativeAbility create fail");
         return MEMORY_MALLOC_ERROR;
@@ -103,9 +122,68 @@ int32_t NativeAbilityThread::ReleaseAbilityThread()
         HILOG_ERROR(HILOG_MODULE_AAFWK, "NativeAbilityThread release fail, the AbilityThread is not inited");
         return PARAM_CHECK_ERROR;
     }
-    delete ability_;
-    ability_ = nullptr;
+    if (ability_->bundleName_ == nullptr) {
+        return PARAM_NULL_ERROR;
+    }
+
+    if (strcmp(ability_->bundleName_, LAUNCHER_BUNDLE_NAME) != 0) {
+        delete ability_;
+        ability_ = nullptr;
+    }
     return ERR_OK;
+}
+
+void NativeAbilityThread::NativeAppTaskHandler(UINT32 uwArg)
+{
+    auto messageQueueId = reinterpret_cast<osMessageQueueId_t>(uwArg);
+    if (messageQueueId == nullptr) {
+        return;
+    }
+    AbilityThread *defaultAbilityThread = nullptr;
+
+    for (;;) {
+        SliteAbilityInnerMsg innerMsg;
+        uint8_t prio = 0;
+        osStatus_t ret = osMessageQueueGet(messageQueueId, &innerMsg, &prio, osWaitForever);
+        if (ret != osOK) {
+            return;
+        }
+        AbilityThread *abilityThread = innerMsg.abilityThread;
+        if (abilityThread == nullptr) {
+            if (defaultAbilityThread == nullptr) {
+                continue;
+            }
+            abilityThread = defaultAbilityThread;
+        }
+        LP_TaskBegin();
+        switch (innerMsg.msgId) {
+            case SliteAbilityMsgId::CREATE:
+                defaultAbilityThread = abilityThread;
+                abilityThread->HandleCreate(innerMsg.want);
+                ClearWant(innerMsg.want);
+                AdapterFree(innerMsg.want);
+                innerMsg.want = nullptr;
+                break;
+            case SliteAbilityMsgId::FOREGROUND:
+                abilityThread->HandleForeground(innerMsg.want);
+                ClearWant(innerMsg.want);
+                AdapterFree(innerMsg.want);
+                innerMsg.want = nullptr;
+                break;
+            case SliteAbilityMsgId::BACKGROUND:
+                abilityThread->HandleBackground();
+                break;
+            case SliteAbilityMsgId::DESTROY:
+                abilityThread->HandleDestroy();
+                break; // this task will be kept alive
+            default:
+                if (abilityThread->ability_ != nullptr) {
+                    abilityThread->ability_->HandleExtraMessage(innerMsg);
+                }
+                break;
+        }
+        LP_TaskEnd();
+    }
 }
 } // namespace AbilitySlite
 } // namespace OHOS
