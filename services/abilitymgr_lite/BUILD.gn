@@ -12,6 +12,8 @@
 # limitations under the License.
 import("//build/lite/config/component/lite_component.gni")
 import("//build/lite/config/subsystem/aafwk/config.gni")
+import(
+    "//foundation/bundlemanager/bundle_framework_lite/bundle_framework_lite.gni")
 
 lite_library("abilityms") {
   if (ohos_kernel_type == "liteos_m") {
@@ -41,6 +43,11 @@ lite_library("abilityms") {
         config_ohos_aafwk_aafwk_lite_task_stack_size > 0) {
       defines +=
           [ "TASK_STACK_SIZE=$config_ohos_aafwk_aafwk_lite_task_stack_size" ]
+    }
+
+    if (defined(enable_ohos_bundle_manager_service) &&
+        enable_ohos_bundle_manager_service == true) {
+      defines += [ "_MINI_BMS_" ]
     }
 
     deps = [
