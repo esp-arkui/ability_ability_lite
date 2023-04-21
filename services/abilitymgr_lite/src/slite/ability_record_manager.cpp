@@ -167,7 +167,7 @@ int32_t AbilityRecordManager::StartAbility(const Want *want)
         info->path = nullptr;
     } else {
         // JS APP
-#if ((defined OHOS_APPEXECFWK_BMS_BUNDLEMANAGER) || (defined APP_PLATFORM_WATCHGT))
+#ifdef _MINI_BMS_
         AbilityInfo abilityInfo = { nullptr, nullptr };
         QueryAbilityInfo(want, &abilityInfo);
         if (!(BMSHelper::GetInstance().IsNativeApp(bundleName) || IsValidAbility(&abilityInfo))) {

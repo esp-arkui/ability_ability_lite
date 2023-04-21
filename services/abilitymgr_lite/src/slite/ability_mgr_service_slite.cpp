@@ -53,7 +53,7 @@ static void InitService()
     SamgrLite *sm = SAMGR_GetInstance();
     CHECK_NULLPTR_RETURN(sm, "AbilityManagerService", "get samgr error");
     BOOL result = sm->RegisterService(AbilityMgrServiceSlite::GetInstance());
-    PRINTI("AbilityManagerService", "ams starts %{public}s", result ? "successfully" : "unsuccessfully");
+    HILOG_INFO(HILOG_MODULE_AAFWK, "ams starts %{public}s", result ? "successfully" : "unsuccessfully");
 }
 
 SYSEX_SERVICE_INIT(InitService);
@@ -64,14 +64,14 @@ static void InitFeature()
     CHECK_NULLPTR_RETURN(samgrLite, "AbilityMgrServiceSlite", "get samgr error");
     BOOL result = samgrLite->RegisterFeature(AMS_SERVICE, AbilityMgrServiceSlite::GetInstance());
     if (result == FALSE) {
-        PRINTE("AbilityMgrServiceSlite", "ams register feature failure");
+        HILOG_ERROR(HILOG_MODULE_AAFWK, "ams register feature failure");
         return;
     }
     g_amsSliteImpl.ams = AbilityMgrServiceSlite::GetInstance();
     auto publicApi = GET_IUNKNOWN(g_amsSliteImpl);
     CHECK_NULLPTR_RETURN(publicApi, "AbilityMgrServiceSlite", "publicApi is nullptr");
     BOOL apiResult = samgrLite->RegisterFeatureApi(AMS_SERVICE, AMS_SLITE_FEATURE, publicApi);
-    PRINTI("AbilityMgrServiceSlite", "ams feature init %{public}s", apiResult ? "success" : "failure");
+    HILOG_INFO(HILOG_MODULE_AAFWK, "ams feature init %{public}s", apiResult ? "success" : "failure");
 }
 
 SYSEX_FEATURE_INIT(InitFeature);
