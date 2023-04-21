@@ -27,6 +27,7 @@ extern "C" void LP_TaskEnd();
 namespace OHOS {
 namespace AbilitySlite {
 constexpr char LAUNCHER_BUNDLE_NAME[] = "com.ohos.launcher";
+
 class AbilityRecord;
 enum class AbilityThreadState : int8_t {
     ABILITY_THREAD_UNINITIALIZED,

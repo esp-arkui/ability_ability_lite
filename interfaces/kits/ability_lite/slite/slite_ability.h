@@ -81,6 +81,7 @@ public:
     int GetState() const;
 
     char *bundleName_ = nullptr;
+
 private:
     int abilityState_ = 0;
 };

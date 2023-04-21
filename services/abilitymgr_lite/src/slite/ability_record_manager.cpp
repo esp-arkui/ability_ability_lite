@@ -46,7 +46,6 @@ namespace AbilitySlite {
 constexpr uint16_t LAUNCHER_TOKEN = 0;
 constexpr int32_t QUEUE_LENGTH = 32;
 constexpr int32_t APP_TASK_PRI = 25;
-constexpr int32_t MAX_NATIVE_APP_SIZE = 200; // this size might be changed
 
 AbilityRecordManager::AbilityRecordManager() = default;
 
@@ -57,19 +56,6 @@ AbilityRecordManager::~AbilityRecordManager()
 
 void AbilityRecordManager::StartLauncher()
 {
-    // AbilityRecord *launcherRecord = abilityList_.Get(LAUNCHER_TOKEN);
-    // if (launcherRecord != nullptr) {
-    //     return;
-    // }
-    // auto record = new AbilityRecord();
-    // record->SetAppName(LAUNCHER_BUNDLE_NAME);
-    // record->token = LAUNCHER_TOKEN;
-    // record->isNativeApp = true;
-    // record->state = SCHEDULE_FOREGROUND;
-    // record->taskId = LOS_CurTaskIDGet();
-    // abilityList_.Add(record);
-    // abilityStack_.PushAbility(record);
-    // (void) SchedulerLifecycleInner(record, SLITE_STATE_FOREGROUND);
     AbilityRecord *launcherRecord = abilityList_.Get(LAUNCHER_TOKEN);
     if (launcherRecord != nullptr) {
         return;
@@ -257,54 +243,6 @@ int32_t AbilityRecordManager::StartAbility(AbilitySvcInfo *info)
     HILOG_INFO(HILOG_MODULE_AAFWK, "StartAbility");
 
     auto topRecord = abilityStack_.GetTopAbility();
-
-    // if ((topRecord == nullptr) && (strcmp(info->bundleName, LAUNCHER_BUNDLE_NAME) != 0)) {
-    //     HILOG_ERROR(HILOG_MODULE_AAFWK, "first ability should be launcher.");
-    //     return PARAM_NULL_ERROR;
-    // }
-
-    // //  start launcher
-    // if (IsLauncher(info->bundleName)) {
-    //     if (topRecord == nullptr) {
-    //         return PreCheckStartAbility(info->bundleName, info->path, info->data, info->dataLength, info->isNative);
-    //     }
-    //     uint16_t topToken = topRecord->token;
-    //     UpdateRecord(info);
-    //     if (topToken != LAUNCHER_TOKEN && topRecord->state != SCHEDULE_BACKGROUND) {
-    //         HILOG_INFO(HILOG_MODULE_AAFWK, "Change Js app to background.");
-    //         // 1. topRecord is js ability and transfer to background
-    //         // 2. launcher transfer to foreground
-    //         (void) SendMsgToJsOrNativeAbility(topRecord, SLITE_STATE_BACKGROUND);
-    //     } else {
-    //         // 1. topRecord is launcher and transfer to foreground directly
-    //         (void) SchedulerLifecycle(LAUNCHER_TOKEN, SLITE_STATE_FOREGROUND);
-    //     }
-    //     return ERR_OK;
-    // }
-
-    // if (!CheckResponse(info->bundleName)) {
-    //     return PARAM_CHECK_ERROR;
-    // }
-
-    // // start js app
-    // if (topRecord->state != SCHEDULE_STOP && topRecord->token != LAUNCHER_TOKEN) {
-    //     // start app is top
-    //     if (strcmp(info->bundleName, topRecord->appName) == 0) {
-    //         if (topRecord->state == SCHEDULE_BACKGROUND) {
-    //             HILOG_INFO(HILOG_MODULE_AAFWK, "StartAbility Resume app when background.");
-    //             (void) SchedulerLifecycle(LAUNCHER_TOKEN, SLITE_STATE_BACKGROUND);
-    //             return ERR_OK;
-    //         }
-    //         HILOG_INFO(HILOG_MODULE_AAFWK, "Js app already started or starting.");
-    //     } else {
-    //         // js to js
-    //         HILOG_INFO(HILOG_MODULE_AAFWK, "Terminate pre js app when js to js");
-    //         TerminateAbility(topRecord->token);
-    //         pendingToken_ = GenerateToken();
-    //     }
-    // }
-
-
     if (topRecord == nullptr) {
         if (!IsLauncher(info->bundleName)) {
             HILOG_ERROR(HILOG_MODULE_AAFWK, "first ability should be launcher.");
@@ -607,33 +545,6 @@ void AbilityRecordManager::OnBackgroundDone(uint16_t token)
         return;
     }
     SetAbilityState(token, SCHEDULE_BACKGROUND);
-    // auto topRecord = const_cast<AbilityRecord *>(abilityStack_.GetTopAbility());
-    // if (topRecord == nullptr) {
-    //     return;
-    // }
-    // // the js background
-    // if (token != LAUNCHER_TOKEN) {
-    //     if (topRecord->token == token) {
-    //         APP_EVENT(MT_ACE_APP_BACKGROUND);
-    //         (void) SchedulerLifecycle(LAUNCHER_TOKEN, SLITE_STATE_FOREGROUND);
-    //     }
-    //     return;
-    // }
-    // // the launcher background
-    // if (topRecord->token != LAUNCHER_TOKEN) {
-    //     if (topRecord->state == SCHEDULE_STOP) {
-    //         (void) SendMsgToJsOrNativeAbility(topRecord, SLITE_STATE_INITIAL);
-    //     } else {
-    //         (void) SendMsgToJsOrNativeAbility(topRecord, SLITE_STATE_FOREGROUND);
-    //     }
-    //     if (GetCleanAbilityDataFlag()) {
-    //         HILOG_INFO(HILOG_MODULE_AAFWK, "OnBackgroundDone clean launcher record data");
-    //         AbilityRecord *record = abilityList_.Get(token);
-    //         record->SetWantData(nullptr, 0);
-    //         SetCleanAbilityDataFlag(false);
-    //     }
-    //     return;
-    // }
 
     if (token == LAUNCHER_TOKEN) {
         if (GetCleanAbilityDataFlag()) {
@@ -652,21 +563,6 @@ void AbilityRecordManager::OnBackgroundDone(uint16_t token)
 void AbilityRecordManager::OnDestroyDone(uint16_t token)
 {
     HILOG_INFO(HILOG_MODULE_AAFWK, "OnDestroyDone [%{public}u]", token);
-    // the launcher destroy
-    // if (token == LAUNCHER_TOKEN) {
-    //     SetAbilityState(token, SCHEDULE_STOP);
-    //     return;
-    // }
-    // auto topRecord = abilityStack_.GetTopAbility();
-    // if ((topRecord == nullptr) || (topRecord->token != token)) {
-    //     SetAbilityState(token, SCHEDULE_STOP);
-    //     DeleteRecordInfo(token);
-    //     return;
-    // }
-    // APP_EVENT(MT_ACE_APP_STOP);
-    // abilityStack_.PopAbility();
-    // DeleteRecordInfo(token);
-    // SetAbilityState(token, SCHEDULE_STOP);
 
     auto onDestroyRecord = abilityList_.Get(token);
     if (onDestroyRecord == nullptr) {
@@ -682,20 +578,6 @@ void AbilityRecordManager::OnDestroyDone(uint16_t token)
         DeleteAbilityThread(onDestroyRecord);
         SetAbilityState(token, SCHEDULE_STOP);
     }
-    // AbilityRecord *topRecord = abilityStack_.GetTopAbility();
-    // if (topRecord == nullptr) {
-    //     HILOG_ERROR(HILOG_MODULE_AAFWK, "ability stack is empty");
-    //     return;
-    // }
-    // // no pending token
-    // if (pendingToken_ == 0) {
-    //     if (topRecord->state == SCHEDULE_STOP) {
-    //         (void) SchedulerLifecycle(topRecord->token, SLITE_STATE_INITIAL);
-    //         return;
-    //     }
-    //     HILOG_ERROR(HILOG_MODULE_AAFWK, "state of top ability is invalid");
-    //     return;
-    // }
 
     // start pending token
     if (pendingToken_ != 0) {
