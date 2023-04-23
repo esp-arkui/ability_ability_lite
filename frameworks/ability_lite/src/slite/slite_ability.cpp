@@ -16,9 +16,20 @@
 #include "slite_ability.h"
 #include "slite_ability_state.h"
 #include "abilityms_slite_client.h"
+#include "utils.h"
 
 namespace OHOS {
 namespace AbilitySlite {
+SliteAbility::SliteAbility(const char *bundleName)
+{
+    bundleName_= OHOS::Utils::Strdup(bundleName);
+}
+
+SliteAbility::~SliteAbility()
+{
+    AdapterFree(bundleName_);
+}
+
 void SliteAbility::OnCreate(const Want &want)
 {
     abilityState_ = SLITE_STATE_INITIAL;

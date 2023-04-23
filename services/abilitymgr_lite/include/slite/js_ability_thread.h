@@ -31,6 +31,8 @@ public:
     int32_t InitAbilityThread(const AbilityRecord *abilityRecord) override;
 
     int32_t ReleaseAbilityThread() override;
+
+    static void AppTaskHandler(UINT32 uwArg);
 };
 } // namespace AbilitySlite
 } // namespace OHOS
