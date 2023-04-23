@@ -55,7 +55,7 @@ int32_t AbilityKit::SendMsgResourceRelease()
 }
 } // namespace OHOS
 
-#ifdef APP_PLATFORM_WATCHGT
+#ifdef __LITEOS_M__
 extern "C" {
 int32_t RegisterReceiver(const char *bundleName, SuccessCallback success, FailCallback fail)
 {
@@ -73,4 +73,4 @@ int32_t SendMsgToPeerApp(bool isLocalMsg, const char *callingPkgName, const char
     return OHOS::AbilityKit::SendMsgToPeerApp(isLocalMsg, callingPkgName, calledPkgName, msgBody, length, 0, 0, 0);
 }
 }
-#endif // APP_PLATFORM_WATCHGT
+#endif // __LITEOS_M__
