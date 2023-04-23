@@ -86,13 +86,16 @@ private:
 
     int32_t StartRemoteAbility(const Want *want);
 
-    int32_t PreCheckStartAbility(const char *bundleName, const char *path, const void *data, uint16_t dataLength, bool isNative);
+    int32_t PreCheckStartAbility(const char *bundleName, const char *path, const void *data, uint16_t dataLength,
+        bool isNative = false);
 
     bool CheckResponse(const char *bundleName);
 
     int32_t SchedulerLifecycle(uint64_t token, int32_t state);
 
     int32_t SchedulerLifecycleInner(const AbilityRecord *record, int32_t state);
+
+    bool SendMsgToJsAbility(int32_t state, const AbilityRecord *record);
 
     void SchedulerAbilityLifecycle(SliteAbility *ability, const Want &want, int32_t state);
 

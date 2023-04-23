@@ -73,7 +73,7 @@ int32_t NativeAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecor
         TSK_INIT_PARAM_S stTskInitParam = { 0 };
         LOS_TaskLock();
         stTskInitParam.pfnTaskEntry = (TSK_ENTRY_FUNC) (NativeAbilityThread::NativeAppTaskHandler);
-        stTskInitParam.uwStackSize = TASK_STACK_SIZE;
+        stTskInitParam.uwStackSize = NATIVE_TASK_STACK_SIZE;
         stTskInitParam.usTaskPrio = OS_TASK_PRIORITY_LOWEST - APP_TASK_PRI;
         stTskInitParam.pcName = NATIVE_APP_TASK;
         stTskInitParam.uwResved = 0;
