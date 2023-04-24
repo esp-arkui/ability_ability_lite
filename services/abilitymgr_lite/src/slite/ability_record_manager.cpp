@@ -72,20 +72,6 @@ void AbilityRecordManager::StartLauncher()
     (void) SchedulerLifecycleInner(record, SLITE_STATE_FOREGROUND);
 }
 
-bool AbilityRecordManager::IsValidAbility(AbilityInfo *abilityInfo)
-{
-    if (abilityInfo == nullptr) {
-        return false;
-    }
-    if (abilityInfo->bundleName == nullptr || abilityInfo->srcPath == nullptr) {
-        return false;
-    }
-    if (strlen(abilityInfo->bundleName) == 0 || strlen(abilityInfo->srcPath) == 0) {
-        return false;
-    }
-    return true;
-}
-
 bool AbilityRecordManager::IsLauncher(const char *bundleName)
 {
     size_t len = strlen(bundleName);
@@ -160,7 +146,6 @@ int32_t AbilityRecordManager::StartAbility(const Want *want)
         HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability Service AbilitySvcInfo is null");
         return PARAM_NULL_ERROR;
     }
-
     if (IsLauncher(bundleName)) {
         // Launcher
         info->bundleName = Utils::Strdup(bundleName);
@@ -168,18 +153,15 @@ int32_t AbilityRecordManager::StartAbility(const Want *want)
     } else {
         // JS APP
 #ifdef _MINI_BMS_
-        AbilityInfo abilityInfo = { nullptr, nullptr };
-        QueryAbilityInfo(want, &abilityInfo);
-        if (!(BMSHelper::GetInstance().IsNativeApp(bundleName) || IsValidAbility(&abilityInfo))) {
-            APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_START_UNKNOWN_BUNDLE_INFO);
-            ClearAbilityInfo(&abilityInfo);
+        uint8_t queryRet = BMSHelper::GetInstance().QueryAbilitySvcInfo(want, info);
+        if (queryRet != ERR_OK) {
+            HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability BMS Helper return abilitySvcInfo failed");
+            AdapterFree(info->bundleName);
+            AdapterFree(info->path);
+            AdapterFree(info->data);
             AdapterFree(info);
-            HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability Service returned bundleInfo is not valid");
-            return PARAM_NULL_ERROR;
+            return PARAM_CHECK_ERROR;
         }
-        info->bundleName = OHOS::Utils::Strdup(abilityInfo.bundleName);
-        info->path = OHOS::Utils::Strdup(abilityInfo.srcPath);
-        ClearAbilityInfo(&abilityInfo);
 #else
         info->bundleName = Utils::Strdup(bundleName);
         // Here users assign want->data with js app path.

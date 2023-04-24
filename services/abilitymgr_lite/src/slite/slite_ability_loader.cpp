@@ -51,4 +51,18 @@ SliteAbility *SliteAbilityLoader::CreateAbility(SliteAbilityType type, const cha
     }
     return nullptr;
 }
+
+void SliteAbilityLoader::UnsetAbilityCreatorFunc(SliteAbilityType type)
+{
+    switch (type) {
+        case SliteAbilityType::JS_ABILITY:
+            jsAbilityCreatorFunc_ = nullptr;
+            break;
+        case SliteAbilityType::NATIVE_ABILITY:
+            nativeAbilityCreatorFunc_ = nullptr;
+            break;
+        default:
+            break;
+    }
+}
 }
