@@ -86,7 +86,7 @@ The ability management framework is provided by OpenHarmony for you to develop O
 
 ## Repositories Involved<a name="section93061357133720"></a>
 
-[Application framework](https://gitee.com/openharmony/docs/blob/master/en/readme/application-framework.md)
+[Ability framework](https://gitee.com/openharmony/docs/blob/master/en/readme/ability.md)
 
 **aafwk\_aafwk\_lite**
 
