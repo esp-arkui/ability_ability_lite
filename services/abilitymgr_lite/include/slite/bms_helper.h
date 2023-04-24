@@ -17,8 +17,8 @@
 #define ABILITYLITE_BMS_HELPER_H
 
 #include <cstdint>
-#include "utils_list.h"
 #include "bundle_manager.h"
+#include "utils_list.h"
 #include "want.h"
 
 namespace OHOS {

@@ -23,7 +23,7 @@ namespace OHOS {
 namespace AbilitySlite {
 class DummyJsAbility : public SliteAbility {
 public:
-    DummyJsAbility() = default;
+    DummyJsAbility(const char *bundleName) : SliteAbility(bundleName) {}
 
     ~DummyJsAbility() override = default;
 

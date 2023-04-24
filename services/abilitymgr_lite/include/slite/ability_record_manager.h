@@ -63,6 +63,8 @@ public:
 
     void setNativeAbility(const SliteAbility *ability);
 
+    int SetNativeApplications(const char **nativeApplications, int32_t size);
+
     void StartLauncher();
 
     uint32_t curTask_ = 0;
@@ -74,15 +76,20 @@ private:
 
     int32_t StartAbility(AbilitySvcInfo *info);
 
+    int32_t StartAbility(const AbilityRecord *record);
+
     int32_t StartRemoteAbility(const Want *want);
 
-    int32_t PreCheckStartAbility(const char *bundleName, const char *path, const void *data, uint16_t dataLength);
+    int32_t PreCheckStartAbility(const char *bundleName, const char *path, const void *data, uint16_t dataLength,
+        bool isNative = false);
 
     bool CheckResponse(const char *bundleName);
 
     int32_t SchedulerLifecycle(uint64_t token, int32_t state);
 
     int32_t SchedulerLifecycleInner(const AbilityRecord *record, int32_t state);
+
+    bool SendMsgToJsAbility(int32_t state, const AbilityRecord *record);
 
     void SchedulerAbilityLifecycle(SliteAbility *ability, const Want &want, int32_t state);
 
@@ -98,7 +105,9 @@ private:
 
     void DeleteRecordInfo(uint16_t token);
 
-    bool SendMsgToJsAbility(int32_t msgId, const AbilityRecord *record);
+    void DeleteAbilityThread(AbilityRecord *record);
+
+    bool SendMsgToJsOrNativeAbility(const AbilityRecord *record, int32_t msgId);
 
     void SetAbilityState(uint64_t token, int32_t state);
 

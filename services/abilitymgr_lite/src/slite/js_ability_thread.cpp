@@ -19,6 +19,7 @@
 #include "ability_errors.h"
 #include "ability_inner_message.h"
 #include "ability_manager_inner.h"
+#include "adapter.h"
 #include "dummy_js_ability.h"
 #include "js_ability.h"
 #include "js_async_work.h"
@@ -58,7 +59,7 @@ int32_t JsAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecord)
 
     TSK_INIT_PARAM_S stTskInitParam = { nullptr };
     LOS_TaskLock();
-    stTskInitParam.pfnTaskEntry = (TSK_ENTRY_FUNC) (AbilityThread::AppTaskHandler);
+    stTskInitParam.pfnTaskEntry = (TSK_ENTRY_FUNC) (JsAbilityThread::AppTaskHandler);
     stTskInitParam.uwStackSize = TASK_STACK_SIZE;
     stTskInitParam.usTaskPrio = OS_TASK_PRIORITY_LOWEST - APP_TASK_PRI;
     stTskInitParam.pcName = g_jsAppTask;
@@ -96,9 +97,61 @@ int32_t JsAbilityThread::ReleaseAbilityThread()
     appTaskId_ = 0;
     osMessageQueueDelete(messageQueueId_);
     messageQueueId_ = nullptr;
-    delete ability_;
-    ability_ = nullptr;
     return ERR_OK;
+}
+
+void JsAbilityThread::AppTaskHandler(UINT32 uwArg)
+{
+    auto messageQueueId = reinterpret_cast<osMessageQueueId_t>(uwArg);
+    if (messageQueueId == nullptr) {
+        return;
+    }
+    AbilityThread *defaultAbilityThread = nullptr;
+
+    for (;;) {
+        SliteAbilityInnerMsg innerMsg;
+        uint8_t prio = 0;
+        osStatus_t ret = osMessageQueueGet(messageQueueId, &innerMsg, &prio, osWaitForever);
+        if (ret != osOK) {
+            return;
+        }
+        AbilityThread *abilityThread = innerMsg.abilityThread;
+        if (abilityThread == nullptr) {
+            if (defaultAbilityThread == nullptr) {
+                continue;
+            }
+            abilityThread = defaultAbilityThread;
+        }
+        LP_TaskBegin();
+        switch (innerMsg.msgId) {
+            case SliteAbilityMsgId::CREATE:
+                defaultAbilityThread = abilityThread;
+                abilityThread->HandleCreate(innerMsg.want);
+                ClearWant(innerMsg.want);
+                AdapterFree(innerMsg.want);
+                innerMsg.want = nullptr;
+                break;
+            case SliteAbilityMsgId::FOREGROUND:
+                abilityThread->HandleForeground(innerMsg.want);
+                ClearWant(innerMsg.want);
+                AdapterFree(innerMsg.want);
+                innerMsg.want = nullptr;
+                break;
+            case SliteAbilityMsgId::BACKGROUND:
+                abilityThread->HandleBackground();
+                break;
+            case SliteAbilityMsgId::DESTROY:
+                abilityThread->HandleDestroy();
+                LP_TaskEnd();
+                return; // here exit the loop, and abort all messages afterwards
+            default:
+                if (abilityThread->ability_ != nullptr) {
+                    abilityThread->ability_->HandleExtraMessage(innerMsg);
+                }
+                break;
+        }
+        LP_TaskEnd();
+    }
 }
 } // namespace AbilitySlite
 } // namespace OHOS

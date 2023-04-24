@@ -75,6 +75,7 @@ uint8_t BMSHelper::QueryAbilitySvcInfo(const Want *want, AbilitySvcInfo *svcInfo
     AbilityInfo abilityInfo = { nullptr, nullptr };
     QueryAbilityInfo(want, &abilityInfo);
     if (!IsValidAbility(&abilityInfo)) {
+        APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_START_UNKNOWN_BUNDLE_INFO);
         HILOG_ERROR(HILOG_MODULE_AAFWK, "Invalid AbilityInfo");
         ClearAbilityInfo(&abilityInfo);
         return PARAM_CHECK_ERROR;

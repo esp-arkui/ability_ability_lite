@@ -36,9 +36,9 @@ namespace AbilitySlite {
  */
 class SliteAbility : public LiteContext {
 public:
-    SliteAbility() = default;
+    SliteAbility(const char *bundleName = nullptr);
 
-    virtual ~SliteAbility() = default;
+    virtual ~SliteAbility();
 
     /**
      * @brief Called when this ability is created. You must override this function if you want to perform some
@@ -79,6 +79,8 @@ public:
     virtual void HandleExtraMessage(const SliteAbilityInnerMsg &innerMsg);
 
     int GetState() const;
+
+    char *bundleName_ = nullptr;
 
 private:
     int abilityState_ = 0;
