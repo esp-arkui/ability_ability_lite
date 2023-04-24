@@ -36,6 +36,8 @@ public:
 
     void Erase(AbilityRecord *record);
 
+    uint32_t Size() const;
+
 private:
     List<AbilityRecord *> abilityStack_ {};
 };
