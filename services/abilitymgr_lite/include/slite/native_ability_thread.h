@@ -30,8 +30,11 @@ public:
 
     int32_t ReleaseAbilityThread() override;
 
+    static void NativeAppTaskHandler(UINT32 uwArg);
+
     static osMessageQueueId_t nativeQueueId;
     static UINT32 nativeTaskId;
+    static SliteAbility *LauncherAbility_;
 };
 }
 }
