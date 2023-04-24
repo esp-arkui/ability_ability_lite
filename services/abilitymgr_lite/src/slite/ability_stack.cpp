@@ -54,5 +54,10 @@ void AbilityStack::Erase(AbilityRecord *record)
         node = node->next_;
     }
 }
+
+uint32_t AbilityStack::Size() const
+{
+    return abilityStack_.Size();
+}
 } // namespace AbilitySlite
 } // namespace OHOS
