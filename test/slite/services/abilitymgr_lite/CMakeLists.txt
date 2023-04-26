@@ -23,10 +23,19 @@ set(ABILITY_SERVICE_SRC
         ${ABILITY_LITE_FRAMEWORKS_WANT_LITE_SRC}
         ${ABILITY_LITE_FRAMEWORKS_ABILITY_LITE_SRC}
         ${ABILITY_LITE_FRAMEWORKS_ABILITYMGR_LITE_SRC})
-add_executable(ability_record_manager_test ability_record_manager_test.cpp ${ABILITY_SERVICE_SRC})
+if ((DEFINED PRODUCT) AND (PRODUCT MATCHES ARCHIMEDES))
+    add_executable(ability_record_manager_test ability_record_manager_test.archimedes.cpp ${ABILITY_SERVICE_SRC})
+else ()
+    add_executable(ability_record_manager_test ability_record_manager_test.cpp ${ABILITY_SERVICE_SRC})
+endif ()
 target_link_libraries(ability_record_manager_test PUBLIC ${GTEST} Threads::Threads ${SECUREC} ${MOCK} ${DEP})
 
-add_executable(abilityms_slite_client_test abilityms_slite_client_test.cpp ${ABILITY_SERVICE_SRC})
+if ((DEFINED PRODUCT) AND (PRODUCT MATCHES ARCHIMEDES))
+    add_executable(abilityms_slite_client_test abilityms_slite_client_test.archimedes.cpp ${ABILITY_SERVICE_SRC})
+else ()
+    add_executable(abilityms_slite_client_test abilityms_slite_client_test.cpp ${ABILITY_SERVICE_SRC})
+endif ()
+
 target_link_libraries(abilityms_slite_client_test PUBLIC ${GTEST} Threads::Threads ${SECUREC} ${MOCK} ${DEP})
 
 add_executable(ability_record_test ability_record_test.cpp ${ABILITY_LITE_SERVICES_SRC_DIR}/ability_record.cpp)
@@ -51,12 +60,12 @@ add_executable(native_ability_thread_test native_ability_thread_test.cpp ${ABILI
 target_link_libraries(native_ability_thread_test PUBLIC ${GTEST} Threads::Threads ${SECUREC} ${MOCK} ${DEP})
 
 set(GTEST_REPEAT 10)
-gtest_discover_tests(ability_record_manager_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT} DISCOVERY_TIMEOUT 6000)
-gtest_discover_tests(abilityms_slite_client_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT} DISCOVERY_TIMEOUT 6000)
-gtest_discover_tests(ability_record_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT} DISCOVERY_TIMEOUT 6000)
-gtest_discover_tests(js_ability_thread_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT} DISCOVERY_TIMEOUT 6000)
-gtest_discover_tests(ability_list_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT} DISCOVERY_TIMEOUT 6000)
-gtest_discover_tests(ability_thread_loader_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT} DISCOVERY_TIMEOUT 6000)
 gtest_discover_tests(bms_helper_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT} DISCOVERY_TIMEOUT 6000)
+gtest_discover_tests(ability_list_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT} DISCOVERY_TIMEOUT 6000)
+gtest_discover_tests(ability_record_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT} DISCOVERY_TIMEOUT 6000)
+gtest_discover_tests(ability_thread_loader_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT} DISCOVERY_TIMEOUT 6000)
 gtest_discover_tests(slite_ability_loader_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT} DISCOVERY_TIMEOUT 6000)
 gtest_discover_tests(native_ability_thread_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT} DISCOVERY_TIMEOUT 6000)
+gtest_discover_tests(js_ability_thread_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT} DISCOVERY_TIMEOUT 6000)
+gtest_discover_tests(ability_record_manager_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT} DISCOVERY_TIMEOUT 6000)
+gtest_discover_tests(abilityms_slite_client_test EXTRA_ARGS --gtest_shuffle --gtest_repeat=${GTEST_REPEAT} DISCOVERY_TIMEOUT 6000)

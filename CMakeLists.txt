@@ -19,8 +19,8 @@ set(CMAKE_SKIP_INSTALL_RPATH TRUE)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fsigned-char -ftree-vectorize -funroll-loops -Wno-unused-variable")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c17 -fsigned-char -ftree-vectorize -funroll-loops -Wno-unused-variable")
 if (CMAKE_BUILD_TYPE MATCHES debug)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3 -O0 -Wall -fno-omit-frame-pointer -fno-stack-protector")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g3 -O0 -Wall -fno-omit-frame-pointer -fno-stack-protector")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -Wall -fno-omit-frame-pointer -fno-stack-protector")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -Wall -fno-omit-frame-pointer -fno-stack-protector")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftest-coverage -fprofile-arcs --coverage")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ftest-coverage -fprofile-arcs --coverage")
     if (SANITIZE_TYPE MATCHES address)
@@ -53,6 +53,11 @@ else()
 endif()
 # define
 add_compile_definitions(__LITEOS_M__ TASK_STACK_SIZE=65536 AMS_TASK_STACK_SIZE=32768 NATIVE_TASK_STACK_SIZE=32768 _MINI_BMS_)
+if ((DEFINED PRODUCT) AND (PRODUCT MATCHES ARCHIMEDES))
+    # do nothing
+else ()
+    add_compile_definitions(_MINI_MULTI_TASKS_)
+endif ()
 enable_testing()
 
 # ability_lite

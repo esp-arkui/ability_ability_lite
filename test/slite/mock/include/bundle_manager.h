@@ -52,6 +52,7 @@ extern "C" {
 
 constexpr char APP1_BUNDLE_NAME[] = "com.ohos.test.app1";
 constexpr char APP2_BUNDLE_NAME[] = "com.ohos.test.app2";
+constexpr char APP3_BUNDLE_NAME[] = "com.ohos.test.app3";
 constexpr char APP_BUNDLE_PATH[] = "/path/to/app/";
 constexpr char INVALID_APP_BUNDLE_NAME[] = "com.ohos.test.app.invalid";
 

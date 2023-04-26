@@ -134,7 +134,7 @@ public:
                 }
                 if (it->second->Empty()) {
                     queueMapLock_.unlock();
-                    usleep(50000); // sleep 50ms
+                    // usleep(50000); // sleep 50ms
                     continue;
                 }
                 osStatus_t status = it->second->Get(msg_ptr);

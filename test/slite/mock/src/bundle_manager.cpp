@@ -30,7 +30,8 @@ uint8_t QueryAbilityInfo(const Want *want, AbilityInfo *abilityInfo)
         return PARAM_NULL_ERROR;
     }
     if (strcmp(want->element->bundleName, APP1_BUNDLE_NAME) == 0 ||
-        strcmp(want->element->bundleName, APP2_BUNDLE_NAME) == 0) {
+        strcmp(want->element->bundleName, APP2_BUNDLE_NAME) == 0 ||
+        strcmp(want->element->bundleName, APP3_BUNDLE_NAME) == 0) {
         abilityInfo->bundleName = OHOS::Utils::Strdup(want->element->bundleName);
         abilityInfo->srcPath = OHOS::Utils::Strdup(APP_BUNDLE_PATH);
         return ERR_OK;

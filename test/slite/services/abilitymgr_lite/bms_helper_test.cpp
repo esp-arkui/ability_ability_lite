@@ -39,7 +39,7 @@ protected:
 
 TEST_F(BMSHelperTest, BMSHelperRegisteNull)
 {
-    OHOS::List<const char *> bundleNames {};
+    OHOS::List<char *> bundleNames {};
     BMSHelper::GetInstance().RegisterBundleNames(bundleNames);
     bool isNativeApp = BMSHelper::GetInstance().IsNativeApp(BUNDLE_NAME1);
     ASSERT_FALSE(isNativeApp);
@@ -47,22 +47,27 @@ TEST_F(BMSHelperTest, BMSHelperRegisteNull)
 
 TEST_F(BMSHelperTest, BMSHelperRegisteList0)
 {
-    OHOS::List<const char *> bundleNames {};
-    bundleNames.PushBack(BUNDLE_NAME1);
+    OHOS::List<char *> bundleNames {};
+    char *bundleName = OHOS::Utils::Strdup(BUNDLE_NAME1);
+    bundleNames.PushBack(bundleName);
     BMSHelper::GetInstance().RegisterBundleNames(bundleNames);
+    AdapterFree(bundleName);
     bool isNativeApp1 = BMSHelper::GetInstance().IsNativeApp(BUNDLE_NAME1);
     ASSERT_TRUE(isNativeApp1);
     bool isNativeApp2 = BMSHelper::GetInstance().IsNativeApp(BUNDLE_NAME2);
     ASSERT_FALSE(isNativeApp2);
     bool isNativeApp3 = BMSHelper::GetInstance().IsNativeApp(nullptr);
     ASSERT_FALSE(isNativeApp3);
+    BMSHelper::GetInstance().Erase();
 }
 
 TEST_F(BMSHelperTest, BMSHelperRegisteErase)
 {
-    OHOS::List<const char *> bundleNames {};
-    bundleNames.PushBack(BUNDLE_NAME1);
+    OHOS::List<char *> bundleNames {};
+    char *bundleName = OHOS::Utils::Strdup(BUNDLE_NAME1);
+    bundleNames.PushBack(bundleName);
     BMSHelper::GetInstance().RegisterBundleNames(bundleNames);
+    AdapterFree(bundleName);
     bool isNativeApp = BMSHelper::GetInstance().IsNativeApp(BUNDLE_NAME1);
     ASSERT_TRUE(isNativeApp);
     BMSHelper::GetInstance().Erase();
@@ -88,9 +93,11 @@ TEST_F(BMSHelperTest, BMSHelperQueryAbilitySvcInfo1)
     want->element->bundleName = queryName;
     uint8_t queryRet3 = BMSHelper::GetInstance().QueryAbilitySvcInfo(want, info);
     ASSERT_NE(queryRet3, ERR_OK);
-    OHOS::List<const char *> bundleNames {};
-    bundleNames.PushBack(BUNDLE_NAME1);
+    OHOS::List<char *> bundleNames {};
+    char *bundleName = OHOS::Utils::Strdup(BUNDLE_NAME1);
+    bundleNames.PushBack(bundleName);
     BMSHelper::GetInstance().RegisterBundleNames(bundleNames);
+    AdapterFree(bundleName);
     uint8_t queryRet4 = BMSHelper::GetInstance().QueryAbilitySvcInfo(want, info);
     ASSERT_EQ(queryRet4, ERR_OK);
     ASSERT_TRUE(info->isNativeApp);

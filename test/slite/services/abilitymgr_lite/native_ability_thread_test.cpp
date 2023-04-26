@@ -112,6 +112,7 @@ TEST_F(NativeAbilityThreadTest, InitAbilityThreadTest005)
     SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::NATIVE_ABILITY, CreateAbility);
     ASSERT_EQ(abilityThread->InitAbilityThread(record), ERR_OK);
     NativeAbilityThread::Reset();
+    usleep(50000); // sleep 50ms
     delete record;
     delete abilityThread;
 }

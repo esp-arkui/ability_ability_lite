@@ -41,13 +41,13 @@ static void TearDownTestCase()
 
 static constexpr char LAUNCHER_BUNDLE_NAME[] = "com.ohos.launcher";
 
-static SliteAbility *createJsAbilityThread(const char *bundleName)
+static SliteAbility *CreateJsAbilityThread(const char *bundleName)
 {
-    auto *jsAbility = new OHOS::ACELite::SliteAceAbility();
+    auto *jsAbility = new OHOS::ACELite::SliteAceAbility(bundleName);
     return jsAbility;
 }
 
-static SliteAbility *createNativeAbilityThread(const char *bundleName)
+static SliteAbility *CreateNativeAbilityThread(const char *bundleName)
 {
     auto *nativeAbility = new MyNativeAbility();
     return nativeAbility;
@@ -58,7 +58,7 @@ TEST_F(SliteAbilityLoaderTest, SliteAbilityLoaderSetNull)
 {
     SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::JS_ABILITY, nullptr);
     SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::NATIVE_ABILITY, nullptr);
-    SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(static_cast<SliteAbilityType>(3), createJsAbilityThread);
+    SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(static_cast<SliteAbilityType>(3), CreateJsAbilityThread);
     SliteAbility *jsA = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::JS_ABILITY, LAUNCHER_BUNDLE_NAME);
     ASSERT_EQ(jsA, nullptr);
     SliteAbility *naA = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::NATIVE_ABILITY, LAUNCHER_BUNDLE_NAME);
@@ -67,8 +67,8 @@ TEST_F(SliteAbilityLoaderTest, SliteAbilityLoaderSetNull)
 
 TEST_F(SliteAbilityLoaderTest, SliteAbilityLoader)
 {
-    SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::JS_ABILITY, createJsAbilityThread);
-    SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::NATIVE_ABILITY, createNativeAbilityThread);
+    SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::JS_ABILITY, CreateJsAbilityThread);
+    SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::NATIVE_ABILITY, CreateNativeAbilityThread);
     SliteAbility *jsA = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::JS_ABILITY, LAUNCHER_BUNDLE_NAME);
     ASSERT_NE(jsA, nullptr);
     delete jsA;
@@ -76,14 +76,18 @@ TEST_F(SliteAbilityLoaderTest, SliteAbilityLoader)
     ASSERT_NE(naA, nullptr);
     MyNativeAbility *myNativeAbility = static_cast<MyNativeAbility *>(naA);
     ASSERT_EQ(myNativeAbility->getNativeTest(), 200);
+    SliteAbilityLoader::GetInstance().UnsetAbilityCreatorFunc(SliteAbilityType::JS_ABILITY);
+    SliteAbilityLoader::GetInstance().UnsetAbilityCreatorFunc(SliteAbilityType::NATIVE_ABILITY);
     delete naA;
 }
 
 TEST_F(SliteAbilityLoaderTest, SliteAbilityLoaderGetWithOtherType)
 {
-    SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::JS_ABILITY, createJsAbilityThread);
-    SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::NATIVE_ABILITY, createNativeAbilityThread);
+    SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::JS_ABILITY, CreateJsAbilityThread);
+    SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::NATIVE_ABILITY, CreateNativeAbilityThread);
     SliteAbility *ability = SliteAbilityLoader::GetInstance().CreateAbility(static_cast<SliteAbilityType>(3), LAUNCHER_BUNDLE_NAME);
+    SliteAbilityLoader::GetInstance().UnsetAbilityCreatorFunc(SliteAbilityType::JS_ABILITY);
+    SliteAbilityLoader::GetInstance().UnsetAbilityCreatorFunc(SliteAbilityType::NATIVE_ABILITY);
     ASSERT_EQ(ability, nullptr);
 }
 
