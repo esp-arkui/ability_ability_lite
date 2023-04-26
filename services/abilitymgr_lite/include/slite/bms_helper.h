@@ -52,6 +52,8 @@ public:
     uint8_t QueryAbilitySvcInfo(const Want *want, AbilitySvcInfo *svcInfo);
 
     bool IsValidAbility(const AbilityInfo *abilityInfo);
+
+    void ClearAbilitySvcInfo(AbilitySvcInfo *abilitySvcInfo);
 private:
     List<char *> bundleNames_ {};
 };
