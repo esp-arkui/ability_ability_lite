@@ -31,7 +31,6 @@
 
 namespace OHOS {
 namespace AbilitySlite {
-
 class AbilityRecordManager : public NoCopyable {
 public:
     typedef void (AbilityRecordManager::*LifecycleFunc)(uint16_t token);

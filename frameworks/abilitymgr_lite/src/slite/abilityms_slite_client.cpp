@@ -41,7 +41,7 @@ bool AbilityMsClient::Initialize() const
             continue;
         }
 
-        (void) iUnknown->QueryInterface(iUnknown, DEFAULT_VERSION, (void **) &amsProxy_);
+        (void)iUnknown->QueryInterface(iUnknown, DEFAULT_VERSION, (void **)&amsProxy_);
         if (amsProxy_ == nullptr) {
             HILOG_ERROR(HILOG_MODULE_APP, "ams proxy is null");
             osDelay(ERROR_SLEEP_TIMES); // sleep 300ms
@@ -102,7 +102,7 @@ int32_t AbilityMsClient::TerminateAbility(uint64_t token) const
     return SAMGR_SendRequest(identity_, &request, nullptr);
 }
 
-int32_t AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int state) const
+int32_t AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int32_t state) const
 {
     if (identity_ == nullptr) {
         return PARAM_CHECK_ERROR;

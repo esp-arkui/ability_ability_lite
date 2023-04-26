@@ -103,6 +103,7 @@ int32_t AbilityRecordManager::StartAbility(const AbilityRecord *record)
     if (ret != ERR_OK) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "start ability failed [%{public}d]", ret);
     }
+    AdapterFree(want);
     return ret;
 }
 
@@ -180,18 +181,18 @@ int32_t AbilityRecordManager::StartAbility(const Want *want)
         HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability Service AbilitySvcInfo is null");
         return PARAM_NULL_ERROR;
     }
-    if (IsLauncher(bundleName) || BMSHelper::GetInstance().IsNativeApp(bundleName)) {
-        // Launcher  or other Native App
-        info->bundleName = Utils::Strdup(bundleName);
+    if (IsLauncher(bundleName)) {
+        // delete it
+        want->element->bundleName = Utils::Strdup(LAUNCHER_BUNDLE_NAME);
+        AdapterFree(bundleName);
+        bundleName = nullptr;
         info->path = nullptr;
-        info->isNativeApp = true;
-    } else {
-        uint8_t queryRet = BMSHelper::GetInstance().QueryAbilitySvcInfo(want, info);
-        if (queryRet != ERR_OK) {
-            HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability BMS Helper return abilitySvcInfo failed");
-            AdapterFree(info);
-            return PARAM_CHECK_ERROR;
-        }
+    }
+    uint8_t queryRet = BMSHelper::GetInstance().QueryAbilitySvcInfo(want, info);
+    if (queryRet != ERR_OK) {
+        HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability BMS Helper return abilitySvcInfo failed");
+        AdapterFree(info);
+        return PARAM_CHECK_ERROR;
     }
     info->data = OHOS::Utils::Memdup(want->data, want->dataLength);
     info->dataLength = want->dataLength;
@@ -331,9 +332,10 @@ int32_t AbilityRecordManager::TerminateAbility(uint16_t token)
     }
     // 2. terminate non-top ability
     if (token != topToken) {
+        // fixme check exist
         APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_STOP_UNKNOWN_ABILITY_TOKEN);
         DeleteRecordInfo(token);
-        return -1;
+        return ERR_OK;
     }
     // 3. terminate top ability
     abilityStack_.PopAbility();
@@ -532,8 +534,8 @@ int32_t AbilityRecordManager::CreateAppTask(AbilityRecord *record)
         record->abilityThread = nullptr;
         return ret;
     }
-    record->taskId = record->abilityThread->appTaskId_;
-    record->jsAppQueueId = record->abilityThread->messageQueueId_;
+    record->taskId = record->abilityThread->GetAppTaskId();
+    record->jsAppQueueId = record->abilityThread->GetMessageQueueId();
     record->state = SCHEDULE_STOP;
 #ifndef _MINI_MULTI_TASKS_
     abilityStack_.PushAbility(record);
@@ -805,6 +807,7 @@ void AbilityRecordManager::SetAbilityState(uint64_t token, int32_t state)
     record->state = state;
 }
 
+#ifndef _MINI_MULTI_TASKS_
 int32_t AbilityRecordManager::SchedulerLifecycleInner(const AbilityRecord *record, int32_t state)
 {
     if (record == nullptr) {
@@ -843,6 +846,7 @@ int32_t AbilityRecordManager::SchedulerLifecycleInner(const AbilityRecord *recor
     AdapterFree(info);
     return ERR_OK;
 }
+#endif
 
 void AbilityRecordManager::SchedulerAbilityLifecycle(SliteAbility *ability, const Want &want, int32_t state)
 {
@@ -898,7 +902,7 @@ bool AbilityRecordManager::SendMsgToAbilityThread(const AbilityRecord *record, i
 #endif
 {
     if (record == nullptr) {
-        return false;
+        return PARAM_NULL_ERROR;
     }
 
     SliteAbilityInnerMsg innerMsg;
@@ -925,7 +929,7 @@ bool AbilityRecordManager::SendMsgToAbilityThread(const AbilityRecord *record, i
     }
     osMessageQueueId_t appQueueId = record->jsAppQueueId;
     osStatus_t ret = osMessageQueuePut(appQueueId, static_cast<void *>(&innerMsg), 0, 0);
-    return ret == osOK;
+    return ERR_OK;
 }
 
 Want *AbilityRecordManager::CreateWant(const AbilityRecord *record)

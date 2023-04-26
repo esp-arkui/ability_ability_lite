@@ -35,6 +35,8 @@ AbilityRecord::~AbilityRecord()
     AdapterFree(appPath);
     delete abilityData;
     abilityData = nullptr;
+    delete abilityThread;
+    abilityThread = nullptr;
 }
 
 void AbilityRecord::SetAppName(const char *name)

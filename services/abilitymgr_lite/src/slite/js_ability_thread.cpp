@@ -34,7 +34,15 @@ static char g_jsAppTask[] = "AppTask";
 
 JsAbilityThread::JsAbilityThread() = default;
 
-JsAbilityThread::~JsAbilityThread() = default;
+JsAbilityThread::~JsAbilityThread()
+{
+    delete ability_;
+    ability_ = nullptr;
+    if (messageQueueId_ != nullptr) {
+        osMessageQueueDelete(messageQueueId_);
+    }
+    messageQueueId_ = nullptr;
+}
 
 int32_t JsAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecord)
 {
@@ -98,6 +106,16 @@ int32_t JsAbilityThread::ReleaseAbilityThread()
     osMessageQueueDelete(messageQueueId_);
     messageQueueId_ = nullptr;
     return ERR_OK;
+}
+
+osMessageQueueId_t JsAbilityThread::GetMessageQueueId() const
+{
+    return messageQueueId_;
+}
+
+UINT32 JsAbilityThread::GetAppTaskId() const
+{
+    return appTaskId_;
 }
 
 void JsAbilityThread::AppTaskHandler(UINT32 uwArg)

@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef OHOS_ABILITYMS_SLITE_CLIENT_H
-#define OHOS_ABILITYMS_SLITE_CLIENT_H
+#ifndef OHOS_ABILITY_SLITE_ABILITYMS_SLITE_CLIENT_H
+#define OHOS_ABILITY_SLITE_ABILITYMS_SLITE_CLIENT_H
 
 #include "ability_service_interface.h"
 #include "nocopyable.h"
@@ -35,15 +35,13 @@ public:
         return instance;
     }
 
-    ~AbilityMsClient() = default;
-
     bool Initialize() const;
 
     int32_t StartAbility(const Want *want) const;
 
     int32_t TerminateAbility(uint64_t token) const;
 
-    int32_t SchedulerLifecycleDone(uint64_t token, int state) const;
+    int32_t SchedulerLifecycleDone(uint64_t token, int32_t state) const;
 
     int32_t ForceStopBundle(uint64_t token) const;
 
@@ -56,6 +54,8 @@ public:
 private:
     AbilityMsClient() = default;
 
+    ~AbilityMsClient() = default;
+
     AmsSliteInterface *amsProxy_ { nullptr };
     const Identity *identity_ { nullptr };
 
@@ -64,4 +64,4 @@ private:
 } // namespace AbilitySlite
 } // namespace OHOS
 
-#endif // OHOS_ABILITYMS_SLITE_CLIENT_H
+#endif // OHOS_ABILITY_SLITE_ABILITYMS_SLITE_CLIENT_H

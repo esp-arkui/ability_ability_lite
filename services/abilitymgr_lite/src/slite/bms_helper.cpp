@@ -27,10 +27,10 @@ BMSHelper::~BMSHelper()
     Erase();
 }
 
-void BMSHelper::RegisterBundleNames(const List<char *> &names)
+void BMSHelper::RegisterBundleNames(const List<const char *> &names)
 {
     for (auto node = names.Begin(); node != names.End(); node = node->next_) {
-        char *bundleName = node->value_;
+        const char *bundleName = node->value_;
         if (bundleName != nullptr) {
             char *name = Utils::Strdup(bundleName);
             bundleNames_.PushBack(name);
@@ -41,7 +41,7 @@ void BMSHelper::RegisterBundleNames(const List<char *> &names)
 void BMSHelper::Erase()
 {
     while (bundleNames_.Front() != nullptr) {
-        char *name = bundleNames_.Front();
+        const char *name = bundleNames_.Front();
         AdapterFree(name);
         bundleNames_.PopFront();
     }
@@ -53,7 +53,7 @@ bool BMSHelper::IsNativeApp(const char *bundleName)
         return false;
     }
     for (auto node = bundleNames_.Begin(); node != bundleNames_.End(); node = node->next_) {
-        char *bundleName_ = node->value_;
+        const char *bundleName_ = node->value_;
         if (strcmp(bundleName, bundleName_) == 0) {
             return true;
         }

@@ -30,7 +30,7 @@ struct AbilitySvcInfo {
     bool isNativeApp;
     uint16_t dataLength;
 };
-    
+
 class BMSHelper final {
 public:
     static BMSHelper &GetInstance()
@@ -43,7 +43,7 @@ public:
 
     ~BMSHelper();
 
-    void RegisterBundleNames(const List<char *> &names);
+    void RegisterBundleNames(const List<const char *> &names);
 
     void Erase();
 
@@ -55,7 +55,7 @@ public:
 
     void ClearAbilitySvcInfo(AbilitySvcInfo *abilitySvcInfo);
 private:
-    List<char *> bundleNames_ {};
+    List<const char *> bundleNames_ {};
 };
 } // namespace AbilitySlite
 } // namespace OHOS

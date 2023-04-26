@@ -146,6 +146,9 @@ BOOL AbilityMgrServiceSlite::ServiceInitialize(Service *service, Identity identi
     InitAbilityThreadLoad();
     InitAbilityLoad();
     AbilityMsClient::GetInstance().SetServiceIdentity(&abilityMgrService->serviceIdentity_);
+    OHOS::List<const char *> bundleNames {};
+    bundleNames.PushBack(LAUNCHER_BUNDLE_NAME);
+    BMSHelper::GetInstance().RegisterBundleNames(bundleNames);
     return TRUE;
 }
 
@@ -218,13 +221,13 @@ ElementName *AbilityMgrServiceSlite::GetTopAbility()
     return AbilityRecordManager::GetInstance().GetTopAbility();
 }
 
-static AbilityThread *createJsAbilityThread()
+static AbilityThread *CreateJsAbilityThread()
 {
     auto *jsThread = new JsAbilityThread();
     return jsThread;
 }
 
-static AbilityThread *createNativeAbilityThread()
+static AbilityThread *CreateNativeAbilityThread()
 {
     auto *nativeThread = new NativeAbilityThread();
     return nativeThread;
@@ -232,12 +235,12 @@ static AbilityThread *createNativeAbilityThread()
 
 void AbilityMgrServiceSlite::InitAbilityThreadLoad()
 {
-    AbilityThreadLoader::GetInstance().SetCreatorFunc(AbilityThreadCreatorType::JS_CREATOR, createJsAbilityThread);
+    AbilityThreadLoader::GetInstance().SetCreatorFunc(AbilityThreadCreatorType::JS_CREATOR, CreateJsAbilityThread);
     AbilityThreadLoader::GetInstance().SetCreatorFunc(AbilityThreadCreatorType::NATIVE_CREATOR,
-        createNativeAbilityThread);
+        CreateNativeAbilityThread);
 }
 
-static SliteAbility *createJsAbility(const char *bundleName)
+static SliteAbility *CreateJsAbility(const char *bundleName)
 {
     SliteAbility *jsAbility = new DummyJsAbility(bundleName);
     return jsAbility;
@@ -245,7 +248,7 @@ static SliteAbility *createJsAbility(const char *bundleName)
 
 void AbilityMgrServiceSlite::InitAbilityLoad()
 {
-    SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::JS_ABILITY, createJsAbility);
+    SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::JS_ABILITY, CreateJsAbility);
 }
 } // namespace AbilitySlite
 } // namespace OHOS

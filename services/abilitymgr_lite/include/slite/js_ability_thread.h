@@ -32,7 +32,14 @@ public:
 
     int32_t ReleaseAbilityThread() override;
 
+    osMessageQueueId_t GetMessageQueueId() const override;
+
+    UINT32 GetAppTaskId() const override;
+
     static void AppTaskHandler(UINT32 uwArg);
+private:
+    osMessageQueueId_t messageQueueId_ = nullptr;
+    UINT32 appTaskId_ = 0;
 };
 } // namespace AbilitySlite
 } // namespace OHOS
