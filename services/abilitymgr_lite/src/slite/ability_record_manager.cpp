@@ -151,29 +151,18 @@ int32_t AbilityRecordManager::StartAbility(const Want *want)
         info->bundleName = Utils::Strdup(bundleName);
         info->path = nullptr;
     } else {
-        // JS APP
-#ifdef _MINI_BMS_
         uint8_t queryRet = BMSHelper::GetInstance().QueryAbilitySvcInfo(want, info);
         if (queryRet != ERR_OK) {
             HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability BMS Helper return abilitySvcInfo failed");
-            AdapterFree(info->bundleName);
-            AdapterFree(info->path);
-            AdapterFree(info->data);
             AdapterFree(info);
             return PARAM_CHECK_ERROR;
         }
-#else
-        info->bundleName = Utils::Strdup(bundleName);
-        // Here users assign want->data with js app path.
-        info->path = Utils::Strdup((const char *)want->data);
-#endif
     }
 
     info->data = OHOS::Utils::Memdup(want->data, want->dataLength);
     info->dataLength = want->dataLength;
     auto ret = StartAbility(info);
-    AdapterFree(info->bundleName);
-    AdapterFree(info->path);
+    BMSHelper::GetInstance().ClearAbilitySvcInfo(info);
     AdapterFree(info->data);
     AdapterFree(info);
     return ret;
