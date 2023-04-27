@@ -38,7 +38,7 @@ constexpr int32_t QUEUE_LENGTH = 32;
 
 osMessageQueueId_t NativeAbilityThread::nativeQueueId = nullptr;
 UINT32 NativeAbilityThread::nativeTaskId = 0;
-SliteAbility *NativeAbilityThread::LauncherAbility_ = nullptr;
+SliteAbility *NativeAbilityThread::nativeAbility_ = nullptr;
 
 NativeAbilityThread::NativeAbilityThread() = default;
 
@@ -88,22 +88,22 @@ int32_t NativeAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecor
     }
     appTaskId_ = nativeTaskId;
     state_ = AbilityThreadState::ABILITY_THREAD_INITIALIZED;
-    if (LauncherAbility_ != nullptr) {
-        if (LauncherAbility_->bundleName_ == nullptr) {
+    if (nativeAbility_ != nullptr) {
+        if (nativeAbility_->bundleName_ == nullptr) {
             return PARAM_NULL_ERROR;
         }
-        if (strcmp(LauncherAbility_->bundleName_, abilityRecord->appName) != 0) {
+        if (strcmp(nativeAbility_->bundleName_, abilityRecord->appName) != 0) {
             ability_ = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::NATIVE_ABILITY,
                 abilityRecord->appName);
         } else {
-            ability_ = LauncherAbility_;
+            ability_ = nativeAbility_;
         }
     } else {
         if (strcmp(abilityRecord->appName, LAUNCHER_BUNDLE_NAME) == 0) {
-            LauncherAbility_ = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::NATIVE_ABILITY,
+            nativeAbility_ = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::NATIVE_ABILITY,
                 abilityRecord->appName);
         }
-        ability_ = LauncherAbility_;
+        ability_ = nativeAbility_;
     }
 
     if (ability_ == nullptr) {

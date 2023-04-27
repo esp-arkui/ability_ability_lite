@@ -300,7 +300,7 @@ int32_t AbilityRecordManager::StartAbility(AbilitySvcInfo *info)
         }
         return ERR_OK;
     }
-    (void) SendMsgToJsOrNativeAbility(topRecord, SLITE_STATE_BACKGROUND);
+    (void) SendMsgToAbilityThread(topRecord, SLITE_STATE_BACKGROUND);
     pendingToken_ = GenerateToken();
 
     // application has not been launched and then to check priority and permission.
@@ -366,7 +366,7 @@ int32_t AbilityRecordManager::TerminateAbility(uint16_t token)
 
     // TerminateAbility top js
     pendingToken_ = newTopRecord->token;
-    return SendMsgToJsOrNativeAbility(topRecord, SLITE_STATE_BACKGROUND);
+    return SendMsgToAbilityThread(topRecord, SLITE_STATE_BACKGROUND);
 #endif
 }
 
@@ -651,7 +651,7 @@ void AbilityRecordManager::OnForegroundDone(uint16_t token)
 #ifndef _MINI_MULTI_TASKS_
                 (void) SchedulerLifecycleInner(topRecord, SLITE_STATE_UNINITIALIZED);
 #else
-                (void) SendMsgToJsOrNativeAbility(topRecord, SLITE_STATE_UNINITIALIZED);
+                (void) SendMsgToAbilityThread(topRecord, SLITE_STATE_UNINITIALIZED);
 #endif
             }
         }
@@ -804,7 +804,7 @@ int32_t AbilityRecordManager::SchedulerLifecycle(uint64_t token, int32_t state)
 #ifndef _MINI_MULTI_TASKS_
     return SchedulerLifecycleInner(record, state);
 #else
-    return SendMsgToJsOrNativeAbility(record, state);
+    return SendMsgToAbilityThread(record, state);
 #endif
 }
 
@@ -906,7 +906,7 @@ int32_t AbilityRecordManager::SchedulerLifecycleDone(uint64_t token, int32_t sta
 #ifndef _MINI_MULTI_TASKS_
 bool AbilityRecordManager::SendMsgToJsAbility(int32_t state, const AbilityRecord *record)
 #else
-bool AbilityRecordManager::SendMsgToJsOrNativeAbility(const AbilityRecord *record, int32_t state)
+bool AbilityRecordManager::SendMsgToAbilityThread(const AbilityRecord *record, int32_t state)
 #endif
 {
     if (record == nullptr) {

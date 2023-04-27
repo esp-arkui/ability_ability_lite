@@ -105,7 +105,7 @@ private:
 
     void DeleteAbilityThread(AbilityRecord *record);
 
-    bool SendMsgToJsOrNativeAbility(const AbilityRecord *record, int32_t msgId);
+    bool SendMsgToAbilityThread(const AbilityRecord *record, int32_t msgId);
 
     void SetAbilityState(uint64_t token, int32_t state);
 
