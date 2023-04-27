@@ -65,7 +65,6 @@ AbilityRecord *AbilityList::Get(const char *bundleName) const
             return record;
         }
     }
-
     return nullptr;
 }
 
