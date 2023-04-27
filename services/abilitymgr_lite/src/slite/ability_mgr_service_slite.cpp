@@ -28,7 +28,7 @@
 #include "ohos_init.h"
 #include "samgr_lite.h"
 #include "slite_ability_loader.h"
-#include "slite_ace_ability.h"
+#include "dummy_js_ability.h"
 #include "want.h"
 
 namespace OHOS {
@@ -239,7 +239,7 @@ void AbilityMgrServiceSlite::InitAbilityThreadLoad()
 
 static SliteAbility *createJsAbility(const char *bundleName)
 {
-    SliteAbility *jsAbility = new DummyJsAbility();
+    SliteAbility *jsAbility = new DummyJsAbility(bundleName);
     return jsAbility;
 }
 
