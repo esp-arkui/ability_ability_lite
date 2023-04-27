@@ -16,7 +16,6 @@
 #include "ability_mgr_service_slite.h"
 
 #include "ability_errors.h"
-#include "ability_info.h"
 #include "ability_service_interface.h"
 #include "ability_thread_loader.h"
 #include "abilityms_slite_client.h"
@@ -28,7 +27,6 @@
 #include "ohos_init.h"
 #include "samgr_lite.h"
 #include "slite_ability_loader.h"
-#include "dummy_js_ability.h"
 #include "want.h"
 
 namespace OHOS {
@@ -103,13 +101,13 @@ const Identity *AbilityMgrServiceSlite::GetIdentity()
 
 const char *AbilityMgrServiceSlite::GetFeatureName(Feature *feature)
 {
-    (void) feature;
+    (void)feature;
     return AMS_SLITE_FEATURE;
 }
 
 void AbilityMgrServiceSlite::OnFeatureInitialize(Feature *feature, Service *parent, Identity identity)
 {
-    (void) parent;
+    (void)parent;
     CHECK_NULLPTR_RETURN(feature, "AbilityMgrServiceSlite", "feature initialize fail");
     auto *abilityMgrService = static_cast<AbilityMgrServiceSlite *>(feature);
     abilityMgrService->featureIdentity_ = identity;
@@ -118,8 +116,8 @@ void AbilityMgrServiceSlite::OnFeatureInitialize(Feature *feature, Service *pare
 
 void AbilityMgrServiceSlite::OnFeatureStop(Feature *feature, Identity identity)
 {
-    (void) feature;
-    (void) identity;
+    (void)feature;
+    (void)identity;
 }
 
 BOOL AbilityMgrServiceSlite::OnFeatureMessage(Feature *feature, Request *request)
@@ -132,7 +130,7 @@ BOOL AbilityMgrServiceSlite::OnFeatureMessage(Feature *feature, Request *request
 
 const char *AbilityMgrServiceSlite::GetServiceName(Service *service)
 {
-    (void) service;
+    (void)service;
     return AMS_SERVICE;
 }
 
@@ -146,9 +144,6 @@ BOOL AbilityMgrServiceSlite::ServiceInitialize(Service *service, Identity identi
     InitAbilityThreadLoad();
     InitAbilityLoad();
     AbilityMsClient::GetInstance().SetServiceIdentity(&abilityMgrService->serviceIdentity_);
-    OHOS::List<const char *> bundleNames {};
-    bundleNames.PushBack(LAUNCHER_BUNDLE_NAME);
-    BMSHelper::GetInstance().RegisterBundleNames(bundleNames);
     return TRUE;
 }
 

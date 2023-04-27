@@ -15,16 +15,12 @@
 
 #include "native_ability_thread.h"
 
-#include <string.h>
-
-#include "aafwk_event_error_id.h"
+#include <cstring>
 #include "aafwk_event_error_code.h"
-#include "ability_manager_inner.h"
 #include "ability_errors.h"
 #include "ability_inner_message.h"
 #include "ability_record_manager.h"
 #include "adapter.h"
-#include "slite_ability_state.h"
 #include "ability_thread.h"
 #include "abilityms_log.h"
 #include "los_task.h"
@@ -37,7 +33,7 @@ constexpr int32_t APP_TASK_PRI = 25;
 constexpr int32_t QUEUE_LENGTH = 32;
 
 osMessageQueueId_t NativeAbilityThread::nativeQueueId_ = nullptr;
-UINT32 NativeAbilityThread::nativeTaskId_ = 0;
+UINT32 NativeAbilityThread::nativeTaskId_ = UINT32_MAX;
 SliteAbility *NativeAbilityThread::nativeAbility_ = nullptr;
 
 NativeAbilityThread::NativeAbilityThread() = default;

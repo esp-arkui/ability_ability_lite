@@ -16,12 +16,7 @@
 #include "ability_thread.h"
 
 #include "ability_errors.h"
-#include "ability_manager_inner.h"
-#include "bms_helper.h"
-#include "slite_ability_state.h"
-#include "los_task.h"
 #include "ability_inner_message.h"
-#include "adapter.h"
 
 namespace OHOS {
 namespace AbilitySlite {

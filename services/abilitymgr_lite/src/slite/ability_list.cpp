@@ -17,7 +17,6 @@
 #include "ability_record.h"
 #include "ability_list.h"
 
-
 namespace OHOS {
 namespace AbilitySlite {
 namespace {
@@ -31,7 +30,7 @@ void AbilityList::Add(AbilityRecord *abilityRecord)
     }
 
     if (Get(abilityRecord->token) == nullptr) {
-        abilityList_.PushBack(abilityRecord);
+        abilityList_.PushFront(abilityRecord);
     }
 }
 
@@ -94,6 +93,35 @@ void AbilityList::Erase(uint16_t token)
             return;
         }
     }
+}
+
+uint32_t AbilityList::Size() const
+{
+    return abilityList_.Size();
+}
+
+bool AbilityList::MoveToTop(uint16_t token)
+{
+    AbilityRecord *abilityRecord = Get(token);
+    if (abilityRecord == nullptr) {
+        return false;
+    }
+    Erase(token);
+    Add(abilityRecord);
+    return true;
+}
+
+void AbilityList::PopAbility()
+{
+    abilityList_.PopFront();
+}
+
+AbilityRecord *AbilityList::GetTopAbility() const
+{
+    if (abilityList_.Size() != 0) {
+        return abilityList_.Front();
+    }
+    return nullptr;
 }
 } // namespace AbilitySlite
 } // namespace OHOS

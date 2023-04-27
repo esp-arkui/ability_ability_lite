@@ -20,7 +20,6 @@
 
 #include "ability_list.h"
 #include "ability_record.h"
-#include "ability_stack.h"
 #include "adapter.h"
 #include "bms_helper.h"
 #include "js_ability_thread.h"
@@ -86,8 +85,6 @@ private:
 
     int32_t SchedulerLifecycleInner(const AbilityRecord *record, int32_t state);
 
-    bool SendMsgToJsAbility(int32_t state, const AbilityRecord *record);
-
     void SchedulerAbilityLifecycle(SliteAbility *ability, const Want &want, int32_t state);
 
     int32_t CreateAppTask(AbilityRecord *record);
@@ -104,7 +101,7 @@ private:
 
     void DeleteAbilityThread(AbilityRecord *record);
 
-    bool SendMsgToAbilityThread(const AbilityRecord *record, int32_t msgId);
+    int32_t SendMsgToAbilityThread(int32_t state, const AbilityRecord *record);
 
     void SetAbilityState(uint64_t token, int32_t state);
 
@@ -117,8 +114,10 @@ private:
     Want *CreateWant(const AbilityRecord *record);
 
     uint16_t pendingToken_ { 0 };
+#ifndef _MINI_MULTI_TASKS_
+    AbilityRecord *pendingRecord = nullptr;
+#endif
     AbilityList abilityList_ {};
-    AbilityStack abilityStack_ {};
     SliteAbility *nativeAbility_ = nullptr;
 };
 } // namespace AbilitySlite

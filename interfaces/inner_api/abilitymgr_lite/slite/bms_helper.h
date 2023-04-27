@@ -43,7 +43,7 @@ public:
 
     ~BMSHelper();
 
-    void RegisterBundleNames(const List<const char *> &names);
+    void RegisterBundleNames(const List<char *> &names);
 
     void Erase();
 
@@ -55,7 +55,7 @@ public:
 
     void ClearAbilitySvcInfo(AbilitySvcInfo *abilitySvcInfo);
 private:
-    List<const char *> bundleNames_ {};
+    List<char *> bundleNames_ {};
 };
 } // namespace AbilitySlite
 } // namespace OHOS
