@@ -32,7 +32,7 @@
 
 namespace OHOS {
 namespace AbilitySlite {
-static char NATIVE_APP_TASK[] = "NativeAppTask";
+static char g_NativeAppTask[] = "NativeAppTask";
 constexpr int32_t APP_TASK_PRI = 25;
 constexpr int32_t QUEUE_LENGTH = 32;
 
@@ -75,7 +75,7 @@ int32_t NativeAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecor
         stTskInitParam.pfnTaskEntry = (TSK_ENTRY_FUNC) (NativeAbilityThread::NativeAppTaskHandler);
         stTskInitParam.uwStackSize = NATIVE_TASK_STACK_SIZE;
         stTskInitParam.usTaskPrio = OS_TASK_PRIORITY_LOWEST - APP_TASK_PRI;
-        stTskInitParam.pcName = NATIVE_APP_TASK;
+        stTskInitParam.pcName = g_NativeAppTask;
         stTskInitParam.uwResved = 0;
         stTskInitParam.uwArg = reinterpret_cast<UINT32>((uintptr_t) messageQueueId_);
         uint32_t ret = LOS_TaskCreate(&nativeTaskId, &stTskInitParam);

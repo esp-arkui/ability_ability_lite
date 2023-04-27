@@ -392,9 +392,8 @@ int32_t AbilityRecordManager::ForceStopBundle(uint16_t token)
     if (launcherRecord->state != SCHEDULE_FOREGROUND) {
         return SchedulerLifecycle(LAUNCHER_TOKEN, SLITE_STATE_FOREGROUND);
     }
-#else 
+#else
     if (launcherRecord->state == SCHEDULE_STOP) {
-        //return SchedulerLifecycle(LAUNCHER_TOKEN, SLITE_STATE_FOREGROUND);
         return StartAbility(launcherRecord);
     }
 #endif
