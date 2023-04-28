@@ -20,13 +20,13 @@
 #include "ability_thread_loader.h"
 #include "abilityms_slite_client.h"
 #include "abilityms_log.h"
-#include "dummy_js_ability.h"
 #include "iunknown.h"
 #include "js_ability_thread.h"
 #include "native_ability_thread.h"
 #include "ohos_init.h"
 #include "samgr_lite.h"
 #include "slite_ability_loader.h"
+#include "slite_ace_ability.h"
 #include "want.h"
 
 namespace OHOS {
@@ -237,7 +237,7 @@ void AbilityMgrServiceSlite::InitAbilityThreadLoad()
 
 static SliteAbility *CreateJsAbility(const char *bundleName)
 {
-    SliteAbility *jsAbility = new DummyJsAbility(bundleName);
+    SliteAbility *jsAbility = new ACELite::SliteAceAbility(bundleName);
     return jsAbility;
 }
 
