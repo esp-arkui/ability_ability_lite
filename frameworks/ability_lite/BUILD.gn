@@ -14,6 +14,7 @@ import("//build/lite/config/component/lite_component.gni")
 import("//build/lite/config/subsystem/aafwk/config.gni")
 import("//build/lite/config/test.gni")
 import("//build/lite/ndk/ndk.gni")
+import("//foundation/ability/ability_lite/ability_lite.gni")
 
 generate_notice_file("ability_notice_file") {
   module_name = "ability"
@@ -44,8 +45,8 @@ lite_library("ability") {
 
     public_deps = [
       "${aafwk_lite_path}/frameworks/abilitymgr_lite:abilitymanager",
-      "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_static",
-      "//foundation/distributeddatamgr/kv_store/interfaces/inner_api/kv_store:kv_store",
+      "${hilog_lite_path}/frameworks/featured:hilog_static",
+      "${kv_store_path}/interfaces/inner_api/kv_store:kv_store",
     ]
 
     defines = []
@@ -56,8 +57,9 @@ lite_library("ability") {
       "${aafwk_lite_path}/interfaces/inner_api/abilitymgr_lite/slite",
       "${aafwk_lite_path}/interfaces/kits/ability_lite",
       "${appexecfwk_lite_path}/utils/bundle_lite",
-      "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/registry",
-      "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/samgr",
+      "${utils_lite_path}/memory/include",
+      "${samgr_lite_path}/interfaces/kits/registry",
+      "${samgr_lite_path}/interfaces/kits/samgr",
     ]
   } else {
     target_type = "shared_library"
@@ -88,9 +90,9 @@ lite_library("ability") {
     public_deps = [
       "${aafwk_lite_path}/frameworks/abilitymgr_lite:abilitymanager",
       "${appexecfwk_lite_path}/frameworks/bundle_lite:bundle",
-      "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
-      "//foundation/communication/ipc/interfaces/innerkits/c/ipc:ipc_single",
-      "//foundation/distributeddatamgr/kv_store/interfaces/inner_api/kv_store:kv_store",
+      "${communication_path}/ipc/interfaces/innerkits/c/ipc:ipc_single",
+      "${hilog_lite_path}/frameworks/featured:hilog_shared",
+      "${kv_store_path}/interfaces/inner_api/kv_store:kv_store",
     ]
 
     defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
@@ -104,14 +106,14 @@ lite_library("ability") {
       "${appexecfwk_lite_path}/utils/bundle_lite",
       "${appexecfwk_lite_path}/interfaces/kits/bundle_lite",
       "${appexecfwk_lite_path}/frameworks/bundle_lite/include",
-      "//commonlibrary/utils_lite/include",
-      "//foundation/communication/ipc/interfaces/innerkits/c/ipc/include",
-      "//foundation/communication/ipc/ipc/native/c/manager/include",
-      "//foundation/distributeddatamgr/kv_store/interfaces/inner_api/kv_store/include",
-      "//foundation/graphic/surface/interfaces/kits",
-      "//foundation/graphic/ui/frameworks",
-      "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/registry",
-      "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/samgr",
+      "${utils_lite_path}/include",
+      "${communication_path}/ipc/interfaces/innerkits/c/ipc/include",
+      "${communication_path}/ipc/ipc/native/c/manager/include",
+      "${kv_store_path}/interfaces/inner_api/kv_store/include",
+      "${graphic_path}/surface/interfaces/kits",
+      "${graphic_path}/ui/frameworks",
+      "${samgr_lite_path}/interfaces/kits/registry",
+      "${samgr_lite_path}/interfaces/kits/samgr",
       "//third_party/bounds_checking_function/include",
       "./include",
       "./",
@@ -129,12 +131,11 @@ lite_library("ability") {
   cflags_cc = cflags
 
   if (enable_ohos_appexecfwk_feature_ability == true) {
-    public_deps += [ "//foundation/graphic/ui:ui_lite" ]
+    public_deps += [ "${graphic_path}/ui:ui_lite" ]
   }
 
   if (ohos_kernel_type == "liteos_m") {
-    include_dirs +=
-        [ "//base/hiviewdfx/hilog_lite/interfaces/native/kits/hilog_lite" ]
+    include_dirs += [ "${hilog_lite_path}/interfaces/native/kits/hilog_lite" ]
   }
 
   defines += [ "OPENHARMONY_FONT_PATH" ]
@@ -156,7 +157,7 @@ unittest("ability_main_test_lv0") {
   output_extension = "bin"
   output_dir = "$root_out_dir/test/unittest/MainTest_lv0"
 
-  sources = [ "//foundation/ability/ability_lite/frameworks/ability_lite/unittest/ability_main_test.cpp" ]
+  sources = [ "${ability_lite_path}/frameworks/ability_lite/unittest/ability_main_test.cpp" ]
 
   include_dirs = [ "${aafwk_lite_path}/interfaces/inner_api/abilitymgr_lite" ]
 }
@@ -170,7 +171,7 @@ config("abilitykit_config") {
     "${aafwk_lite_path}/interfaces/kits/want_lite",
     "${aafwk_lite_path}/interfaces/kits/ability_lite",
     "${aafwk_lite_path}/interfaces/kits/ability_lite/slite",
-    "//foundation/communication/ipc/interfaces/innerkits/c/ipc/include",
+    "${communication_path}/ipc/interfaces/innerkits/c/ipc/include",
   ]
 }
 
