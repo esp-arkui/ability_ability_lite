@@ -29,6 +29,7 @@ lite_library("abilityms") {
       "src/slite/ability_mgr_service_slite.cpp",
       "src/slite/ability_record.cpp",
       "src/slite/ability_record_manager.cpp",
+      "src/slite/ability_record_observer_manager.cpp",
       "src/slite/ability_thread.cpp",
       "src/slite/ability_thread_loader.cpp",
       "src/slite/bms_helper.cpp",

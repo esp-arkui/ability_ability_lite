@@ -19,6 +19,7 @@
 #include "ability_errors.h"
 #include "ability_inner_message.h"
 #include "ability_record.h"
+#include "ability_record_observer_manager.h"
 #include "ability_thread_loader.h"
 #include "abilityms_log.h"
 #include "ability_manager_inner.h"
@@ -592,6 +593,7 @@ void AbilityRecordManager::DeleteRecordInfo(uint16_t token)
         RecordAbiityInfoEvt(record->GetAppName());
     }
     abilityList_.Erase(token);
+    AbilityRecordObserverManager::GetInstance().NotifyAbilityRecordCleanup(record->appName);
     delete record;
 }
 
@@ -815,6 +817,8 @@ void AbilityRecordManager::SetAbilityState(uint64_t token, int32_t state)
         return;
     }
     record->state = state;
+    AbilityRecordObserverManager::GetInstance().NotifyAbilityRecordStateChanged(
+        AbilityRecordStateData(record->appName, static_cast<AbilityRecordState>(state)));
 }
 
 #ifndef _MINI_MULTI_TASKS_
@@ -978,6 +982,18 @@ ElementName *AbilityRecordManager::GetTopAbility()
 void AbilityRecordManager::setNativeAbility(const SliteAbility *ability)
 {
     nativeAbility_ = const_cast<SliteAbility *>(ability);
+}
+
+int32_t AbilityRecordManager::AddAbilityRecordObserver(AbilityRecordObserver *observer)
+{
+    AbilityRecordObserverManager::GetInstance().AddObserver(observer);
+    return ERR_OK;
+}
+
+int32_t AbilityRecordManager::RemoveAbilityRecordObserver(AbilityRecordObserver *observer)
+{
+    AbilityRecordObserverManager::GetInstance().RemoveObserver(observer);
+    return ERR_OK;
 }
 } // namespace AbilitySlite
 } // namespace OHOS

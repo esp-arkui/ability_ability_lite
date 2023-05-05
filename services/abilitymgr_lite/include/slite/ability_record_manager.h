@@ -20,6 +20,7 @@
 
 #include "ability_list.h"
 #include "ability_record.h"
+#include "ability_record_observer.h"
 #include "adapter.h"
 #include "bms_helper.h"
 #include "js_ability_thread.h"
@@ -62,6 +63,9 @@ public:
     void setNativeAbility(const SliteAbility *ability);
 
     void StartLauncher();
+
+    int32_t AddAbilityRecordObserver(AbilityRecordObserver *observer);
+    int32_t RemoveAbilityRecordObserver(AbilityRecordObserver *observer);
 
     uint32_t curTask_ = 0;
 

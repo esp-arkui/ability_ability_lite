@@ -161,6 +161,32 @@ int32_t AbilityMsClient::ForceStop(char *bundleName) const
     return SAMGR_SendRequest(identity_, &request, nullptr);
 }
 
+int32_t AbilityMsClient::AddAbilityRecordObserver(AbilityRecordObserver *observer)
+{
+    if (identity_ == nullptr) {
+        return PARAM_CHECK_ERROR;
+    }
+    Request request = {
+        .msgId = ADD_ABILITY_RECORD_OBSERVER,
+        .msgValue = reinterpret_cast<uint32>(observer),
+    };
+
+    return SAMGR_SendRequest(identity_, &request, nullptr);
+}
+
+int32_t AbilityMsClient::RemoveAbilityRecordObserver(AbilityRecordObserver *observer)
+{
+    if (identity_ == nullptr) {
+        return PARAM_CHECK_ERROR;
+    }
+    Request request = {
+        .msgId = REMOVE_ABILITY_RECORD_OBSERVER,
+        .msgValue = reinterpret_cast<uint32>(observer),
+    };
+
+    return SAMGR_SendRequest(identity_, &request, nullptr);
+}
+
 void AbilityMsClient::SetServiceIdentity(const Identity *identity)
 {
     identity_ = identity;

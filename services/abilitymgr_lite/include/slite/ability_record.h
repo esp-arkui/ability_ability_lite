@@ -19,20 +19,13 @@
 #include "ability_info.h"
 #include "cmsis_os.h"
 #include "ability_thread.h"
+#include "ability_record_state.h"
 
 namespace OHOS {
 namespace AbilitySlite {
 class JsAppHost;
 
 constexpr int FAIL_CALLBACK_ERRORCODE = 200;
-
-/* States-feedback from launcher to AMS */
-typedef enum {
-    SCHEDULE_INITED,
-    SCHEDULE_FOREGROUND,
-    SCHEDULE_BACKGROUND,
-    SCHEDULE_STOP
-} AbilityState;
 
 typedef enum {
     STATE_JS_RUNNING,

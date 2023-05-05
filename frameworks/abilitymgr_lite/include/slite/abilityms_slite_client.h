@@ -17,6 +17,7 @@
 #define OHOS_ABILITY_SLITE_ABILITYMS_SLITE_CLIENT_H
 
 #include "ability_service_interface.h"
+#include "ability_record_observer.h"
 #include "nocopyable.h"
 #include "want.h"
 
@@ -50,6 +51,9 @@ public:
     ElementName *GetTopAbility() const;
 
     void SetServiceIdentity(const Identity *identity);
+
+    int32_t AddAbilityRecordObserver(AbilityRecordObserver *observer);
+    int32_t RemoveAbilityRecordObserver(AbilityRecordObserver *observer);
 
 private:
     AbilityMsClient() = default;

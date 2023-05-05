@@ -16,6 +16,7 @@
 #include "ability_mgr_service_slite.h"
 
 #include "ability_errors.h"
+#include "ability_record_observer.h"
 #include "ability_service_interface.h"
 #include "ability_thread_loader.h"
 #include "abilityms_slite_client.h"
@@ -171,6 +172,12 @@ BOOL AbilityMgrServiceSlite::ServiceMessageHandle(Service *service, Request *req
     } else if (request->msgId == TERMINATE_APP_BY_BUNDLENAME) {
         char *bundleName = reinterpret_cast<char *>(request->data);
         ret = AbilityRecordManager::GetInstance().ForceStop(bundleName);
+    } else if (request->msgId == ADD_ABILITY_RECORD_OBSERVER) {
+        AbilityRecordObserver *observer = reinterpret_cast<AbilityRecordObserver *>(request->msgValue);
+        ret = AbilityRecordManager::GetInstance().AddAbilityRecordObserver(observer);
+    } else if (request->msgId == REMOVE_ABILITY_RECORD_OBSERVER) {
+        AbilityRecordObserver *observer = reinterpret_cast<AbilityRecordObserver *>(request->msgValue);
+        ret = AbilityRecordManager::GetInstance().RemoveAbilityRecordObserver(observer);
     }
     return ret == ERR_OK;
 }
