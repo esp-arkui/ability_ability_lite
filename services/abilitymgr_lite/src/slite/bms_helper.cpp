@@ -108,4 +108,13 @@ bool BMSHelper::IsValidAbility(const AbilityInfo *abilityInfo)
     }
     return true;
 }
+
+void BMSHelper::ClearAbilitySvcInfo(AbilitySvcInfo *abilitySvcInfo)
+{
+    if (abilitySvcInfo == nullptr) {
+        return;
+    }
+    AdapterFree(abilitySvcInfo->bundleName);
+    AdapterFree(abilitySvcInfo->path);
+}
 }
