@@ -926,13 +926,6 @@ int32_t AbilityRecordManager::SendMsgToAbilityThread(int32_t state, const Abilit
         innerMsg.msgId = (SliteAbilityMsgId) state;
     }
     innerMsg.abilityThread = record->abilityThread;
-    if (record->abilityData != nullptr) {
-        innerMsg.data = const_cast<void *>(record->abilityData->wantData);
-        innerMsg.dataLength = record->abilityData->wantDataSize;
-    } else {
-        innerMsg.data = nullptr;
-        innerMsg.dataLength = 0;
-    }
     osMessageQueueId_t appQueueId = record->jsAppQueueId;
     osStatus_t ret = osMessageQueuePut(appQueueId, static_cast<void *>(&innerMsg), 0, 0);
     if (ret != osOK) {
@@ -951,6 +944,7 @@ Want *AbilityRecordManager::CreateWant(const AbilityRecord *record)
     ElementName elementName = {};
     SetElementBundleName(&elementName, record->appName);
     SetWantElement(want, elementName);
+    SetWantData(want, record->abilityData->wantData, record->abilityData->wantDataSize);
     ClearElement(&elementName);
     return want;
 }
