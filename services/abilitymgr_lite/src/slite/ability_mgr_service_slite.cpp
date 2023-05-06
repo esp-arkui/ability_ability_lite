@@ -16,19 +16,17 @@
 #include "ability_mgr_service_slite.h"
 
 #include "ability_errors.h"
-#include "ability_info.h"
 #include "ability_service_interface.h"
 #include "ability_thread_loader.h"
 #include "abilityms_slite_client.h"
 #include "abilityms_log.h"
-#include "dummy_js_ability.h"
 #include "iunknown.h"
 #include "js_ability_thread.h"
 #include "native_ability_thread.h"
 #include "ohos_init.h"
 #include "samgr_lite.h"
 #include "slite_ability_loader.h"
-#include "dummy_js_ability.h"
+#include "slite_ace_ability.h"
 #include "want.h"
 
 namespace OHOS {
@@ -101,25 +99,21 @@ const Identity *AbilityMgrServiceSlite::GetIdentity()
     return &serviceIdentity_;
 }
 
-const char *AbilityMgrServiceSlite::GetFeatureName(Feature *feature)
+const char *AbilityMgrServiceSlite::GetFeatureName([[maybe_unused]] Feature *feature)
 {
-    (void) feature;
     return AMS_SLITE_FEATURE;
 }
 
-void AbilityMgrServiceSlite::OnFeatureInitialize(Feature *feature, Service *parent, Identity identity)
+void AbilityMgrServiceSlite::OnFeatureInitialize(Feature *feature, [[maybe_unused]] Service *parent, Identity identity)
 {
-    (void) parent;
     CHECK_NULLPTR_RETURN(feature, "AbilityMgrServiceSlite", "feature initialize fail");
     auto *abilityMgrService = static_cast<AbilityMgrServiceSlite *>(feature);
     abilityMgrService->featureIdentity_ = identity;
     AbilityRecordManager::GetInstance().StartLauncher();
 }
 
-void AbilityMgrServiceSlite::OnFeatureStop(Feature *feature, Identity identity)
+void AbilityMgrServiceSlite::OnFeatureStop([[maybe_unused]] Feature *feature, [[maybe_unused]] Identity identity)
 {
-    (void) feature;
-    (void) identity;
 }
 
 BOOL AbilityMgrServiceSlite::OnFeatureMessage(Feature *feature, Request *request)
@@ -130,9 +124,8 @@ BOOL AbilityMgrServiceSlite::OnFeatureMessage(Feature *feature, Request *request
     return TRUE;
 }
 
-const char *AbilityMgrServiceSlite::GetServiceName(Service *service)
+const char *AbilityMgrServiceSlite::GetServiceName([[maybe_unused]] Service *service)
 {
-    (void) service;
     return AMS_SERVICE;
 }
 
@@ -218,13 +211,13 @@ ElementName *AbilityMgrServiceSlite::GetTopAbility()
     return AbilityRecordManager::GetInstance().GetTopAbility();
 }
 
-static AbilityThread *createJsAbilityThread()
+static AbilityThread *CreateJsAbilityThread()
 {
     auto *jsThread = new JsAbilityThread();
     return jsThread;
 }
 
-static AbilityThread *createNativeAbilityThread()
+static AbilityThread *CreateNativeAbilityThread()
 {
     auto *nativeThread = new NativeAbilityThread();
     return nativeThread;
@@ -232,20 +225,20 @@ static AbilityThread *createNativeAbilityThread()
 
 void AbilityMgrServiceSlite::InitAbilityThreadLoad()
 {
-    AbilityThreadLoader::GetInstance().SetCreatorFunc(AbilityThreadCreatorType::JS_CREATOR, createJsAbilityThread);
+    AbilityThreadLoader::GetInstance().SetCreatorFunc(AbilityThreadCreatorType::JS_CREATOR, CreateJsAbilityThread);
     AbilityThreadLoader::GetInstance().SetCreatorFunc(AbilityThreadCreatorType::NATIVE_CREATOR,
-        createNativeAbilityThread);
+        CreateNativeAbilityThread);
 }
 
-static SliteAbility *createJsAbility(const char *bundleName)
+static SliteAbility *CreateJsAbility(const char *bundleName)
 {
-    SliteAbility *jsAbility = new DummyJsAbility(bundleName);
+    SliteAbility *jsAbility = new ACELite::SliteAceAbility(bundleName);
     return jsAbility;
 }
 
 void AbilityMgrServiceSlite::InitAbilityLoad()
 {
-    SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::JS_ABILITY, createJsAbility);
+    SliteAbilityLoader::GetInstance().SetAbilityCreatorFunc(SliteAbilityType::JS_ABILITY, CreateJsAbility);
 }
 } // namespace AbilitySlite
 } // namespace OHOS

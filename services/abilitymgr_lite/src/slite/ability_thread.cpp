@@ -15,41 +15,15 @@
 
 #include "ability_thread.h"
 
-#include <string.h>
-
 #include "ability_errors.h"
-#include "ability_manager_inner.h"
-#include "bms_helper.h"
-#include "slite_ability_state.h"
-#include "los_task.h"
 #include "ability_inner_message.h"
-#include "adapter.h"
 
 namespace OHOS {
 namespace AbilitySlite {
 
 AbilityThread::AbilityThread() = default;
 
-AbilityThread::~AbilityThread()
-{
-    if (ability_ != nullptr && ability_->bundleName_ != nullptr) {
-        if (!BMSHelper::GetInstance().IsNativeApp(ability_->bundleName_)) {
-            // js ability thread deconstruction
-            delete ability_;
-            ability_ = nullptr;
-            if (messageQueueId_ != nullptr) {
-                osMessageQueueDelete(messageQueueId_);
-            }
-            messageQueueId_ = nullptr;
-        } else {
-            // native ability thread deconstruction
-            if (strcmp(ability_->bundleName_, LAUNCHER_BUNDLE_NAME) != 0) {
-                delete ability_;
-                ability_ = nullptr;
-            }
-        }
-    }
-}
+AbilityThread::~AbilityThread() = default;
 
 int32_t AbilityThread::HandleCreate(const Want *want)
 {

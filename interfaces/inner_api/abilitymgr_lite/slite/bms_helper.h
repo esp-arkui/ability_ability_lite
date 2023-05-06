@@ -30,7 +30,7 @@ struct AbilitySvcInfo {
     bool isNativeApp;
     uint16_t dataLength;
 };
-    
+
 class BMSHelper final {
 public:
     static BMSHelper &GetInstance()

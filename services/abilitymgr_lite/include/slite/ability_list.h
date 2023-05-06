@@ -37,6 +37,14 @@ public:
 
     void Erase(uint16_t token);
 
+    uint32_t Size() const;
+
+    bool MoveToTop(uint16_t token);
+
+    void PopAbility();
+
+    AbilityRecord *GetTopAbility() const;
+
 private:
     List<AbilityRecord *> abilityList_ {};
 };
