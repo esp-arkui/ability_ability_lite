@@ -33,25 +33,25 @@ SliteAbility::~SliteAbility()
 void SliteAbility::OnCreate(const Want &want)
 {
     abilityState_ = SLITE_STATE_INITIAL;
-    (void) AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, SLITE_STATE_INITIAL);
+    (void)AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, SLITE_STATE_INITIAL);
 }
 
 void SliteAbility::OnForeground(const Want &want)
 {
     abilityState_ = SLITE_STATE_FOREGROUND;
-    (void) AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, SLITE_STATE_FOREGROUND);
+    (void)AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, SLITE_STATE_FOREGROUND);
 }
 
 void SliteAbility::OnBackground()
 {
     abilityState_ = SLITE_STATE_BACKGROUND;
-    (void) AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, SLITE_STATE_BACKGROUND);
+    (void)AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, SLITE_STATE_BACKGROUND);
 }
 
 void SliteAbility::OnDestroy()
 {
     abilityState_ = SLITE_STATE_UNINITIALIZED;
-    (void) AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, SLITE_STATE_UNINITIALIZED);
+    (void)AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, SLITE_STATE_UNINITIALIZED);
 }
 
 void SliteAbility::HandleExtraMessage(const SliteAbilityInnerMsg &innerMsg)

@@ -29,6 +29,7 @@ namespace AbilitySlite {
 constexpr char LAUNCHER_BUNDLE_NAME[] = "com.ohos.launcher";
 
 class AbilityRecord;
+
 enum class AbilityThreadState : int8_t {
     ABILITY_THREAD_UNINITIALIZED,
     ABILITY_THREAD_INITIALIZED,
@@ -45,6 +46,10 @@ public:
 
     virtual int32_t ReleaseAbilityThread() = 0;
 
+    virtual osMessageQueueId_t GetMessageQueueId() const = 0;
+
+    virtual UINT32 GetAppTaskId() const = 0;
+
     int32_t HandleCreate(const Want *want);
 
     int32_t HandleForeground(const Want *want);
@@ -53,10 +58,7 @@ public:
 
     int32_t HandleDestroy();
 
-    osMessageQueueId_t messageQueueId_ = nullptr;
-    UINT32 appTaskId_ = 0;
     SliteAbility *ability_ = nullptr;
-
 protected:
     AbilityThreadState state_ = AbilityThreadState::ABILITY_THREAD_UNINITIALIZED;
 };

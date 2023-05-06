@@ -30,10 +30,16 @@ public:
 
     int32_t ReleaseAbilityThread() override;
 
-    static void NativeAppTaskHandler(UINT32 uwArg);
+    osMessageQueueId_t GetMessageQueueId() const override;
 
-    static osMessageQueueId_t nativeQueueId;
-    static UINT32 nativeTaskId;
+    UINT32 GetAppTaskId() const override;
+
+    static void Reset();
+
+    static void NativeAppTaskHandler(UINT32 uwArg);
+private:
+    static osMessageQueueId_t nativeQueueId_;
+    static UINT32 nativeTaskId_;
     static SliteAbility *nativeAbility_;
 };
 }
