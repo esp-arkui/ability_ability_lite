@@ -99,25 +99,21 @@ const Identity *AbilityMgrServiceSlite::GetIdentity()
     return &serviceIdentity_;
 }
 
-const char *AbilityMgrServiceSlite::GetFeatureName(Feature *feature)
+const char *AbilityMgrServiceSlite::GetFeatureName([[maybe_unused]] Feature *feature)
 {
-    (void)feature;
     return AMS_SLITE_FEATURE;
 }
 
-void AbilityMgrServiceSlite::OnFeatureInitialize(Feature *feature, Service *parent, Identity identity)
+void AbilityMgrServiceSlite::OnFeatureInitialize(Feature *feature, [[maybe_unused]] Service *parent, Identity identity)
 {
-    (void)parent;
     CHECK_NULLPTR_RETURN(feature, "AbilityMgrServiceSlite", "feature initialize fail");
     auto *abilityMgrService = static_cast<AbilityMgrServiceSlite *>(feature);
     abilityMgrService->featureIdentity_ = identity;
     AbilityRecordManager::GetInstance().StartLauncher();
 }
 
-void AbilityMgrServiceSlite::OnFeatureStop(Feature *feature, Identity identity)
+void AbilityMgrServiceSlite::OnFeatureStop([[maybe_unused]] Feature *feature, [[maybe_unused]] Identity identity)
 {
-    (void)feature;
-    (void)identity;
 }
 
 BOOL AbilityMgrServiceSlite::OnFeatureMessage(Feature *feature, Request *request)
@@ -128,9 +124,8 @@ BOOL AbilityMgrServiceSlite::OnFeatureMessage(Feature *feature, Request *request
     return TRUE;
 }
 
-const char *AbilityMgrServiceSlite::GetServiceName(Service *service)
+const char *AbilityMgrServiceSlite::GetServiceName([[maybe_unused]] Service *service)
 {
-    (void)service;
     return AMS_SERVICE;
 }
 

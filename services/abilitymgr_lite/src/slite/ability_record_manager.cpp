@@ -67,7 +67,7 @@ void AbilityRecordManager::StartLauncher()
     record->state = SCHEDULE_FOREGROUND;
     record->taskId = LOS_CurTaskIDGet();
     abilityList_.Add(record);
-    (void) SchedulerLifecycleInner(record, SLITE_STATE_FOREGROUND);
+    (void)ScheduleLifecycleInner(record, SLITE_STATE_FOREGROUND);
 #else // define _MINI_MULTI_TASKS_
     StartAbility(launcherRecord);
 #endif
@@ -247,7 +247,7 @@ int32_t AbilityRecordManager::StartAbility(AbilitySvcInfo *info)
         UpdateRecord(info);
         if (topToken != LAUNCHER_TOKEN && topRecord->state != SCHEDULE_BACKGROUND) {
             HILOG_INFO(HILOG_MODULE_AAFWK, "Change Js app to background.");
-            (void) SchedulerLifecycleInner(topRecord, SLITE_STATE_BACKGROUND);
+            (void)ScheduleLifecycleInner(topRecord, SLITE_STATE_BACKGROUND);
         } else {
             (void) SchedulerLifecycle(LAUNCHER_TOKEN, SLITE_STATE_FOREGROUND);
         }
@@ -334,7 +334,7 @@ int32_t AbilityRecordManager::TerminateAbility(uint16_t token)
     }
     topRecord->isTerminated = true;
     // TerminateAbility top js
-    return SchedulerLifecycleInner(topRecord, SLITE_STATE_BACKGROUND);
+    return ScheduleLifecycleInner(topRecord, SLITE_STATE_BACKGROUND);
 #else
     // 1. only launcher in the ability stack
     if (abilityList_.Size() == 1 && topToken == LAUNCHER_TOKEN) {
@@ -647,9 +647,9 @@ void AbilityRecordManager::OnForegroundDone(uint16_t token)
                 DeleteRecordInfo(topRecord->token);
             } else if (topRecord->isTerminated) {
 #ifndef _MINI_MULTI_TASKS_
-                (void) SchedulerLifecycleInner(topRecord, SLITE_STATE_UNINITIALIZED);
+                (void)ScheduleLifecycleInner(topRecord, SLITE_STATE_UNINITIALIZED);
 #else
-                (void) SendMsgToAbilityThread(SLITE_STATE_UNINITIALIZED, topRecord);
+                (void)SendMsgToAbilityThread(SLITE_STATE_UNINITIALIZED, topRecord);
 #endif
             }
         }
@@ -666,7 +666,7 @@ void AbilityRecordManager::OnBackgroundDone(uint16_t token)
     HILOG_INFO(HILOG_MODULE_AAFWK, "OnBackgroundDone [%{public}u]", token);
 #ifndef _MINI_MULTI_TASKS_
     SetAbilityState(token, SCHEDULE_BACKGROUND);
-    auto topRecord = const_cast<AbilityRecord *>(abilityList_.GetTopAbility());
+    const AbilityRecord *topRecord = abilityList_.GetTopAbility();
     if (topRecord == nullptr) {
         return;
     }
@@ -681,9 +681,9 @@ void AbilityRecordManager::OnBackgroundDone(uint16_t token)
     // the launcher background
     if (topRecord->token != LAUNCHER_TOKEN) {
         if (topRecord->state == SCHEDULE_STOP) {
-            (void) SchedulerLifecycleInner(topRecord, SLITE_STATE_INITIAL);
+            (void)ScheduleLifecycleInner(topRecord, SLITE_STATE_INITIAL);
         } else {
-            (void) SchedulerLifecycleInner(topRecord, SLITE_STATE_FOREGROUND);
+            (void)ScheduleLifecycleInner(topRecord, SLITE_STATE_FOREGROUND);
         }
         if (GetCleanAbilityDataFlag()) {
             HILOG_INFO(HILOG_MODULE_AAFWK, "OnBackgroundDone clean launcher record data");
@@ -802,7 +802,7 @@ int32_t AbilityRecordManager::SchedulerLifecycle(uint64_t token, int32_t state)
         return PARAM_NULL_ERROR;
     }
 #ifndef _MINI_MULTI_TASKS_
-    return SchedulerLifecycleInner(record, state);
+    return ScheduleLifecycleInner(record, state);
 #else
     return SendMsgToAbilityThread(state, record);
 #endif
@@ -818,7 +818,7 @@ void AbilityRecordManager::SetAbilityState(uint64_t token, int32_t state)
 }
 
 #ifndef _MINI_MULTI_TASKS_
-int32_t AbilityRecordManager::SchedulerLifecycleInner(const AbilityRecord *record, int32_t state)
+int32_t AbilityRecordManager::ScheduleLifecycleInner(const AbilityRecord *record, int32_t state)
 {
     if (record == nullptr) {
         return PARAM_NULL_ERROR;

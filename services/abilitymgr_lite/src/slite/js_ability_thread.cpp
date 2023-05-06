@@ -38,8 +38,8 @@ JsAbilityThread::~JsAbilityThread()
     ability_ = nullptr;
     if (messageQueueId_ != nullptr) {
         osMessageQueueDelete(messageQueueId_);
+        messageQueueId_ = nullptr;
     }
-    messageQueueId_ = nullptr;
 }
 
 int32_t JsAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecord)

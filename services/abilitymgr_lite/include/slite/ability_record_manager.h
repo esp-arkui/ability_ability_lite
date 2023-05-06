@@ -83,7 +83,7 @@ private:
 
     int32_t SchedulerLifecycle(uint64_t token, int32_t state);
 
-    int32_t SchedulerLifecycleInner(const AbilityRecord *record, int32_t state);
+    int32_t ScheduleLifecycleInner(const AbilityRecord *record, int32_t state);
 
     void SchedulerAbilityLifecycle(SliteAbility *ability, const Want &want, int32_t state);
 
