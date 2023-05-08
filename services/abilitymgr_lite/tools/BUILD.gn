@@ -53,9 +53,9 @@ executable("aa") {
 
   if (enable_ohos_appexecfwk_feature_ability == true) {
     deps += [
-      "${graphic_path}/surface",
-      "${graphic_path}/ui:ui_lite",
-      "${graphic_path}/utils:graphic_utils_lite",
+      "${graphic_path}/../arkui/ui_lite:ui_lite",
+      "${graphic_path}/graphic_utils_lite:utils_lite",
+      "${graphic_path}/surface_lite",
     ]
   }
   include_dirs = [
