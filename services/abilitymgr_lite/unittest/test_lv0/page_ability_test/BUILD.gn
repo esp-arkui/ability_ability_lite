@@ -39,17 +39,17 @@ unittest("ability_test_pageAbilityTest_lv0") {
     "${appexecfwk_lite_path}/frameworks/bundle_lite/include",
     "${appexecfwk_lite_path}/kits/appkit_lite/appkit_utils/include",
     "${utils_lite_path}/include",
-    "${samgr_lite_path}/interfaces/innerkits/registry",
-    "${samgr_lite_path}/interfaces/interfaces/innerkits/samgr",
+    "${ability_lite_samgr_lite_path}/interfaces/innerkits/registry",
+    "${ability_lite_samgr_lite_path}/interfaces/interfaces/innerkits/samgr",
     "//third_party/cJSON",
   ]
 
   deps = [
     "${aafwk_lite_path}/frameworks/abilitymgr_lite:aafwk_abilityManager_lite",
+    "${ability_lite_samgr_lite_path}/samgr:samgr",
     "${appexecfwk_lite_path}/frameworks/bundle_lite:bundle",
     "${communication_path}/ipc/interfaces/innerkits/c/ipc:ipc_single",
     "${hilog_lite_path}/frameworks/featured:hilog_shared",
-    "${samgr_lite_path}/samgr:samgr",
     "//build/lite/config/component/cJSON:cjson_shared",
   ]
 
