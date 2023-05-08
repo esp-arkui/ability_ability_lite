@@ -13,6 +13,7 @@
 
 import("//build/lite/config/component/lite_component.gni")
 import("//build/lite/config/test.gni")
+import("//foundation/ability/ability_lite/ability_lite.gni")
 
 unittest("ability_test_pageAbilityTest_lv0") {
   output_extension = "bin"
@@ -37,19 +38,19 @@ unittest("ability_test_pageAbilityTest_lv0") {
     "${appexecfwk_lite_path}/interfaces/inner_api/bundlemgr_lite",
     "${appexecfwk_lite_path}/frameworks/bundle_lite/include",
     "${appexecfwk_lite_path}/kits/appkit_lite/appkit_utils/include",
-    "//commonlibrary/utils_lite/include",
-    "//foundation/systemabilitymgr/samgr_lite/interfaces/innerkits/registry",
-    "//foundation/systemabilitymgr/samgr_lite/interfaces/innerkits/samgr",
+    "${utils_lite_path}/include",
+    "${samgr_lite_path}/interfaces/innerkits/registry",
+    "${samgr_lite_path}/interfaces/interfaces/innerkits/samgr",
     "//third_party/cJSON",
   ]
 
   deps = [
     "${aafwk_lite_path}/frameworks/abilitymgr_lite:aafwk_abilityManager_lite",
     "${appexecfwk_lite_path}/frameworks/bundle_lite:bundle",
-    "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
+    "${communication_path}/ipc/interfaces/innerkits/c/ipc:ipc_single",
+    "${hilog_lite_path}/frameworks/featured:hilog_shared",
+    "${samgr_lite_path}/samgr:samgr",
     "//build/lite/config/component/cJSON:cjson_shared",
-    "//foundation/communication/ipc/interfaces/innerkits/c/ipc:ipc_single",
-    "//foundation/systemabilitymgr/samgr_lite/samgr:samgr",
   ]
 
   defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]

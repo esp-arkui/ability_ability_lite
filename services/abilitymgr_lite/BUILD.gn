@@ -12,6 +12,7 @@
 # limitations under the License.
 import("//build/lite/config/component/lite_component.gni")
 import("//build/lite/config/subsystem/aafwk/config.gni")
+import("//foundation/ability/ability_lite/ability_lite.gni")
 import(
     "//foundation/bundlemanager/bundle_framework_lite/bundle_framework_lite.gni")
 
@@ -59,9 +60,9 @@ lite_library("abilityms") {
     }
 
     deps = [
-      "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_static",
-      "//foundation/arkui/ace_engine_lite/frameworks:ace_lite",
-      "//foundation/systemabilitymgr/samgr_lite/samgr:samgr",
+      "${ace_engine_lite_path}/frameworks:ace_lite",
+      "${hilog_lite_path}/frameworks/featured:hilog_static",
+      "${samgr_lite_path}/samgr:samgr",
     ]
 
     include_dirs = [
@@ -73,11 +74,11 @@ lite_library("abilityms") {
       "${appexecfwk_lite_path}/interfaces/inner_api/bundlemgr_lite",
       "${appexecfwk_lite_path}/interfaces/kits/bundle_lite",
       "${appexecfwk_lite_path}/utils/bundle_lite",
-      "//commonlibrary/utils_lite/include",
-      "//commonlibrary/utils_lite/memory/include",
-      "//foundation/ability/dmsfwk_lite/interfaces/innerkits",
-      "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/registry",
-      "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/samgr",
+      "${utils_lite_path}/include",
+      "${utils_lite_path}/memory/include",
+      "${dmsfwk_lite_path}/interfaces/innerkits",
+      "${samgr_lite_path}/interfaces/kits/registry",
+      "${samgr_lite_path}/interfaces/kits/samgr",
       "//third_party/bounds_checking_function/include",
       "./include/slite",
       "./include/util",
@@ -125,9 +126,9 @@ lite_library("abilityms") {
 
     deps = [
       "${appexecfwk_lite_path}/frameworks/bundle_lite:bundle",
-      "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
-      "//foundation/communication/ipc/interfaces/innerkits/c/ipc:ipc_single",
-      "//foundation/systemabilitymgr/samgr_lite/samgr:samgr",
+      "${communication_path}/ipc/interfaces/innerkits/c/ipc:ipc_single",
+      "${hilog_lite_path}/frameworks/featured:hilog_shared",
+      "${samgr_lite_path}/samgr:samgr",
     ]
 
     defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
@@ -138,7 +139,7 @@ lite_library("abilityms") {
     }
 
     if (enable_ohos_appexecfwk_feature_ability == true) {
-      deps += [ "//foundation/graphic/surface" ]
+      deps += [ "${graphic_path}/surface" ]
       defines += [ "ABILITY_WINDOW_SUPPORT" ]
     }
 
@@ -153,16 +154,16 @@ lite_library("abilityms") {
       "${appexecfwk_lite_path}/utils/bundle_lite",
       "${appexecfwk_lite_path}/interfaces/inner_api/bundlemgr_lite",
       "${appexecfwk_lite_path}/frameworks/bundle_lite/include",
-      "//base/security/permission_lite/interfaces/kits",
-      "//base/security/permission_lite/services/pms/include",
-      "//base/startup/appspawn/lite",
-      "//commonlibrary/utils_lite/include",
-      "//commonlibrary/utils_lite/memory/include",
-      "//foundation/ability/dmsfwk_lite/interfaces/innerkits",
-      "//foundation/communication/ipc/interfaces/innerkits/c/ipc/include",
-      "//foundation/graphic/wms/interfaces/innerkits",
-      "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/registry",
-      "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/samgr",
+      "${permission_lite_path}/interfaces/kits",
+      "${permission_lite_path}/services/pms/include",
+      "${appapawn_lite_path}",
+      "${utils_lite_path}/include",
+      "${utils_lite_path}/memory/include",
+      "${dmsfwk_lite_path}/interfaces/innerkits",
+      "${communication_path}/ipc/interfaces/innerkits/c/ipc/include",
+      "${graphic_path}/wms/interfaces/innerkits",
+      "${samgr_lite_path}/interfaces/kits/registry",
+      "${samgr_lite_path}/interfaces/kits/samgr",
       "//third_party/bounds_checking_function/include",
       "//third_party/cJSON",
       "include",
@@ -187,8 +188,7 @@ lite_library("abilityms") {
   ]
 
   if (ohos_kernel_type == "liteos_m") {
-    include_dirs +=
-        [ "//base/hiviewdfx/hilog_lite/interfaces/native/kits/hilog_lite" ]
+    include_dirs += [ "${hilog_lite_path}/interfaces/native/kits/hilog_lite" ]
   }
 }
 
