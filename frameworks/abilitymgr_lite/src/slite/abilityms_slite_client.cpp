@@ -76,7 +76,14 @@ int32_t AbilityMsClient::StartAbility(const Want *want) const
     info->dataLength = 0;
     info->appPath = nullptr;
     SetWantElement(info, *(want->element));
-    SetWantData(info, want->data, want->dataLength);
+    if (want->data != nullptr) {
+        SetWantData(info, want->data, want->dataLength);
+        HILOG_INFO(HILOG_MODULE_APP, "start ability with input data");
+    } else {
+        char* defaultData = "data";
+        SetWantData(info, defaultData, 5);
+        HILOG_INFO(HILOG_MODULE_APP, "start ability with default data");
+    }
     data->want = info;
     data->curTask = LOS_CurTaskIDGet();
     Request request = {
