@@ -60,9 +60,9 @@ lite_library("abilityms") {
     }
 
     deps = [
+      "${ability_lite_samgr_lite_path}/samgr:samgr",
       "${ace_engine_lite_path}/frameworks:ace_lite",
       "${hilog_lite_path}/frameworks/featured:hilog_static",
-      "${samgr_lite_path}/samgr:samgr",
     ]
 
     include_dirs = [
@@ -77,8 +77,8 @@ lite_library("abilityms") {
       "${utils_lite_path}/include",
       "${utils_lite_path}/memory/include",
       "${dmsfwk_lite_path}/interfaces/innerkits",
-      "${samgr_lite_path}/interfaces/kits/registry",
-      "${samgr_lite_path}/interfaces/kits/samgr",
+      "${ability_lite_samgr_lite_path}/interfaces/kits/registry",
+      "${ability_lite_samgr_lite_path}/interfaces/kits/samgr",
       "//third_party/bounds_checking_function/include",
       "./include/slite",
       "./include/util",
@@ -125,10 +125,10 @@ lite_library("abilityms") {
     ]
 
     deps = [
+      "${ability_lite_samgr_lite_path}/samgr:samgr",
       "${appexecfwk_lite_path}/frameworks/bundle_lite:bundle",
       "${communication_path}/ipc/interfaces/innerkits/c/ipc:ipc_single",
       "${hilog_lite_path}/frameworks/featured:hilog_shared",
-      "${samgr_lite_path}/samgr:samgr",
     ]
 
     defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
@@ -162,8 +162,8 @@ lite_library("abilityms") {
       "${dmsfwk_lite_path}/interfaces/innerkits",
       "${communication_path}/ipc/interfaces/innerkits/c/ipc/include",
       "${graphic_path}/wms/interfaces/innerkits",
-      "${samgr_lite_path}/interfaces/kits/registry",
-      "${samgr_lite_path}/interfaces/kits/samgr",
+      "${ability_lite_samgr_lite_path}/interfaces/kits/registry",
+      "${ability_lite_samgr_lite_path}/interfaces/kits/samgr",
       "//third_party/bounds_checking_function/include",
       "//third_party/cJSON",
       "include",
