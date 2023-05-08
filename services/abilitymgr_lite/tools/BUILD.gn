@@ -12,6 +12,7 @@
 # limitations under the License.
 import("//build/lite/config/component/lite_component.gni")
 import("//build/lite/config/subsystem/aafwk/config.gni")
+import("//foundation/ability/ability_lite/ability_lite.gni")
 
 lite_component("tools_lite") {
   features = [ ":aa" ]
@@ -43,18 +44,18 @@ executable("aa") {
   deps = [
     "${aafwk_lite_path}/frameworks/abilitymgr_lite:aafwk_abilityManager_lite",
     "${appexecfwk_lite_path}/frameworks/bundle_lite:bundle",
-    "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
+    "${communication_path}/ipc/interfaces/innerkits/c/ipc:ipc_single",
+    "${hilog_lite_path}/frameworks/featured:hilog_shared",
+    "${kv_store_path}/interfaces/inner_api/kv_store:kv_store",
+    "${samgr_lite_path}/samgr:samgr",
     "//build/lite/config/component/cJSON:cjson_shared",
-    "//foundation/communication/ipc/interfaces/innerkits/c/ipc:ipc_single",
-    "//foundation/distributeddatamgr/kv_store/interfaces/inner_api/kv_store:kv_store",
-    "//foundation/systemabilitymgr/samgr_lite/samgr:samgr",
   ]
 
   if (enable_ohos_appexecfwk_feature_ability == true) {
     deps += [
-      "//foundation/graphic/surface",
-      "//foundation/graphic/ui:ui_lite",
-      "//foundation/graphic/utils:graphic_utils_lite",
+      "${graphic_path}/surface",
+      "${graphic_path}/ui:ui_lite",
+      "${graphic_path}/utils:graphic_utils_lite",
     ]
   }
   include_dirs = [
@@ -66,10 +67,10 @@ executable("aa") {
     "${aafwk_lite_path}/frameworks/want_lite/include",
     "${appexecfwk_lite_path}/utils/bundle_lite",
     "${appexecfwk_lite_path}/interfaces/kits/bundle_lite",
-    "//commonlibrary/utils_lite/include",
-    "//foundation/communication/ipc/interfaces/innerkits/c/ipc/include",
-    "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/registry",
-    "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/samgr",
+    "${utils_lite_path}/include",
+    "${communication_path}/ipc/interfaces/innerkits/c/ipc/include",
+    "${samgr_lite_path}/interfaces/kits/registry",
+    "${samgr_lite_path}/interfaces/kits/samgr",
     "//third_party/bounds_checking_function/include",
     "//third_party/cJSON",
   ]

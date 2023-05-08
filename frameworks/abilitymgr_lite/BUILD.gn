@@ -13,6 +13,7 @@
 import("//build/lite/config/component/lite_component.gni")
 import("//build/lite/config/subsystem/aafwk/config.gni")
 import("//build/lite/config/test.gni")
+import("//foundation/ability/ability_lite/ability_lite.gni")
 
 lite_library("abilitymanager") {
   if (ohos_kernel_type == "liteos_m") {
@@ -24,7 +25,7 @@ lite_library("abilitymanager") {
       "src/slite/abilityms_slite_client.cpp",
     ]
 
-    deps = [ "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_static" ]
+    deps = [ "${hilog_lite_path}/frameworks/featured:hilog_static" ]
 
     include_dirs = [
       "${aafwk_lite_path}/interfaces/inner_api/abilitymgr_lite",
@@ -35,10 +36,10 @@ lite_library("abilitymanager") {
       "${aafwk_lite_path}/services/abilitymgr_lite/include/util",
       "${appexecfwk_lite_path}/interfaces/kits/bundle_lite",
       "${appexecfwk_lite_path}/utils/bundle_lite",
-      "//commonlibrary/utils_lite/include",
-      "//commonlibrary/utils_lite/memory/include",
-      "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/registry",
-      "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/samgr",
+      "${utils_lite_path}/include",
+      "${utils_lite_path}/memory/include",
+      "${samgr_lite_path}/interfaces/kits/registry",
+      "${samgr_lite_path}/interfaces/kits/samgr",
       "//third_party/bounds_checking_function/include",
       "./include/slite",
     ]
@@ -55,8 +56,8 @@ lite_library("abilitymanager") {
 
     deps = [
       "${appexecfwk_lite_path}/frameworks/bundle_lite:bundle",
-      "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared",
-      "//foundation/communication/ipc/interfaces/innerkits/c/ipc:ipc_single",
+      "${communication_path}/ipc/interfaces/innerkits/c/ipc:ipc_single",
+      "${hilog_lite_path}/frameworks/featured:hilog_shared",
     ]
 
     defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
@@ -72,12 +73,12 @@ lite_library("abilitymanager") {
       "${appexecfwk_lite_path}/utils/bundle_lite",
       "${appexecfwk_lite_path}/interfaces/kits/bundle_lite",
       "${appexecfwk_lite_path}/frameworks/bundle_lite/include",
-      "//commonlibrary/utils_lite/include",
-      "//commonlibrary/utils_lite/memory/include",
-      "//foundation/communication/ipc/interfaces/innerkits/c/ipc/include",
-      "//foundation/distributeddatamgr/kv_store/interfaces/inner_api/kv_store/include",
-      "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/registry",
-      "//foundation/systemabilitymgr/samgr_lite/interfaces/kits/samgr",
+      "${utils_lite_path}/include",
+      "${utils_lite_path}/memory/include",
+      "${communication_path}/ipc/interfaces/innerkits/c/ipc/include",
+      "${kv_store_path}/interfaces/inner_api/kv_store/include",
+      "${samgr_lite_path}/interfaces/kits/registry",
+      "${samgr_lite_path}/interfaces/kits/samgr",
       "//third_party/bounds_checking_function/include",
       "./include",
       "./",
@@ -85,8 +86,7 @@ lite_library("abilitymanager") {
   }
 
   if (ohos_kernel_type == "liteos_m") {
-    include_dirs +=
-        [ "//base/hiviewdfx/hilog_lite/interfaces/native/kits/hilog_lite" ]
+    include_dirs += [ "${hilog_lite_path}/interfaces/native/kits/hilog_lite" ]
   }
 }
 
@@ -94,7 +94,7 @@ unittest("ability_manager_inner_test") {
   output_extension = "bin"
   output_dir = "$root_out_dir/test/unittest/ManagerInnerTest_lv0"
 
-  sources = [ "//foundation/ability/ability_lite/frameworks/abilitymgr_lite/unittest/ability_manager_inner_test.cpp" ]
+  sources = [ "${ability_lite_path}/frameworks/abilitymgr_lite/unittest/ability_manager_inner_test.cpp" ]
 }
 
 lite_component("aafwk_abilityManager_lite") {

@@ -12,11 +12,11 @@
 # limitations under the License.
 
 import("//build/ohos.gni")
-
+import("//foundation/ability/ability_lite/ability_lite.gni")
 ohos_shared_library("aafwk") {
   include_dirs = [
     "//third_party/node/src",
-    "//foundation/arkui/napi/interfaces/kits",
+    "${arkui_path}/napi/interfaces/kits",
   ]
 
   cflags = [
@@ -27,8 +27,8 @@ ohos_shared_library("aafwk") {
   sources = [ "js_aafwk.cpp" ]
 
   deps = [
-    "//foundation/ability/ability_lite/frameworks/abilitymgr_lite:abilitymanager",
-    "//foundation/arkui/napi/:ace_napi",
+    "${ability_lite_path}/frameworks/abilitymgr_lite:abilitymanager",
+    "${arkui_path}/napi/:ace_napi",
   ]
 
   external_deps = [
