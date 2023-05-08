@@ -43,11 +43,11 @@ executable("aa") {
 
   deps = [
     "${aafwk_lite_path}/frameworks/abilitymgr_lite:aafwk_abilityManager_lite",
+    "${ability_lite_samgr_lite_path}/samgr:samgr",
     "${appexecfwk_lite_path}/frameworks/bundle_lite:bundle",
     "${communication_path}/ipc/interfaces/innerkits/c/ipc:ipc_single",
     "${hilog_lite_path}/frameworks/featured:hilog_shared",
     "${kv_store_path}/interfaces/inner_api/kv_store:kv_store",
-    "${samgr_lite_path}/samgr:samgr",
     "//build/lite/config/component/cJSON:cjson_shared",
   ]
 
@@ -69,8 +69,8 @@ executable("aa") {
     "${appexecfwk_lite_path}/interfaces/kits/bundle_lite",
     "${utils_lite_path}/include",
     "${communication_path}/ipc/interfaces/innerkits/c/ipc/include",
-    "${samgr_lite_path}/interfaces/kits/registry",
-    "${samgr_lite_path}/interfaces/kits/samgr",
+    "${ability_lite_samgr_lite_path}/interfaces/kits/registry",
+    "${ability_lite_samgr_lite_path}/interfaces/kits/samgr",
     "//third_party/bounds_checking_function/include",
     "//third_party/cJSON",
   ]
