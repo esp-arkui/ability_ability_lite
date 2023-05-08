@@ -15,6 +15,7 @@
 
 #include "ability_thread.h"
 
+#include "abilityms_log.h"
 #include "ability_errors.h"
 #include "ability_inner_message.h"
 
@@ -32,6 +33,11 @@ int32_t AbilityThread::HandleCreate(const Want *want)
     }
     if (want == nullptr) {
         return PARAM_NULL_ERROR;
+    }
+    if (want->data != nullptr) {
+        HILOG_INFO(HILOG_MODULE_APP, "start ability with data %{public}u", want->dataLength);
+    } else {
+        HILOG_INFO(HILOG_MODULE_APP, "start ability with no data");
     }
     ability_->OnCreate(*want);
     return ERR_OK;
