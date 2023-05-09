@@ -80,7 +80,7 @@ int32_t AbilityMsClient::StartAbility(const Want *want) const
         SetWantData(info, want->data, want->dataLength);
         HILOG_INFO(HILOG_MODULE_APP, "start ability with input data");
     } else {
-        char* defaultData = "data";
+        const char* defaultData = "data";
         SetWantData(info, defaultData, 5);
         HILOG_INFO(HILOG_MODULE_APP, "start ability with default data");
     }
