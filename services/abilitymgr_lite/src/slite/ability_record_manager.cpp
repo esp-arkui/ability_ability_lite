@@ -310,6 +310,11 @@ int32_t AbilityRecordManager::StartAbility(AbilitySvcInfo *info)
 
 int32_t AbilityRecordManager::TerminateAbility(uint16_t token)
 {
+    return TerminateAbility(token, nullptr);
+}
+
+int32_t AbilityRecordManager::TerminateAbility(uint16_t token, const Want* want = nullptr)
+{
     HILOG_INFO(HILOG_MODULE_AAFWK, "TerminateAbility [%{public}u]", token);
     AbilityRecord *topRecord = const_cast<AbilityRecord *>(abilityList_.GetTopAbility());
     if (topRecord == nullptr) {
@@ -367,6 +372,17 @@ int32_t AbilityRecordManager::TerminateAbility(uint16_t token)
         abilityList_.Add(topRecord);
         abilityList_.Add(newTopRecord);
     }
+    if (want != nullptr) {
+        if (newTopRecord->abilityData != nullptr) {
+            AdapterFree(newTopRecord->abilityData->wantData);
+        }
+        if (want->data != nullptr) {
+            newTopRecord->SetWantData(want->data, want->dataLength);
+        }
+        HILOG_INFO(HILOG_MODULE_AAFWK, "Terminate ability with want, dataLength is %{public}u", want->dataLength);
+    } else {
+        HILOG_INFO(HILOG_MODULE_AAFWK, "Terminate ability with no want");
+    }
 
     // TerminateAbility top js
     pendingToken_ = newTopRecord->token;
@@ -404,22 +420,24 @@ int32_t AbilityRecordManager::ForceStopBundle(uint16_t token)
     return ERR_OK;
 }
 
-int32_t AbilityRecordManager::ForceStop(const char *bundleName)
+int32_t AbilityRecordManager::ForceStop(const Want *want)
 {
-    if (bundleName == nullptr) {
+    if (want == nullptr
+        || want->element == nullptr
+        || want->element->bundleName == nullptr) {
         return PARAM_NULL_ERROR;
     }
 
     // stop Launcher
-    if (IsLauncher(bundleName)) {
-        return TerminateAbility(0);
+    if (IsLauncher(want->element->bundleName)) {
+        return TerminateAbility(0, nullptr);
     }
 
     // stop js app
-    if (strcmp(abilityList_.GetTopAbility()->appName, bundleName) == 0) {
+    if (strcmp(abilityList_.GetTopAbility()->appName, want->element->bundleName) == 0) {
         AbilityRecord *topRecord = const_cast<AbilityRecord *>(abilityList_.GetTopAbility());
         HILOG_INFO(HILOG_MODULE_AAFWK, "ForceStop [%{public}u]", topRecord->token);
-        return TerminateAbility(topRecord->token);
+        return TerminateAbility(topRecord->token, want);
     }
     return PARAM_CHECK_ERROR;
 }

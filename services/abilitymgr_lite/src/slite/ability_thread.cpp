@@ -35,9 +35,9 @@ int32_t AbilityThread::HandleCreate(const Want *want)
         return PARAM_NULL_ERROR;
     }
     if (want->data != nullptr) {
-        HILOG_INFO(HILOG_MODULE_APP, "start ability with data %{public}u", want->dataLength);
+        HILOG_INFO(HILOG_MODULE_AAFWK, "start ability with data %{public}u", want->dataLength);
     } else {
-        HILOG_INFO(HILOG_MODULE_APP, "start ability with no data");
+        HILOG_INFO(HILOG_MODULE_AAFWK, "start ability with no data");
     }
     ability_->OnCreate(*want);
     return ERR_OK;
@@ -50,6 +50,11 @@ int32_t AbilityThread::HandleForeground(const Want *want)
     }
     if (want == nullptr) {
         return PARAM_NULL_ERROR;
+    }
+    if (want->data != nullptr) {
+        HILOG_INFO(HILOG_MODULE_AAFWK, "foreground ability with data %{public}u", want->dataLength);
+    } else {
+        HILOG_INFO(HILOG_MODULE_AAFWK, "foreground ability with no data");
     }
     ability_->OnForeground(*want);
     return ERR_OK;
