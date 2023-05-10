@@ -43,9 +43,9 @@ lite_library("hiability") {
     "${appexefwk_lite_path}/interfaces/kits/bundle_lite",
     "${appexefwk_lite_path}/utils/bundle_lite",
     "${communication_path}/ipc/interfaces/innerkits/c/ipc/include",
-    "${graphic_path}/utils/interfaces/innerkits",
-    "${graphic_path}/ui/interfaces/kits",
-    "${graphic_path}/utils/interfaces/kits/gfx_utils",
+    "${graphic_path}/graphic_utils_lite/interfaces/innerkits",
+    "${graphic_path}/../arkui/ui_lite/interfaces/kits",
+    "${graphic_path}/graphic_utils_lite/interfaces/kits/gfx_utils",
   ]
 
   deps = [ "${aafwk_lite_path}/frameworks/ability_lite:aafwk_abilitykit_lite" ]
@@ -53,7 +53,7 @@ lite_library("hiability") {
   defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
 
   if (enable_ohos_appexecfwk_feature_ability == true) {
-    deps += [ "${graphic_path}/ui:ui_lite" ]
+    deps += [ "${graphic_path}/../arkui/ui_lite:ui_lite" ]
     defines += [
       "ENABLE_WINDOW=1",
       "ABILITY_WINDOW_SUPPORT",

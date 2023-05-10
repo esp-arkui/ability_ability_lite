@@ -24,13 +24,13 @@
             "components": [
                 "bundle_framework_lite",
                 "kv_store",
-                "ui",
-                "surface",
+                "ui_lite",
+                "surface_lite",
                 "hilog",
                 "permission",
                 "samgr_lite",
                 "appspawn_lite",
-                "wms"
+                "window_manager_lite"
             ],
             "third_party": [
                 "bounds_checking_function",
