@@ -181,6 +181,9 @@ int32_t AbilityRecordManager::StartAbility(const Want *want)
             return ERR_OK;
         }
         abilityList_.MoveToTop(abilityRecord->token);
+        if (NeedToBeTerminated(topRecord->appName)) {
+            topRecord->isTerminated = true;
+        }
         return SendMsgToAbilityThread(SLITE_STATE_BACKGROUND, topRecord);
     }
 #endif
@@ -189,13 +192,6 @@ int32_t AbilityRecordManager::StartAbility(const Want *want)
     if (info == nullptr) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability Service AbilitySvcInfo is null");
         return PARAM_NULL_ERROR;
-    }
-    if (IsLauncher(bundleName)) {
-        // delete it
-        want->element->bundleName = Utils::Strdup(LAUNCHER_BUNDLE_NAME);
-        AdapterFree(bundleName);
-        bundleName = nullptr;
-        info->path = nullptr;
     }
     uint8_t queryRet = BMSHelper::GetInstance().QueryAbilitySvcInfo(want, info);
     if (queryRet != ERR_OK) {
@@ -299,6 +295,9 @@ int32_t AbilityRecordManager::StartAbility(AbilitySvcInfo *info)
             CreateAppTask(const_cast<AbilityRecord *>(topRecord));
         }
         return ERR_OK;
+    }
+    if (NeedToBeTerminated(topRecord->appName)) {
+        topRecord->isTerminated = true;
     }
     (void) SendMsgToAbilityThread(SLITE_STATE_BACKGROUND, topRecord);
     pendingToken_ = GenerateToken();
@@ -622,6 +621,7 @@ void AbilityRecordManager::OnForegroundDone(uint16_t token)
     if (topRecord == nullptr) {
         return;
     }
+    HILOG_INFO(HILOG_MODULE_AAFWK, "The number of tasks in the stack is %{public}u.", abilityList_.Size());
 
     // the launcher foreground
     if (token == LAUNCHER_TOKEN) {
@@ -949,6 +949,14 @@ Want *AbilityRecordManager::CreateWant(const AbilityRecord *record)
     }
     ClearElement(&elementName);
     return want;
+}
+
+bool AbilityRecordManager::NeedToBeTerminated(const char *bundleName)
+{
+    if (strcmp(bundleName, CLOCK_LOCKER_BUNDLE_NAME) == 0 || strcmp(bundleName, MISSION_HISTORY_BUNDLE_NAME) == 0) {
+        return true;
+    }
+    return false;
 }
 
 ElementName *AbilityRecordManager::GetTopAbility()

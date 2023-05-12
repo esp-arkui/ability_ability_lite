@@ -113,6 +113,8 @@ private:
 
     Want *CreateWant(const AbilityRecord *record);
 
+    bool NeedToBeTerminated(const char *bundleName);
+
     uint16_t pendingToken_ { 0 };
 #ifndef _MINI_MULTI_TASKS_
     AbilityRecord *pendingRecord = nullptr;
