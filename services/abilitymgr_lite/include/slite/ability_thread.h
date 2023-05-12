@@ -27,6 +27,8 @@ extern "C" void LP_TaskEnd();
 namespace OHOS {
 namespace AbilitySlite {
 constexpr char LAUNCHER_BUNDLE_NAME[] = "com.ohos.launcher";
+constexpr char CLOCK_LOCKER_BUNDLE_NAME[] = "com.ohos.clocklocker";
+constexpr char MISSION_HISTORY_BUNDLE_NAME[] = "com.ohos.missionhistory";
 
 class AbilityRecord;
 
