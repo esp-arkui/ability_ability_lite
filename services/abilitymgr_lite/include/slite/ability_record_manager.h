@@ -50,8 +50,10 @@ public:
     int32_t StartAbility(const Want *want);
 
     int32_t TerminateAbility(uint16_t token);
+    
+    int32_t TerminateAbility(uint16_t token, const Want* want);
 
-    int32_t ForceStop(const char *bundleName);
+    int32_t ForceStop(const Want *want);
 
     int32_t ForceStopBundle(uint16_t token);
 

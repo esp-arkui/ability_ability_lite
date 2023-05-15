@@ -47,6 +47,8 @@ public:
 
     int32_t ForceStop(char *bundleName) const;
 
+    int32_t ForceStop(const Want *want) const;
+
     ElementName *GetTopAbility() const;
 
     void SetServiceIdentity(const Identity *identity);
