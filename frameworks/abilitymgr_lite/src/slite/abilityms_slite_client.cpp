@@ -81,7 +81,7 @@ int32_t AbilityMsClient::StartAbility(const Want *want) const
         HILOG_INFO(HILOG_MODULE_APP, "start ability with input data");
     } else {
         const char* defaultData = "data";
-        SetWantData(info, defaultData, 5);
+        SetWantData(info, defaultData, strlen(defaultData) + 1);
         HILOG_INFO(HILOG_MODULE_APP, "start ability with default data");
     }
     data->want = info;
@@ -151,13 +151,61 @@ int32_t AbilityMsClient::ForceStop(char *bundleName) const
     if (identity_ == nullptr) {
         return PARAM_CHECK_ERROR;
     }
-    char *name = Utils::Strdup(bundleName);
+    Want *want = static_cast<Want *>(AdapterMalloc(sizeof(Want)));
+    if (want == nullptr) {
+        return MEMORY_MALLOC_ERROR;
+    }
+    want->element = reinterpret_cast<ElementName *>(AdapterMalloc(sizeof(ElementName)));
+    if (want->element == nullptr) {
+        return MEMORY_MALLOC_ERROR;
+    }
+    want->element->deviceId = nullptr;
+    want->element->bundleName = Utils::Strdup(bundleName);
+    want->element->abilityName = nullptr;
+    want->data = nullptr;
+    want->dataLength = 0;
+    want->appPath = nullptr;
+    const char *forceData = "forcedata";
+    SetWantData(want, forceData, strlen(forceData) + 1);
+    if (want->data != nullptr) {
+        HILOG_INFO(HILOG_MODULE_APP, "force stop with default data");
+    }
     Request request = {
         .msgId = TERMINATE_APP_BY_BUNDLENAME,
-        .len = (int16)strlen(name),
-        .data = reinterpret_cast<void *>(name),
+        .len = sizeof(Want),
+        .data = want,
     };
+    return SAMGR_SendRequest(identity_, &request, nullptr);
+}
 
+int32_t AbilityMsClient::ForceStop(const Want *want) const
+{
+    if (identity_ == nullptr) {
+        return PARAM_CHECK_ERROR;
+    }
+    if (want == nullptr || want->element == nullptr || want->element->bundleName == nullptr) {
+        return PARAM_CHECK_ERROR;
+    }
+    Want *info = static_cast<Want *>(AdapterMalloc(sizeof(Want)));
+    if (info == nullptr) {
+        return MEMORY_MALLOC_ERROR;
+    }
+    info->element = nullptr;
+    info->data = nullptr;
+    info->dataLength = 0;
+    info->appPath = nullptr;
+    SetWantElement(info, *(want->element));
+    SetWantData(info, want->data, want->dataLength);
+    if (want->data != nullptr) {
+        HILOG_INFO(HILOG_MODULE_APP, "force stop with data");
+    } else {
+        HILOG_INFO(HILOG_MODULE_APP, "force stop with no data");
+    }
+    Request request = {
+        .msgId = TERMINATE_APP_BY_BUNDLENAME,
+        .len = sizeof(Want),
+        .data = info,
+    };
     return SAMGR_SendRequest(identity_, &request, nullptr);
 }
 

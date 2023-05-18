@@ -169,8 +169,15 @@ BOOL AbilityMgrServiceSlite::ServiceMessageHandle(Service *service, Request *req
     } else if (request->msgId == TERMINATE_APP) {
         ret = AbilityRecordManager::GetInstance().ForceStopBundle(request->msgValue);
     } else if (request->msgId == TERMINATE_APP_BY_BUNDLENAME) {
-        char *bundleName = reinterpret_cast<char *>(request->data);
-        ret = AbilityRecordManager::GetInstance().ForceStop(bundleName);
+        auto *data = static_cast<Want *>(request->data);
+        if (data == nullptr) {
+            return FALSE;
+        }
+        ret = AbilityRecordManager::GetInstance().ForceStop(data);
+        ClearWant(data);
+        AdapterFree(request->data);
+        request->data = nullptr;
+        request->len = 0;
     }
     return ret == ERR_OK;
 }
