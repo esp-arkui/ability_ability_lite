@@ -29,7 +29,6 @@
                 "hilog",
                 "permission",
                 "samgr_lite",
-                "appspawn_lite",
                 "window_manager_lite"
             ],
             "third_party": [
