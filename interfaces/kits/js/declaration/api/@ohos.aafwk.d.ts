@@ -14,7 +14,7 @@
  */
 
 import { AsyncCallback, ErrorCallback } from './@ohos.base';
-import {Want} from "//interface_sdk-js/api/phone/app/want";
+import {Want} from '//interface_sdk-js/api/phone/app/want';
 
 /**
  * Aafwk.
@@ -23,7 +23,7 @@ import {Want} from "//interface_sdk-js/api/phone/app/want";
  */
 declare namespace aafw {
     function startAbility(want : Want) : number;
-    function stopAbility(want : Want) : number; 
+    function stopAbility(want : Want) : number;
 }
 
 export default aafwk;
