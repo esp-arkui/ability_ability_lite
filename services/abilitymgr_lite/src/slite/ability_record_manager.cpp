@@ -180,6 +180,10 @@ int32_t AbilityRecordManager::StartAbility(const Want *want)
         if (topRecord == abilityRecord) {
             return ERR_OK;
         }
+        if (!CheckResponse(bundleName)) {
+            HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability Service CheckResponse Failed.");
+            return PARAM_CHECK_ERROR;
+        }
         abilityList_.MoveToTop(abilityRecord->token);
         if (NeedToBeTerminated(topRecord->appName)) {
             topRecord->isTerminated = true;
