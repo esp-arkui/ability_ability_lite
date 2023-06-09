@@ -28,13 +28,12 @@
 
 namespace OHOS {
 namespace AbilitySlite {
-static char g_nativeAppTask[] = "NativeAppTask";
+static char g_NativeAppTask[] = "NativeAppTask";
 constexpr int32_t APP_TASK_PRI = 25;
 constexpr int32_t QUEUE_LENGTH = 32;
 
 osMessageQueueId_t NativeAbilityThread::nativeQueueId_ = nullptr;
 UINT32 NativeAbilityThread::nativeTaskId_ = UINT32_MAX;
-SliteAbility *NativeAbilityThread::nativeAbility_ = nullptr;
 
 NativeAbilityThread::NativeAbilityThread() = default;
 
@@ -43,10 +42,8 @@ NativeAbilityThread::~NativeAbilityThread()
     if (ability_ == nullptr) {
         return;
     }
-    if ((ability_->bundleName_ == nullptr) || (strcmp(ability_->bundleName_, LAUNCHER_BUNDLE_NAME) != 0)) {
-        delete ability_;
-        ability_ = nullptr;
-    }
+    delete ability_;
+    ability_ = nullptr;
 }
 
 int32_t NativeAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecord)
@@ -79,7 +76,7 @@ int32_t NativeAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecor
         stTskInitParam.pfnTaskEntry = (TSK_ENTRY_FUNC) (NativeAbilityThread::NativeAppTaskHandler);
         stTskInitParam.uwStackSize = NATIVE_TASK_STACK_SIZE;
         stTskInitParam.usTaskPrio = OS_TASK_PRIORITY_LOWEST - APP_TASK_PRI;
-        stTskInitParam.pcName = g_nativeAppTask;
+        stTskInitParam.pcName = g_NativeAppTask;
         stTskInitParam.uwResved = 0;
         stTskInitParam.uwArg = reinterpret_cast<UINT32>((uintptr_t) nativeQueueId_);
         uint32_t ret = LOS_TaskCreate(&nativeTaskId_, &stTskInitParam);
@@ -92,17 +89,8 @@ int32_t NativeAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecor
     }
 
     state_ = AbilityThreadState::ABILITY_THREAD_INITIALIZED;
-
-    if (strcmp(abilityRecord->appName, LAUNCHER_BUNDLE_NAME) == 0) {
-        if (nativeAbility_ == nullptr) {
-            nativeAbility_ = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::NATIVE_ABILITY,
-                abilityRecord->appName);
-        }
-        ability_ = nativeAbility_;
-    } else {
-        ability_ = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::NATIVE_ABILITY,
-            abilityRecord->appName);
-    }
+    ability_ = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::NATIVE_ABILITY,
+        abilityRecord->appName);
     if (ability_ == nullptr) {
         HILOG_INFO(HILOG_MODULE_AAFWK, "NativeAbility create fail");
         LOS_TaskUnlock();
@@ -140,7 +128,6 @@ void NativeAbilityThread::Reset()
     }
     nativeQueueId_ = nullptr;
     nativeTaskId_ = 0;
-    nativeAbility_ = nullptr;
 }
 
 void NativeAbilityThread::NativeAppTaskHandler(UINT32 uwArg)
@@ -170,6 +157,7 @@ void NativeAbilityThread::NativeAppTaskHandler(UINT32 uwArg)
             case SliteAbilityMsgId::CREATE:
                 defaultAbilityThread = abilityThread;
                 abilityThread->HandleCreate(innerMsg.want);
+                abilityThread->HandleRestore(innerMsg.abilitySavedData);
                 ClearWant(innerMsg.want);
                 AdapterFree(innerMsg.want);
                 innerMsg.want = nullptr;
@@ -184,6 +172,7 @@ void NativeAbilityThread::NativeAppTaskHandler(UINT32 uwArg)
                 abilityThread->HandleBackground();
                 break;
             case SliteAbilityMsgId::DESTROY:
+                abilityThread->HandleSave(innerMsg.abilitySavedData);
                 abilityThread->HandleDestroy();
                 break; // this task will be kept alive
             default:

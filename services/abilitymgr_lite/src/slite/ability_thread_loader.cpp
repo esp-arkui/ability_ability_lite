@@ -23,10 +23,14 @@ void AbilityThreadLoader::SetCreatorFunc(AbilityThreadCreatorType type, AbilityT
     }
     switch (type) {
         case AbilityThreadCreatorType::JS_CREATOR:
-            jsAbilityThreadFunc_ = func;
+            if (jsAbilityThreadFunc_ == nullptr) {
+                jsAbilityThreadFunc_ = func;
+            }
             break;
         case AbilityThreadCreatorType::NATIVE_CREATOR:
-            nativeAbilityThreadFunc_ = func;
+            if (nativeAbilityThreadFunc_ == nullptr) {
+                nativeAbilityThreadFunc_ = func;
+            }
             break;
         default:
             break;

@@ -17,6 +17,8 @@
 #define OHOS_ABILITY_SLITE_ABILITYMS_SLITE_CLIENT_H
 
 #include "ability_service_interface.h"
+#include "ability_record_observer.h"
+#include "mission_info.h"
 #include "nocopyable.h"
 #include "want.h"
 
@@ -41,17 +43,26 @@ public:
 
     int32_t TerminateAbility(uint64_t token) const;
 
+    int32_t TerminateMission(uint32_t mission) const;
+
+    int32_t TerminateAll(const char* excludedBundleName) const;
+
     int32_t SchedulerLifecycleDone(uint64_t token, int32_t state) const;
 
     int32_t ForceStopBundle(uint64_t token) const;
 
-    int32_t ForceStop(char *bundleName) const;
+    int32_t ForceStop(const char *bundleName) const;
 
     int32_t ForceStop(const Want *want) const;
 
     ElementName *GetTopAbility() const;
 
     void SetServiceIdentity(const Identity *identity);
+
+    int32_t AddAbilityRecordObserver(AbilityRecordObserver *observer);
+    int32_t RemoveAbilityRecordObserver(AbilityRecordObserver *observer);
+
+    MissionInfoList *GetMissionInfos(uint32_t maxNum) const;
 
 private:
     AbilityMsClient() = default;

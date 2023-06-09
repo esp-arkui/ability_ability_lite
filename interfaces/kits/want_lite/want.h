@@ -77,6 +77,8 @@ typedef struct {
     uint16_t dataLength;
 
     const char *appPath;
+
+    uint32_t mission;
 } Want;
 
 #ifdef __cplusplus

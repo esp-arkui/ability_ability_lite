@@ -27,9 +27,6 @@ extern "C" void LP_TaskEnd();
 namespace OHOS {
 namespace AbilitySlite {
 constexpr char LAUNCHER_BUNDLE_NAME[] = "com.ohos.launcher";
-constexpr char CLOCK_LOCKER_BUNDLE_NAME[] = "com.ohos.clocklocker";
-constexpr char MISSION_HISTORY_BUNDLE_NAME[] = "com.ohos.missionhistory";
-
 class AbilityRecord;
 
 enum class AbilityThreadState : int8_t {
@@ -52,11 +49,17 @@ public:
 
     virtual UINT32 GetAppTaskId() const = 0;
 
+    virtual int32_t SendScheduleMsgToAbilityThread(SliteAbilityInnerMsg &innerMsg);
+
     int32_t HandleCreate(const Want *want);
+
+    int32_t HandleRestore(AbilitySavedData *data);
 
     int32_t HandleForeground(const Want *want);
 
     int32_t HandleBackground();
+
+    int32_t HandleSave(AbilitySavedData *data);
 
     int32_t HandleDestroy();
 

@@ -75,14 +75,14 @@ int32_t AbilityMsClient::StartAbility(const Want *want) const
     info->data = nullptr;
     info->dataLength = 0;
     info->appPath = nullptr;
+    info->mission = want->mission;
     SetWantElement(info, *(want->element));
     if (want->data != nullptr) {
-        SetWantData(info, want->data, want->dataLength);
         HILOG_INFO(HILOG_MODULE_APP, "start ability with input data");
+        SetWantData(info, want->data, want->dataLength);
     } else {
-        const char* defaultData = "data";
-        SetWantData(info, defaultData, strlen(defaultData) + 1);
-        HILOG_INFO(HILOG_MODULE_APP, "start ability with default data");
+        SetWantData(info, nullptr, 0);
+        HILOG_INFO(HILOG_MODULE_APP, "start ability with no data");
     }
     data->want = info;
     data->curTask = LOS_CurTaskIDGet();
@@ -105,6 +105,35 @@ int32_t AbilityMsClient::TerminateAbility(uint64_t token) const
         .len = 0,
         .data = nullptr,
         .msgValue = static_cast<uint32_t>(token & TRANSACTION_MSG_TOKEN_MASK),
+    };
+    return SAMGR_SendRequest(identity_, &request, nullptr);
+}
+
+int32_t AbilityMsClient::TerminateMission(uint32_t mission) const
+{
+    Request request = {
+        .msgId = TERMINATE_MISSION,
+        .len = 0,
+        .data = nullptr,
+        .msgValue = mission,
+    };
+    return SAMGR_SendRequest(identity_, &request, nullptr);
+}
+
+int32_t AbilityMsClient::TerminateAll(const char* excludedBundleName) const
+{
+    if (identity_ == nullptr) {
+        return PARAM_CHECK_ERROR;
+    }
+    void *data = nullptr;
+    if (excludedBundleName != nullptr) {
+        data = Utils::Strdup(excludedBundleName);
+    }
+    Request request = {
+        .msgId = TERMINATE_ALL,
+        .len = 0,
+        .data = data,
+        .msgValue = 0,
     };
     return SAMGR_SendRequest(identity_, &request, nullptr);
 }
@@ -146,7 +175,7 @@ ElementName *AbilityMsClient::GetTopAbility() const
     return amsProxy_->GetTopAbility();
 }
 
-int32_t AbilityMsClient::ForceStop(char *bundleName) const
+int32_t AbilityMsClient::ForceStop(const char *bundleName) const
 {
     if (identity_ == nullptr) {
         return PARAM_CHECK_ERROR;
@@ -159,17 +188,14 @@ int32_t AbilityMsClient::ForceStop(char *bundleName) const
     if (want->element == nullptr) {
         return MEMORY_MALLOC_ERROR;
     }
+    HILOG_INFO(HILOG_MODULE_APP, "ForceStop with bundleName");
     want->element->deviceId = nullptr;
     want->element->bundleName = Utils::Strdup(bundleName);
     want->element->abilityName = nullptr;
     want->data = nullptr;
     want->dataLength = 0;
     want->appPath = nullptr;
-    const char *forceData = "forcedata";
-    SetWantData(want, forceData, strlen(forceData) + 1);
-    if (want->data != nullptr) {
-        HILOG_INFO(HILOG_MODULE_APP, "force stop with default data");
-    }
+    SetWantData(want, nullptr, 0);
     Request request = {
         .msgId = TERMINATE_APP_BY_BUNDLENAME,
         .len = sizeof(Want),
@@ -197,9 +223,9 @@ int32_t AbilityMsClient::ForceStop(const Want *want) const
     SetWantElement(info, *(want->element));
     SetWantData(info, want->data, want->dataLength);
     if (want->data != nullptr) {
-        HILOG_INFO(HILOG_MODULE_APP, "force stop with data");
+        HILOG_INFO(HILOG_MODULE_APP, "ForceStop with data");
     } else {
-        HILOG_INFO(HILOG_MODULE_APP, "force stop with no data");
+        HILOG_INFO(HILOG_MODULE_APP, "ForceStop with no data");
     }
     Request request = {
         .msgId = TERMINATE_APP_BY_BUNDLENAME,
@@ -207,6 +233,44 @@ int32_t AbilityMsClient::ForceStop(const Want *want) const
         .data = info,
     };
     return SAMGR_SendRequest(identity_, &request, nullptr);
+}
+
+int32_t AbilityMsClient::AddAbilityRecordObserver(AbilityRecordObserver *observer)
+{
+    if (identity_ == nullptr) {
+        return PARAM_CHECK_ERROR;
+    }
+    Request request = {
+        .msgId = ADD_ABILITY_RECORD_OBSERVER,
+        .len = 0,
+        .data = nullptr,
+        .msgValue = reinterpret_cast<uint32>(observer),
+    };
+
+    return SAMGR_SendRequest(identity_, &request, nullptr);
+}
+
+int32_t AbilityMsClient::RemoveAbilityRecordObserver(AbilityRecordObserver *observer)
+{
+    if (identity_ == nullptr) {
+        return PARAM_CHECK_ERROR;
+    }
+    Request request = {
+        .msgId = REMOVE_ABILITY_RECORD_OBSERVER,
+        .len = 0,
+        .data = nullptr,
+        .msgValue = reinterpret_cast<uint32>(observer),
+    };
+
+    return SAMGR_SendRequest(identity_, &request, nullptr);
+}
+
+MissionInfoList *AbilityMsClient::GetMissionInfos(uint32_t maxNum) const
+{
+    if (!Initialize()) {
+        return nullptr;
+    }
+    return static_cast<MissionInfoList *>(amsProxy_->GetMissionInfos(maxNum));
 }
 
 void AbilityMsClient::SetServiceIdentity(const Identity *identity)

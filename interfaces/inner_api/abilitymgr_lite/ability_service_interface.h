@@ -56,6 +56,10 @@ enum AmsCommand {
     TERMINATE_APP = INNER_BEGIN,
     DUMP_ABILITY,
     TERMINATE_APP_BY_BUNDLENAME,
+    ADD_ABILITY_RECORD_OBSERVER,
+    REMOVE_ABILITY_RECORD_OBSERVER,
+    TERMINATE_MISSION,
+    TERMINATE_ALL,
     COMMAND_END,
 };
 
@@ -85,6 +89,7 @@ struct AmsSliteInterface {
     int32_t (*SchedulerLifecycleDone)(uint64_t token, int state);
     int32_t (*ForceStopBundle)(uint64_t token);
     ElementName *(*GetTopAbility)();
+    void *(*GetMissionInfos)(uint32_t maxNum);
 };
 #endif
 #ifdef __cplusplus

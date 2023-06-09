@@ -43,6 +43,17 @@ int32_t AbilityThread::HandleCreate(const Want *want)
     return ERR_OK;
 }
 
+int32_t AbilityThread::HandleRestore(AbilitySavedData *data)
+{
+    if (ability_ == nullptr) {
+        return PARAM_NULL_ERROR;
+    }
+    if (data != nullptr) {
+        ability_->OnRestoreData(data);
+    }
+    return ERR_OK;
+}
+
 int32_t AbilityThread::HandleForeground(const Want *want)
 {
     if (ability_ == nullptr) {
@@ -69,12 +80,32 @@ int32_t AbilityThread::HandleBackground()
     return ERR_OK;
 }
 
+int32_t AbilityThread::HandleSave(AbilitySavedData *data)
+{
+    if (ability_ == nullptr) {
+        return PARAM_NULL_ERROR;
+    }
+    if (data != nullptr) {
+        ability_->OnSaveData(data);
+    }
+    return ERR_OK;
+}
+
 int32_t AbilityThread::HandleDestroy()
 {
     if (ability_ == nullptr) {
         return PARAM_NULL_ERROR;
     }
     ability_->OnDestroy();
+    return ERR_OK;
+}
+
+int32_t AbilityThread::SendScheduleMsgToAbilityThread(SliteAbilityInnerMsg &innerMsg)
+{
+    osStatus_t ret = osMessageQueuePut(GetMessageQueueId(), static_cast<void *>(&innerMsg), 0, 0);
+    if (ret != osOK) {
+        return IPC_REQUEST_ERROR;
+    }
     return ERR_OK;
 }
 } // namespace AbilitySlite

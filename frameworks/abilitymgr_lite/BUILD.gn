@@ -21,8 +21,11 @@ lite_library("abilitymanager") {
 
     sources = [
       "src/slite/ability_manager.cpp",
+      "src/slite/ability_manager_client.cpp",
       "src/slite/ability_manager_inner.cpp",
+      "src/slite/ability_record_state_data.cpp",
       "src/slite/abilityms_slite_client.cpp",
+      "src/slite/mission_info.cpp",
     ]
 
     deps = [ "${hilog_lite_path}/frameworks/featured:hilog_static" ]
