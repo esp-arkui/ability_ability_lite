@@ -27,8 +27,9 @@ struct AbilitySvcInfo {
     char *bundleName;
     char *path;
     void *data;
-    bool isNativeApp;
     uint16_t dataLength;
+    bool isNativeApp;
+    uint32_t mission;
 };
 
 class BMSHelper final {
@@ -39,11 +40,15 @@ public:
         return instance;
     }
 
-    BMSHelper() = default;
+    int32_t RegisterBundleNames(const List<char *> &names);
 
-    ~BMSHelper();
+    int32_t RegisterStartupBundleName(const char *bundleName);
 
-    void RegisterBundleNames(const List<char *> &names);
+    const char *GetStartupBundleName();
+
+    int32_t RegisterTemporaryBundleNames(const List<char *> &names);
+
+    bool IsTemporaryBundleName(const char *bundleName);
 
     void Erase();
 
@@ -54,8 +59,15 @@ public:
     bool IsValidAbility(const AbilityInfo *abilityInfo);
 
     void ClearAbilitySvcInfo(AbilitySvcInfo *abilitySvcInfo);
+
 private:
     List<char *> bundleNames_ {};
+    List<char *> temporaryBundleNames_ {};
+    char *startupBundleName_ = nullptr;
+
+    BMSHelper() = default;
+
+    ~BMSHelper();
 };
 } // namespace AbilitySlite
 } // namespace OHOS

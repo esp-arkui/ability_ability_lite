@@ -20,9 +20,11 @@
 
 #include "ability_list.h"
 #include "ability_record.h"
+#include "ability_record_observer.h"
 #include "adapter.h"
 #include "bms_helper.h"
 #include "js_ability_thread.h"
+#include "mission_info.h"
 #include "nocopyable.h"
 #include "want.h"
 #include "slite_ability.h"
@@ -30,6 +32,15 @@
 
 namespace OHOS {
 namespace AbilitySlite {
+struct AbilityOperation {
+    AbilityOperation() {}
+    ~AbilityOperation() {}
+
+    uint16_t msgId = 0;
+    Want *want = nullptr;
+    uint64_t token = 0;
+};
+
 class AbilityRecordManager : public NoCopyable {
 public:
     typedef void (AbilityRecordManager::*LifecycleFunc)(uint16_t token);
@@ -50,8 +61,10 @@ public:
     int32_t StartAbility(const Want *want);
 
     int32_t TerminateAbility(uint16_t token);
-    
-    int32_t TerminateAbility(uint16_t token, const Want* want);
+
+    int32_t TerminateMission(uint32_t mission);
+
+    int32_t TerminateAll(const char *excludedBundleName);
 
     int32_t ForceStop(const Want *want);
 
@@ -61,14 +74,27 @@ public:
 
     ElementName *GetTopAbility();
 
+    MissionInfoList *GetMissionInfos(uint32_t maxNum) const;
+
     void setNativeAbility(const SliteAbility *ability);
 
     void StartLauncher();
+
+    void SetIsAppScheduling(bool runState);
+
+    bool GetIsAppScheduling();
+
+    int32_t RunOperation();
+
+    int32_t AddAbilityRecordObserver(AbilityRecordObserver *observer);
+    int32_t RemoveAbilityRecordObserver(AbilityRecordObserver *observer);
 
     uint32_t curTask_ = 0;
 
 private:
     static uint16_t GenerateToken();
+
+    uint32_t GenerateMission();
 
     AbilityRecordManager();
 
@@ -78,8 +104,7 @@ private:
 
     int32_t StartRemoteAbility(const Want *want);
 
-    int32_t PreCheckStartAbility(const char *bundleName, const char *path, const void *data, uint16_t dataLength,
-        bool isNative = false);
+    int32_t PreCheckStartAbility(const AbilitySvcInfo &info);
 
     bool CheckResponse(const char *bundleName);
 
@@ -105,9 +130,11 @@ private:
 
     int32_t SendMsgToAbilityThread(int32_t state, const AbilityRecord *record);
 
-    void SetAbilityState(uint64_t token, int32_t state);
+    void SetAbilityStateAndNotify(uint64_t token, int32_t state);
 
     void UpdateRecord(AbilitySvcInfo *info);
+
+    int32_t TerminateAbility(uint16_t token, const Want* want);
 
     int32_t ForceStopBundleInner(uint16_t token);
 
@@ -117,10 +144,17 @@ private:
 
     bool NeedToBeTerminated(const char *bundleName);
 
+    Want *CopyWant(const Want *want);
+
+    int32_t AddAbilityOperation(uint16_t msgId, const Want *want, uint64_t token);
+
     uint16_t pendingToken_ { 0 };
 #ifndef _MINI_MULTI_TASKS_
     AbilityRecord *pendingRecord = nullptr;
 #endif
+    List<AbilityOperation *> abilityOperation_ {};
+    bool isAppScheduling_ = false;
+
     AbilityList abilityList_ {};
     SliteAbility *nativeAbility_ = nullptr;
 };

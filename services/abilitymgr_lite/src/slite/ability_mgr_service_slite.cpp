@@ -16,6 +16,7 @@
 #include "ability_mgr_service_slite.h"
 
 #include "ability_errors.h"
+#include "ability_record_observer.h"
 #include "ability_service_interface.h"
 #include "ability_thread_loader.h"
 #include "abilityms_slite_client.h"
@@ -27,6 +28,7 @@
 #include "samgr_lite.h"
 #include "slite_ability_loader.h"
 #include "slite_ace_ability.h"
+#include "utils.h"
 #include "want.h"
 
 namespace OHOS {
@@ -43,6 +45,7 @@ AbilityMgrServiceSliteImpl g_amsSliteImpl = {
     .SchedulerLifecycleDone = AbilityMgrServiceSlite::SchedulerLifecycleDone,
     .ForceStopBundle = AbilityMgrServiceSlite::ForceStopBundle,
     .GetTopAbility = AbilityMgrServiceSlite::GetTopAbility,
+    .GetMissionInfos = AbilityMgrServiceSlite::GetMissionInfos,
     DEFAULT_IUNKNOWN_ENTRY_END
 };
 
@@ -160,12 +163,10 @@ BOOL AbilityMgrServiceSlite::ServiceMessageHandle(Service *service, Request *req
         AdapterFree(request->data);
         request->data = nullptr;
         request->len = 0;
-    } else if (request->msgId == ABILITY_TRANSACTION_DONE) {
-        uint32_t token = request->msgValue & TRANSACTION_MSG_TOKEN_MASK;
-        uint32_t state = (request->msgValue >> TRANSACTION_MSG_STATE_OFFSET) & TRANSACTION_MSG_STATE_MASK;
-        ret = AbilityRecordManager::GetInstance().SchedulerLifecycleDone(token, state);
     } else if (request->msgId == TERMINATE_ABILITY) {
         ret = AbilityRecordManager::GetInstance().TerminateAbility(request->msgValue);
+    } else if (request->msgId == TERMINATE_MISSION) {
+        ret = AbilityRecordManager::GetInstance().TerminateMission(request->msgValue);
     } else if (request->msgId == TERMINATE_APP) {
         ret = AbilityRecordManager::GetInstance().ForceStopBundle(request->msgValue);
     } else if (request->msgId == TERMINATE_APP_BY_BUNDLENAME) {
@@ -178,6 +179,26 @@ BOOL AbilityMgrServiceSlite::ServiceMessageHandle(Service *service, Request *req
         AdapterFree(request->data);
         request->data = nullptr;
         request->len = 0;
+    } else if (request->msgId == TERMINATE_ALL) {
+        char *excludedBundleName = reinterpret_cast<char *>(request->data);
+        ret = AbilityRecordManager::GetInstance().TerminateAll(excludedBundleName);
+        AdapterFree(request->data);
+        request->data = nullptr;
+        request->len = 0;
+    } else if (request->msgId == ABILITY_TRANSACTION_DONE) {
+        uint32_t token = request->msgValue & TRANSACTION_MSG_TOKEN_MASK;
+        uint32_t state = (request->msgValue >> TRANSACTION_MSG_STATE_OFFSET) & TRANSACTION_MSG_STATE_MASK;
+        return AbilityRecordManager::GetInstance().SchedulerLifecycleDone(token, state) == ERR_OK;
+    } else if (request->msgId == ADD_ABILITY_RECORD_OBSERVER) {
+        AbilityRecordObserver *observer = reinterpret_cast<AbilityRecordObserver *>(request->msgValue);
+        return AbilityRecordManager::GetInstance().AddAbilityRecordObserver(observer) == ERR_OK;
+    } else if (request->msgId == REMOVE_ABILITY_RECORD_OBSERVER) {
+        AbilityRecordObserver *observer = reinterpret_cast<AbilityRecordObserver *>(request->msgValue);
+        return AbilityRecordManager::GetInstance().RemoveAbilityRecordObserver(observer) == ERR_OK;
+    }
+    if ((ret != ERR_OK) || (!AbilityRecordManager::GetInstance().GetIsAppScheduling())) {
+        AbilityRecordManager::GetInstance().SetIsAppScheduling(false);
+        return AbilityRecordManager::GetInstance().RunOperation() == ERR_OK;
     }
     return ret == ERR_OK;
 }
@@ -216,6 +237,11 @@ int32_t AbilityMgrServiceSlite::ForceStopBundle(uint64_t token)
 ElementName *AbilityMgrServiceSlite::GetTopAbility()
 {
     return AbilityRecordManager::GetInstance().GetTopAbility();
+}
+
+void *AbilityMgrServiceSlite::GetMissionInfos(uint32_t maxNum)
+{
+    return static_cast<void *>(AbilityRecordManager::GetInstance().GetMissionInfos(maxNum));
 }
 
 static AbilityThread *CreateJsAbilityThread()

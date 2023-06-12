@@ -17,31 +17,13 @@
 #define OHOS_ABILITY_SLITE_ABILITY_RECORD_H
 
 #include "ability_info.h"
+#include "ability_saved_data.h"
 #include "cmsis_os.h"
 #include "ability_thread.h"
+#include "ability_record_state.h"
 
 namespace OHOS {
 namespace AbilitySlite {
-class JsAppHost;
-
-constexpr int FAIL_CALLBACK_ERRORCODE = 200;
-
-/* States-feedback from launcher to AMS */
-typedef enum {
-    SCHEDULE_INITED,
-    SCHEDULE_FOREGROUND,
-    SCHEDULE_BACKGROUND,
-    SCHEDULE_STOP
-} AbilityState;
-
-typedef enum {
-    STATE_JS_RUNNING,
-    STATE_NATIVE_RUNNING,
-    STATE_JS_JUMP_NATIVE,
-    STATE_NATIVE_JUMP_JS,
-    STATE_JS_JUMP_JS,
-} AppState;
-
 struct AbilityData {
     AbilityData();
 
@@ -66,10 +48,12 @@ public:
     char *appName = nullptr;
     char *appPath = nullptr;
     AbilityData *abilityData = nullptr;
+    AbilitySavedData *abilitySavedData = nullptr;
     AbilityThread *abilityThread = nullptr;
     osMessageQueueId_t jsAppQueueId = nullptr;
     uint32_t taskId = 0;
     uint16_t token = 0;
+    uint32_t mission = 0;
     uint8_t state = SCHEDULE_STOP;
     bool isTerminated = false;
     bool isNativeApp = false;

@@ -22,13 +22,20 @@
 using namespace OHOS::ACELite;
 
 namespace OHOS::AbilitySlite {
+namespace {
+constexpr uint16_t BUNDLE_LIST_CAPACITY = 256;
+const char* DEFAULT_STARTUP_BUNDLE_NAME = "com.ohos.launcher";
+}
 BMSHelper::~BMSHelper()
 {
     Erase();
 }
 
-void BMSHelper::RegisterBundleNames(const List<char *> &names)
+int32_t BMSHelper::RegisterBundleNames(const List<char *> &names)
 {
+    if (names.Size() + bundleNames_.Size() > BUNDLE_LIST_CAPACITY) {
+        return PARAM_CHECK_ERROR;
+    }
     for (auto node = names.Begin(); node != names.End(); node = node->next_) {
         char *bundleName = node->value_;
         if (bundleName != nullptr) {
@@ -36,6 +43,54 @@ void BMSHelper::RegisterBundleNames(const List<char *> &names)
             bundleNames_.PushBack(name);
         }
     }
+    return ERR_OK;
+}
+
+int32_t BMSHelper::RegisterStartupBundleName(const char *bundleName)
+{
+    if (bundleName == nullptr) {
+        return PARAM_NULL_ERROR;
+    }
+    AdapterFree(startupBundleName_);
+    startupBundleName_ = Utils::Strdup(bundleName);
+    return ERR_OK;
+}
+
+const char *BMSHelper::GetStartupBundleName()
+{
+    if (startupBundleName_ == nullptr) {
+        return DEFAULT_STARTUP_BUNDLE_NAME;
+    }
+    return startupBundleName_;
+}
+
+int32_t BMSHelper::RegisterTemporaryBundleNames(const List<char *> &names)
+{
+    if (names.Size() + temporaryBundleNames_.Size() > BUNDLE_LIST_CAPACITY) {
+        return PARAM_CHECK_ERROR;
+    }
+    for (auto node = names.Begin(); node != names.End(); node = node->next_) {
+        char *bundleName = node->value_;
+        if (bundleName != nullptr) {
+            char *name = Utils::Strdup(bundleName);
+            temporaryBundleNames_.PushBack(name);
+        }
+    }
+    return ERR_OK;
+}
+
+bool BMSHelper::IsTemporaryBundleName(const char *bundleName)
+{
+    if (bundleName == nullptr) {
+        return false;
+    }
+    for (auto node = temporaryBundleNames_.Begin(); node != temporaryBundleNames_.End(); node = node->next_) {
+        char *temporaryBundleName = node->value_;
+        if (temporaryBundleName != nullptr && strcmp(bundleName, temporaryBundleName) == 0) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void BMSHelper::Erase()
@@ -44,6 +99,12 @@ void BMSHelper::Erase()
         char *name = bundleNames_.Front();
         AdapterFree(name);
         bundleNames_.PopFront();
+    }
+    AdapterFree(startupBundleName_);
+    while (temporaryBundleNames_.Front() != nullptr) {
+        char *name = temporaryBundleNames_.Front();
+        AdapterFree(name);
+        temporaryBundleNames_.PopFront();
     }
 }
 

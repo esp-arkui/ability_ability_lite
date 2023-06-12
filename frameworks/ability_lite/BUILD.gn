@@ -37,6 +37,7 @@ lite_library("ability") {
     target_type = "static_library"
 
     sources = [
+      "src/slite/ability_saved_data.cpp",
       "src/slite/lite_context.cpp",
       "src/slite/slite_ability.cpp",
     ]

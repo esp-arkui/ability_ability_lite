@@ -17,6 +17,7 @@
 #define OHOS_ABILITY_SLITE_ABILITY_INNER_MESSAGE_H
 
 #include <cstdint>
+#include "ability_saved_data.h"
 #include "want.h"
 
 namespace OHOS {
@@ -36,12 +37,13 @@ enum SliteAbilityMsgId {
 class AbilityThread;
 
 struct SliteAbilityInnerMsg {
-    SliteAbilityMsgId msgId = UNKNOWN;
     AbilityThread *abilityThread = nullptr;
     Want *want = nullptr;
-    uint16_t token = 0;
     void *data = nullptr;
+    AbilitySavedData *abilitySavedData = nullptr;
     uint16_t dataLength = 0;
+    uint16_t token = 0;
+    SliteAbilityMsgId msgId = UNKNOWN;
 };
 } // namespace AbilitySlite
 } // namespace OHOS

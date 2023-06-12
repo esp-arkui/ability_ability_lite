@@ -17,15 +17,19 @@
 #define OHOS_ABILITY_SLITE_ABILITY_LIST_H
 
 #include "ability_record.h"
+#include "cmsis_os2.h"
+#include "mission_info.h"
 #include "utils_list.h"
 
 namespace OHOS {
 namespace AbilitySlite {
+constexpr char HOME_BUNDLE_NAME[] = "main";
+
 class AbilityList {
 public:
-    AbilityList() = default;
+    AbilityList();
 
-    ~AbilityList() = default;
+    ~AbilityList();
 
     void Add(AbilityRecord *abilityRecord);
 
@@ -45,8 +49,15 @@ public:
 
     AbilityRecord *GetTopAbility() const;
 
+    MissionInfoList *GetMissionInfos(uint32_t maxNum) const;
+
+    const List<AbilityRecord *> GetAbilityList(uint32_t mission);
+
+    void PopBottomAbility();
+
 private:
     List<AbilityRecord *> abilityList_ {};
+    mutable osMutexId_t abilityListMutex_;
 };
 } // AbilitySlite
 } // namespace OHOS

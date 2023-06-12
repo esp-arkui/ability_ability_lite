@@ -36,6 +36,14 @@ void SliteAbility::OnCreate(const Want &want)
     (void)AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, SLITE_STATE_INITIAL);
 }
 
+void SliteAbility::OnRestoreData(AbilitySavedData *data)
+{
+    if (data == nullptr) {
+        return;
+    }
+    data->Reset();
+}
+
 void SliteAbility::OnForeground(const Want &want)
 {
     abilityState_ = SLITE_STATE_FOREGROUND;
@@ -48,6 +56,10 @@ void SliteAbility::OnBackground()
     (void)AbilityMsClient::GetInstance().SchedulerLifecycleDone(token_, SLITE_STATE_BACKGROUND);
 }
 
+void SliteAbility::OnSaveData(AbilitySavedData *data)
+{
+}
+
 void SliteAbility::OnDestroy()
 {
     abilityState_ = SLITE_STATE_UNINITIALIZED;
@@ -58,7 +70,7 @@ void SliteAbility::HandleExtraMessage(const SliteAbilityInnerMsg &innerMsg)
 {
 }
 
-int SliteAbility::GetState() const
+int32_t SliteAbility::GetState() const
 {
     return abilityState_;
 }
