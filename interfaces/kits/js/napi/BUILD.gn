@@ -39,6 +39,6 @@ ohos_shared_library("aafwk") {
 
   relative_install_dir = "module"
 
-  subsystem_name = "aafwk"
+  subsystem_name = "ability"
   part_name = "aafwk_native"
 }
