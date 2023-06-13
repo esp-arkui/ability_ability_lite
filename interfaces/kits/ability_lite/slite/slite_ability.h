@@ -17,6 +17,7 @@
 #define OHOS_SLITE_ABILITY_H
 
 #include "ability_inner_message.h"
+#include "ability_saved_data.h"
 #include "lite_context.h"
 #include "want.h"
 
@@ -50,6 +51,13 @@ public:
     virtual void OnCreate(const Want &want);
 
     /**
+     * @brief Called when the user data need to be restored.
+     *
+     * You can override this function to implement your own processing logic.
+     */
+    virtual void OnRestoreData(AbilitySavedData *data);
+
+    /**
      * @brief Called when this ability enters the <b>SLITE_STATE_FOREGROUND</b> state.
      *
      * The ability in the <b>SLITE_STATE_FOREGROUND</b> state is visible and has focus.
@@ -69,6 +77,13 @@ public:
     virtual void OnBackground();
 
     /**
+     * @brief Called when the user data need to be saved.
+     *
+     * You can override this function to implement your own processing logic.
+     */
+    virtual void OnSaveData(AbilitySavedData *data);
+
+    /**
      * @brief Called when this ability enters the <b>SLITE_STATE_UNINITIALIZED</b> state.
      *
      * The ability in the <b>SLITE_STATE_UNINITIALIZED</b> is being destroyed.
@@ -78,12 +93,12 @@ public:
 
     virtual void HandleExtraMessage(const SliteAbilityInnerMsg &innerMsg);
 
-    int GetState() const;
+    int32_t GetState() const;
 
     char *bundleName_ = nullptr;
 
 private:
-    int abilityState_ = 0;
+    int32_t abilityState_ = 0;
 };
 } // namespace AbilitySlite
 using AbilitySlite::SliteAbility;

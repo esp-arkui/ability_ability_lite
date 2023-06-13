@@ -38,6 +38,8 @@ public:
 
     static ElementName *GetTopAbility();
 
+    static void *GetMissionInfos(uint32_t maxNum);
+
 private:
     AbilityMgrServiceSlite();
 

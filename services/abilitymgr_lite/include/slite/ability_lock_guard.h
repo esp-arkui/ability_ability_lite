@@ -13,35 +13,30 @@
  * limitations under the License.
  */
 
-#ifndef ABILITYLITE_NATIVE_ABILITY_THREAD_H
-#define ABILITYLITE_NATIVE_ABILITY_THREAD_H
+#ifndef OHOS_ABILITY_SLITE_ABILITY_LOCK_GUARD_H
+#define OHOS_ABILITY_SLITE_ABILITY_LOCK_GUARD_H
 
-#include "ability_thread.h"
+#include "cmsis_os2.h"
 
 namespace OHOS {
 namespace AbilitySlite {
-class NativeAbilityThread : public AbilityThread {
+class AbilityLockGuard {
 public:
-    NativeAbilityThread();
+    explicit AbilityLockGuard(osMutexId_t& mutex): mutex_(mutex)
+    {
+        osMutexAcquire(mutex_, 0);
+    }
 
-    ~NativeAbilityThread() override;
+    ~AbilityLockGuard()
+    {
+        osMutexRelease(mutex_);
+    }
 
-    int32_t InitAbilityThread(const AbilityRecord *abilityRecord) override;
-
-    int32_t ReleaseAbilityThread() override;
-
-    osMessageQueueId_t GetMessageQueueId() const override;
-
-    UINT32 GetAppTaskId() const override;
-
-    static void Reset();
-
-    static void NativeAppTaskHandler(UINT32 uwArg);
+    AbilityLockGuard(const AbilityLockGuard&) = delete;
+    AbilityLockGuard& operator=(const AbilityLockGuard&) = delete;
 private:
-    static osMessageQueueId_t nativeQueueId_;
-    static UINT32 nativeTaskId_;
+    osMutexId_t& mutex_;
 };
-}
-}
-
-#endif //ABILITYLITE_NATIVE_ABILITY_THREAD_H
+} // AbilitySlite
+} // namespace OHOS
+#endif // OHOS_ABILITY_SLITE_ABILITY_LOCK_GUARD_H

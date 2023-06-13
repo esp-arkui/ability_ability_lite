@@ -143,6 +143,7 @@ void JsAbilityThread::AppTaskHandler(UINT32 uwArg)
             case SliteAbilityMsgId::CREATE:
                 defaultAbilityThread = abilityThread;
                 abilityThread->HandleCreate(innerMsg.want);
+                abilityThread->HandleRestore(innerMsg.abilitySavedData);
                 ClearWant(innerMsg.want);
                 AdapterFree(innerMsg.want);
                 innerMsg.want = nullptr;
@@ -157,6 +158,7 @@ void JsAbilityThread::AppTaskHandler(UINT32 uwArg)
                 abilityThread->HandleBackground();
                 break;
             case SliteAbilityMsgId::DESTROY:
+                abilityThread->HandleSave(innerMsg.abilitySavedData);
                 abilityThread->HandleDestroy();
                 LP_TaskEnd();
                 return; // here exit the loop, and abort all messages afterwards
