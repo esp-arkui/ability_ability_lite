@@ -46,14 +46,18 @@ void AbilityRecordObserverManager::RemoveObserver(AbilityRecordObserver *observe
 void AbilityRecordObserverManager::NotifyAbilityRecordStateChanged(const AbilityRecordStateData &data)
 {
     for (auto it = observers_.Begin(); it != observers_.End(); it = it->next_) {
-        it->value_->OnAbilityRecordStateChanged(data);
+        if (it->value_ != nullptr) {
+            it->value_->OnAbilityRecordStateChanged(data);
+        }
     }
 }
 
 void AbilityRecordObserverManager::NotifyAbilityRecordCleanup(char *appName)
 {
     for (auto it = observers_.Begin(); it != observers_.End(); it = it->next_) {
-        it->value_->OnAbilityRecordCleanup(appName);
+        if (it->value_ != nullptr) {
+            it->value_->OnAbilityRecordCleanup(appName);
+        }
     }
 }
 } // namespace AbilitySlite

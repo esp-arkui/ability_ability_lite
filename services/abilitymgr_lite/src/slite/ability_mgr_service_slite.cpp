@@ -17,6 +17,7 @@
 
 #include "ability_errors.h"
 #include "ability_record_observer.h"
+#include "ability_record_observer_manager.h"
 #include "ability_service_interface.h"
 #include "ability_thread_loader.h"
 #include "abilityms_slite_client.h"
@@ -141,6 +142,7 @@ BOOL AbilityMgrServiceSlite::ServiceInitialize(Service *service, Identity identi
     abilityMgrService->serviceIdentity_ = identity;
     InitAbilityThreadLoad();
     InitAbilityLoad();
+    AbilityRecordObserverManager::GetInstance();
     AbilityMsClient::GetInstance().SetServiceIdentity(&abilityMgrService->serviceIdentity_);
     return TRUE;
 }
