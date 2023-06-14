@@ -40,6 +40,7 @@ public:
 private:
     static osMessageQueueId_t nativeQueueId_;
     static UINT32 nativeTaskId_;
+    static SliteAbility *nativeAbility_;
 };
 }
 }

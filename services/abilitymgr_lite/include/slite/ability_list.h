@@ -23,7 +23,7 @@
 
 namespace OHOS {
 namespace AbilitySlite {
-constexpr char HOME_BUNDLE_NAME[] = "main";
+constexpr char MAIN_BUNDLE_NAME[] = "main";
 
 class AbilityList {
 public:

@@ -191,7 +191,7 @@ void AbilityList::PopBottomAbility()
         abilityList_.PopBack();
         return;
     }
-    if (lastRecord->appName == nullptr || strcmp(lastRecord->appName, HOME_BUNDLE_NAME) != 0) {
+    if (lastRecord->appName == nullptr || strcmp(lastRecord->appName, MAIN_BUNDLE_NAME) != 0) {
         abilityList_.PopBack();
         delete lastRecord;
         return;
