@@ -179,11 +179,13 @@ int32_t AbilityRecordManager::StartAbility(const Want *want)
     }
     isAppScheduling_ = true;
     if (want == nullptr || want->element == nullptr) {
+        isAppScheduling_ = false;
         HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability Service wanted element is null");
         return PARAM_NULL_ERROR;
     }
     char *bundleName = want->element->bundleName;
     if (bundleName == nullptr) {
+        isAppScheduling_ = false;
         HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability Service wanted bundleName is null");
         return PARAM_NULL_ERROR;
     }
@@ -191,6 +193,7 @@ int32_t AbilityRecordManager::StartAbility(const Want *want)
 #ifdef OHOS_DMS_ENABLED
     if (want->element->deviceId != nullptr && *(want->element->deviceId) != '\0') {
         // deviceId is set
+        isAppScheduling_ = false;
         return StartRemoteAbility(want);
     }
 #endif
@@ -222,11 +225,13 @@ int32_t AbilityRecordManager::StartAbility(const Want *want)
 
     auto *info = static_cast<AbilitySvcInfo *>(AdapterMalloc(sizeof(AbilitySvcInfo)));
     if (info == nullptr) {
+        isAppScheduling_ = false;
         HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability Service AbilitySvcInfo is null");
         return PARAM_NULL_ERROR;
     }
     uint8_t queryRet = BMSHelper::GetInstance().QueryAbilitySvcInfo(want, info);
     if (queryRet != ERR_OK) {
+        isAppScheduling_ = false;
         HILOG_ERROR(HILOG_MODULE_AAFWK, "Ability BMS Helper return abilitySvcInfo failed");
         AdapterFree(info);
         return PARAM_CHECK_ERROR;
@@ -260,6 +265,7 @@ void AbilityRecordManager::UpdateRecord(AbilitySvcInfo *info)
 int32_t AbilityRecordManager::StartAbility(AbilitySvcInfo *info)
 {
     if ((info == nullptr) || (info->bundleName == nullptr) || (strlen(info->bundleName) == 0)) {
+        isAppScheduling_ = false;
         return PARAM_NULL_ERROR;
     }
     HILOG_INFO(HILOG_MODULE_AAFWK, "StartAbility");
@@ -267,6 +273,7 @@ int32_t AbilityRecordManager::StartAbility(AbilitySvcInfo *info)
     auto topRecord = abilityList_.GetTopAbility();
 #ifndef _MINI_MULTI_TASKS_
     if ((topRecord == nullptr) || (topRecord->appName == nullptr)) {
+        isAppScheduling_ = false;
         HILOG_ERROR(HILOG_MODULE_AAFWK, "StartAbility top null.");
         return PARAM_NULL_ERROR;
     }
@@ -284,6 +291,7 @@ int32_t AbilityRecordManager::StartAbility(AbilitySvcInfo *info)
     }
 
     if ((info->isNativeApp == false) && !CheckResponse(info->bundleName)) {
+        isAppScheduling_ = false;
         return PARAM_CHECK_ERROR;
     }
 
@@ -380,6 +388,7 @@ int32_t AbilityRecordManager::TerminateAbility(uint16_t token, const Want* want)
     HILOG_INFO(HILOG_MODULE_AAFWK, "TerminateAbility [%{public}u]", token);
     AbilityRecord *topRecord = const_cast<AbilityRecord *>(abilityList_.GetTopAbility());
     if (topRecord == nullptr) {
+        isAppScheduling_ = false;
         APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_STOP_NO_ABILITY_RUNNING);
         return PARAM_NULL_ERROR;
     }
@@ -387,6 +396,7 @@ int32_t AbilityRecordManager::TerminateAbility(uint16_t token, const Want* want)
 #ifndef _MINI_MULTI_TASKS_
     if (token == LAUNCHER_TOKEN) {
         // if js is in background, the launcher goes back to background and js goes to active
+        isAppScheduling_ = false;
         if (topToken != token && topRecord->state == SCHEDULE_BACKGROUND) {
             HILOG_INFO(HILOG_MODULE_AAFWK, "Resume Js app [%{public}u]", topToken);
             return SchedulerLifecycle(LAUNCHER_TOKEN, SLITE_STATE_BACKGROUND);
@@ -395,6 +405,7 @@ int32_t AbilityRecordManager::TerminateAbility(uint16_t token, const Want* want)
     }
 
     if (token != topToken) {
+        isAppScheduling_ = false;
         APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_STOP_UNKNOWN_ABILITY_TOKEN);
         DeleteRecordInfo(token);
         return -1;
@@ -412,6 +423,7 @@ int32_t AbilityRecordManager::TerminateAbility(uint16_t token, const Want* want)
     if (token != topToken) {
         AbilityRecord* abilityRecord = abilityList_.Get(token);
         if ((abilityRecord == nullptr) || (abilityRecord->token == LAUNCHER_TOKEN)) {
+            isAppScheduling_ = false;
             return PARAM_CHECK_ERROR;
         }
         APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_STOP_UNKNOWN_ABILITY_TOKEN);
@@ -423,6 +435,7 @@ int32_t AbilityRecordManager::TerminateAbility(uint16_t token, const Want* want)
     abilityList_.PopAbility();
     AbilityRecord *newTopRecord = const_cast<AbilityRecord *>(abilityList_.GetTopAbility());
     if (newTopRecord == nullptr) {
+        isAppScheduling_ = false;
         APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_STOP_NO_ABILITY_RUNNING);
         return PARAM_NULL_ERROR;
     }
@@ -505,13 +518,13 @@ int32_t AbilityRecordManager::TerminateAll(const char *excludedBundleName)
         return AddAbilityOperation(TERMINATE_ALL, &want, 0);
     }
     isAppScheduling_ = true;
-    AbilityRecord *homeRecord = abilityList_.Get(HOME_BUNDLE_NAME);
+    AbilityRecord *homeRecord = abilityList_.Get(MAIN_BUNDLE_NAME);
     if (homeRecord == nullptr) {
         return PARAM_CHECK_ERROR;
     }
     AbilityRecord *topRecord = abilityList_.GetTopAbility();
     abilityList_.PopAbility();
-    if (excludedBundleName == nullptr || strcmp(excludedBundleName, HOME_BUNDLE_NAME) == 0
+    if (excludedBundleName == nullptr || strcmp(excludedBundleName, MAIN_BUNDLE_NAME) == 0
         || strcmp(excludedBundleName, topRecord->appName) == 0) {
         excludedBundleName = nullptr;
     }
@@ -523,7 +536,7 @@ int32_t AbilityRecordManager::TerminateAll(const char *excludedBundleName)
         if (record == nullptr) {
             continue;
         }
-        if (strcmp(record->appName, HOME_BUNDLE_NAME) == 0) {
+        if (strcmp(record->appName, MAIN_BUNDLE_NAME) == 0) {
             continue;
         }
         if (excludedBundleName != nullptr && strcmp(record->appName, excludedBundleName) == 0) {
@@ -552,6 +565,7 @@ int32_t AbilityRecordManager::ForceStop(const Want *want)
     if (want == nullptr
         || want->element == nullptr
         || want->element->bundleName == nullptr) {
+        isAppScheduling_ = false;
         return PARAM_NULL_ERROR;
     }
 
@@ -564,6 +578,7 @@ int32_t AbilityRecordManager::ForceStop(const Want *want)
     // stop app
     AbilityRecord *terminateRecord = abilityList_.Get(want->element->bundleName);
     if (terminateRecord == nullptr) {
+        isAppScheduling_ = false;
         HILOG_ERROR(HILOG_MODULE_AAFWK, "ForceStop, The specified ability is not found.");
         return PARAM_CHECK_ERROR;
     }

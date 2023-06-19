@@ -34,6 +34,7 @@ constexpr int32_t QUEUE_LENGTH = 32;
 
 osMessageQueueId_t NativeAbilityThread::nativeQueueId_ = nullptr;
 UINT32 NativeAbilityThread::nativeTaskId_ = UINT32_MAX;
+SliteAbility *NativeAbilityThread::nativeAbility_ = nullptr;
 
 NativeAbilityThread::NativeAbilityThread() = default;
 
@@ -42,8 +43,15 @@ NativeAbilityThread::~NativeAbilityThread()
     if (ability_ == nullptr) {
         return;
     }
+#ifdef _MINI_MULTI_TASKS_
     delete ability_;
     ability_ = nullptr;
+#else
+    if ((ability_->bundleName_ == nullptr) || (strcmp(ability_->bundleName_, LAUNCHER_BUNDLE_NAME) != 0)) {
+        delete ability_;
+        ability_ = nullptr;
+    }
+#endif
 }
 
 int32_t NativeAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecord)
@@ -89,8 +97,21 @@ int32_t NativeAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecor
     }
 
     state_ = AbilityThreadState::ABILITY_THREAD_INITIALIZED;
+#ifdef _MINI_MULTI_TASKS_
     ability_ = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::NATIVE_ABILITY,
         abilityRecord->appName);
+#else
+    if (strcmp(abilityRecord->appName, LAUNCHER_BUNDLE_NAME) == 0) {
+        if (nativeAbility_ == nullptr) {
+            nativeAbility_ = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::NATIVE_ABILITY,
+                abilityRecord->appName);
+        }
+        ability_ = nativeAbility_;
+    } else {
+        ability_ = SliteAbilityLoader::GetInstance().CreateAbility(SliteAbilityType::NATIVE_ABILITY,
+            abilityRecord->appName);
+    }
+#endif
     if (ability_ == nullptr) {
         HILOG_INFO(HILOG_MODULE_AAFWK, "NativeAbility create fail");
         LOS_TaskUnlock();
@@ -128,6 +149,7 @@ void NativeAbilityThread::Reset()
     }
     nativeQueueId_ = nullptr;
     nativeTaskId_ = 0;
+    nativeAbility_ = nullptr;
 }
 
 void NativeAbilityThread::NativeAppTaskHandler(UINT32 uwArg)
