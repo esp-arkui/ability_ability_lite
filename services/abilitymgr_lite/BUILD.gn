@@ -16,11 +16,6 @@ import("//foundation/ability/ability_lite/ability_lite.gni")
 import(
     "//foundation/bundlemanager/bundle_framework_lite/bundle_framework_lite.gni")
 
-declare_args() {
-  enable_ohos_aafwk_multi_tasks_feature = false
-  config_ohos_aafwk_ability_list_capacity = 16
-}
-
 lite_library("abilityms") {
   if (ohos_kernel_type == "liteos_m") {
     target_type = "static_library"
