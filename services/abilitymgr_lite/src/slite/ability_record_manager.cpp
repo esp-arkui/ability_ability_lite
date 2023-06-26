@@ -474,6 +474,8 @@ int32_t AbilityRecordManager::ForceStopBundle(uint16_t token)
         return AddAbilityOperation(TERMINATE_APP, nullptr, token);
     }
     isAppScheduling_ = true;
+
+#ifndef _MINI_MULTI_TASKS_
     if (token == LAUNCHER_TOKEN) {
         HILOG_INFO(HILOG_MODULE_AAFWK, "Launcher does not support force stop.");
         isAppScheduling_ = false;
@@ -490,14 +492,18 @@ int32_t AbilityRecordManager::ForceStopBundle(uint16_t token)
     if (launcherRecord == nullptr) {
         return PARAM_NULL_ERROR;
     }
-#ifndef _MINI_MULTI_TASKS_
     if (launcherRecord->state != SCHEDULE_FOREGROUND) {
         return SchedulerLifecycle(LAUNCHER_TOKEN, SLITE_STATE_FOREGROUND);
     }
 #else
-    if (launcherRecord->state == SCHEDULE_STOP) {
-        return StartAbility(launcherRecord);
+    AbilityRecord* topRecord = abilityList_.GetTopAbility();
+    if (topRecord->token != token) {
+        return TerminateAbility(token, nullptr);
     }
+
+    HILOG_INFO(HILOG_MODULE_AAFWK, "force stop top ability.");
+    topRecord->isTerminated = true;
+    OnDestroyDone(token);
 #endif
     return ERR_OK;
 }
