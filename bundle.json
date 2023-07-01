@@ -27,7 +27,6 @@
                 "ui_lite",
                 "surface_lite",
                 "hilog",
-                "permission",
                 "samgr_lite",
                 "window_manager_lite"
             ],
