@@ -372,15 +372,33 @@ int32_t AbilityRecordManager::TerminateMission(uint32_t mission)
         return PARAM_NULL_ERROR;
     }
 
-    const List<AbilityRecord *> &list = abilityList_.GetAbilityList(mission);
+    List<uint32_t> list;
+    abilityList_.GetAbilityList(mission, list);
     for (auto node = list.Begin(); node != list.End(); node = node->next_) {
-        AbilityRecord *record = node->value_;
-        if ((record != nullptr) && (record->token != topRecord->token)) {
-            TerminateAbility(record->token);
+        uint16_t token = static_cast<uint32_t>(node->value_);
+        if (token != topRecord->token) {
+            TerminateAbility(token);
         }
     }
 
     return ERR_OK;
+}
+
+bool IsPermanentAbility(const AbilityRecord &abilityRecord)
+{
+    if (abilityRecord.appName == nullptr) {
+        return false;
+    }
+
+    if (abilityRecord.token == LAUNCHER_TOKEN) {
+        return true;
+    }
+
+    if (strcmp(abilityRecord.appName, MAIN_BUNDLE_NAME) == 0) {
+        return true;
+    }
+
+    return false;
 }
 
 int32_t AbilityRecordManager::TerminateAbility(uint16_t token, const Want* want)
@@ -422,7 +440,7 @@ int32_t AbilityRecordManager::TerminateAbility(uint16_t token, const Want* want)
     // 2. terminate non-top ability
     if (token != topToken) {
         AbilityRecord* abilityRecord = abilityList_.Get(token);
-        if ((abilityRecord == nullptr) || (abilityRecord->token == LAUNCHER_TOKEN)) {
+        if ((abilityRecord == nullptr) || (IsPermanentAbility(*abilityRecord))) {
             isAppScheduling_ = false;
             return PARAM_CHECK_ERROR;
         }
@@ -440,7 +458,7 @@ int32_t AbilityRecordManager::TerminateAbility(uint16_t token, const Want* want)
         return PARAM_NULL_ERROR;
     }
 
-    if (token != LAUNCHER_TOKEN) {
+    if (!IsPermanentAbility(*topRecord)) {
         topRecord->isTerminated = true;
         abilityList_.Add(topRecord);
     } else {
@@ -719,6 +737,7 @@ int32_t AbilityRecordManager::CreateAppTask(AbilityRecord *record)
     record->taskId = record->abilityThread->GetAppTaskId();
     record->jsAppQueueId = record->abilityThread->GetMessageQueueId();
     record->state = SCHEDULE_STOP;
+
 #ifndef _MINI_MULTI_TASKS_
     APP_EVENT(MT_ACE_APP_START);
     abilityList_.Add(record);
@@ -744,6 +763,7 @@ uint16_t AbilityRecordManager::GenerateToken()
     if (token == UINT16_MAX - 1) {
         token = LAUNCHER_TOKEN;
     }
+
 #ifndef _MINI_MULTI_TASKS_
     return ++token;
 #else
@@ -842,6 +862,7 @@ void AbilityRecordManager::OnBackgroundDone(uint16_t token)
 {
     HILOG_INFO(HILOG_MODULE_AAFWK, "OnBackgroundDone [%{public}u]", token);
     SetAbilityStateAndNotify(token, SCHEDULE_BACKGROUND);
+
 #ifndef _MINI_MULTI_TASKS_
     const AbilityRecord *topRecord = abilityList_.GetTopAbility();
     if (topRecord == nullptr) {
@@ -960,6 +981,7 @@ void AbilityRecordManager::OnDestroyDone(uint16_t token)
                 HILOG_ERROR(HILOG_MODULE_AAFWK, "record stack is empty");
                 return;
             }
+            isAppScheduling_ = false;
             StartAbility(topRecord);
         }
         pendingToken_ = 0;
@@ -969,6 +991,7 @@ void AbilityRecordManager::OnDestroyDone(uint16_t token)
         if (pendingToken_ == 0 && CreateAppTask(topAbilityRecord) != ERR_OK) {
             abilityList_.Erase(topAbilityRecord->token);
             delete topAbilityRecord;
+            isAppScheduling_ = false;
         }
     }
 #endif
@@ -980,6 +1003,7 @@ int32_t AbilityRecordManager::SchedulerLifecycle(uint64_t token, int32_t state)
     if (record == nullptr) {
         return PARAM_NULL_ERROR;
     }
+
 #ifndef _MINI_MULTI_TASKS_
     return ScheduleLifecycleInner(record, state);
 #else

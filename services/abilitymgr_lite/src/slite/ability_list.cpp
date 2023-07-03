@@ -111,18 +111,16 @@ void AbilityList::Erase(uint16_t token)
     }
 }
 
-const List<AbilityRecord *> AbilityList::GetAbilityList(uint32_t mission)
+void AbilityList::GetAbilityList(uint32_t mission, List<uint32_t> &result)
 {
-    List<AbilityRecord *> result;
     AbilityLockGuard locker(abilityListMutex_);
+
     for (auto node = abilityList_.Begin(); node != abilityList_.End(); node = node->next_) {
         AbilityRecord *record = node->value_;
         if ((record != nullptr) && (record->mission == mission)) {
-            result.PushFront(record);
+            result.PushFront(record->token);
         }
     }
-
-    return result;
 }
 
 uint32_t AbilityList::Size() const

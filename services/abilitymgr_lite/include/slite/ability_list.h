@@ -51,7 +51,7 @@ public:
 
     MissionInfoList *GetMissionInfos(uint32_t maxNum) const;
 
-    const List<AbilityRecord *> GetAbilityList(uint32_t mission);
+    void GetAbilityList(uint32_t mission, List<uint32_t> &result);
 
     void PopBottomAbility();
 

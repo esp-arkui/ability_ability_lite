@@ -24,7 +24,7 @@ class AbilityLockGuard {
 public:
     explicit AbilityLockGuard(osMutexId_t& mutex): mutex_(mutex)
     {
-        osMutexAcquire(mutex_, 0);
+        osMutexAcquire(mutex_, osWaitForever);
     }
 
     ~AbilityLockGuard()
