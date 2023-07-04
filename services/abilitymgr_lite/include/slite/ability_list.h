@@ -24,6 +24,7 @@
 namespace OHOS {
 namespace AbilitySlite {
 constexpr char MAIN_BUNDLE_NAME[] = "main";
+const uint32_t LAUNCHER_TOKEN = 0;
 
 class AbilityList {
 public:
@@ -54,6 +55,10 @@ public:
     void GetAbilityList(uint32_t mission, List<uint32_t> &result);
 
     void PopBottomAbility();
+
+    int32_t PopAllAbility(const char *excludedBundleName);
+
+    static bool IsPermanentAbility(const AbilityRecord &abilityRecord);
 
 private:
     List<AbilityRecord *> abilityList_ {};

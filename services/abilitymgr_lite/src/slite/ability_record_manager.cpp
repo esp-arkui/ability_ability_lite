@@ -44,7 +44,6 @@ using namespace OHOS::ACELite;
 
 namespace OHOS {
 namespace AbilitySlite {
-constexpr uint16_t LAUNCHER_TOKEN = 0;
 constexpr int32_t QUEUE_LENGTH = 32;
 constexpr int32_t APP_TASK_PRI = 25;
 
@@ -247,6 +246,7 @@ int32_t AbilityRecordManager::StartAbility(const Want *want)
     return ret;
 }
 
+#ifndef _MINI_MULTI_TASKS_
 void AbilityRecordManager::UpdateRecord(AbilitySvcInfo *info)
 {
     if (info == nullptr) {
@@ -261,6 +261,7 @@ void AbilityRecordManager::UpdateRecord(AbilitySvcInfo *info)
     }
     record->SetWantData(info->data, info->dataLength);
 }
+#endif // _MINI_MULTI_TASKS_
 
 int32_t AbilityRecordManager::StartAbility(AbilitySvcInfo *info)
 {
@@ -384,23 +385,6 @@ int32_t AbilityRecordManager::TerminateMission(uint32_t mission)
     return ERR_OK;
 }
 
-bool IsPermanentAbility(const AbilityRecord &abilityRecord)
-{
-    if (abilityRecord.appName == nullptr) {
-        return false;
-    }
-
-    if (abilityRecord.token == LAUNCHER_TOKEN) {
-        return true;
-    }
-
-    if (strcmp(abilityRecord.appName, MAIN_BUNDLE_NAME) == 0) {
-        return true;
-    }
-
-    return false;
-}
-
 int32_t AbilityRecordManager::TerminateAbility(uint16_t token, const Want* want)
 {
     HILOG_INFO(HILOG_MODULE_AAFWK, "TerminateAbility [%{public}u]", token);
@@ -433,14 +417,14 @@ int32_t AbilityRecordManager::TerminateAbility(uint16_t token, const Want* want)
     return ScheduleLifecycleInner(topRecord, SLITE_STATE_BACKGROUND);
 #else
     // 1. only launcher in the ability stack
-    if (abilityList_.Size() == 1 && topToken == LAUNCHER_TOKEN) {
+    if (abilityList_.Size() == 1 && AbilityList::IsPermanentAbility(*topRecord)) {
         isAppScheduling_ = false;
         return ERR_OK;
     }
     // 2. terminate non-top ability
     if (token != topToken) {
         AbilityRecord* abilityRecord = abilityList_.Get(token);
-        if ((abilityRecord == nullptr) || (IsPermanentAbility(*abilityRecord))) {
+        if ((abilityRecord == nullptr) || (AbilityList::IsPermanentAbility(*abilityRecord))) {
             isAppScheduling_ = false;
             return PARAM_CHECK_ERROR;
         }
@@ -458,7 +442,7 @@ int32_t AbilityRecordManager::TerminateAbility(uint16_t token, const Want* want)
         return PARAM_NULL_ERROR;
     }
 
-    if (!IsPermanentAbility(*topRecord)) {
+    if (!AbilityList::IsPermanentAbility(*topRecord)) {
         topRecord->isTerminated = true;
         abilityList_.Add(topRecord);
     } else {
@@ -542,42 +526,9 @@ int32_t AbilityRecordManager::TerminateAll(const char *excludedBundleName)
         return AddAbilityOperation(TERMINATE_ALL, &want, 0);
     }
     isAppScheduling_ = true;
-    AbilityRecord *homeRecord = abilityList_.Get(MAIN_BUNDLE_NAME);
-    if (homeRecord == nullptr) {
-        return PARAM_CHECK_ERROR;
-    }
-    AbilityRecord *topRecord = abilityList_.GetTopAbility();
-    abilityList_.PopAbility();
-    if (excludedBundleName == nullptr || strcmp(excludedBundleName, MAIN_BUNDLE_NAME) == 0
-        || strcmp(excludedBundleName, topRecord->appName) == 0) {
-        excludedBundleName = nullptr;
-    }
-
-    AbilityRecord *excludedRecord = nullptr;
-    while (abilityList_.Size() > 0) {
-        AbilityRecord *record = abilityList_.GetTopAbility();
-        abilityList_.PopAbility();
-        if (record == nullptr) {
-            continue;
-        }
-        if (strcmp(record->appName, MAIN_BUNDLE_NAME) == 0) {
-            continue;
-        }
-        if (excludedBundleName != nullptr && strcmp(record->appName, excludedBundleName) == 0) {
-            excludedRecord = record;
-            continue;
-        }
-        DeleteAbilityThread(record);
-        AbilityRecordObserverManager::GetInstance().NotifyAbilityRecordCleanup(record->appName);
-        delete record;
-    }
-    abilityList_.Add(excludedRecord);
-    abilityList_.Add(homeRecord);
-    if (topRecord != homeRecord) {
-        abilityList_.Add(topRecord);
-    }
+    int32_t ret = abilityList_.PopAllAbility(excludedBundleName);
     isAppScheduling_ = false;
-    return ERR_OK;
+    return ret;
 }
 
 int32_t AbilityRecordManager::ForceStop(const Want *want)
@@ -786,11 +737,9 @@ void AbilityRecordManager::DeleteRecordInfo(uint16_t token)
     if (record == nullptr) {
         return;
     }
-    if (token != LAUNCHER_TOKEN) {
-        DeleteAbilityThread(record);
-        // record app info event when stop app
-        RecordAbiityInfoEvt(record->GetAppName());
-    }
+    DeleteAbilityThread(record);
+    // record app info event when stop app
+    RecordAbiityInfoEvt(record->GetAppName());
     abilityList_.Erase(token);
     AbilityRecordObserverManager::GetInstance().NotifyAbilityRecordCleanup(record->appName);
     delete record;
@@ -823,9 +772,9 @@ void AbilityRecordManager::OnForegroundDone(uint16_t token)
     }
     HILOG_INFO(HILOG_MODULE_AAFWK, "The number of tasks in the stack is %{public}u.", abilityList_.Size());
 
+#ifndef _MINI_MULTI_TASKS_
     // the launcher foreground
     if (token == LAUNCHER_TOKEN) {
-#ifndef _MINI_MULTI_TASKS_
         if (nativeAbility_ == nullptr || nativeAbility_->GetState() != SLITE_STATE_FOREGROUND) {
             HILOG_ERROR(HILOG_MODULE_AAFWK, "native ability is in wrong state : %{public}d",
                 nativeAbility_->GetState());
@@ -849,8 +798,8 @@ void AbilityRecordManager::OnForegroundDone(uint16_t token)
             }
         }
         return;
-#endif
     }
+#endif // _MINI_MULTI_TASKS_
 
     // the js app active
     if (topRecord->token == token) {
@@ -896,14 +845,6 @@ void AbilityRecordManager::OnBackgroundDone(uint16_t token)
     if (record == nullptr) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "token is not found");
         return;
-    }
-
-    if (token == LAUNCHER_TOKEN) {
-        if (GetCleanAbilityDataFlag()) {
-            HILOG_INFO(HILOG_MODULE_AAFWK, "OnBackgroundDone clean launcher record data");
-            record->SetWantData(nullptr, 0);
-            SetCleanAbilityDataFlag(false);
-        }
     }
 
     if ((!record->isTerminated) && (record->abilitySavedData == nullptr)) {

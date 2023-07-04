@@ -14,10 +14,12 @@
  */
 
 #include <cstring>
-#include "ability_record.h"
+#include "abilityms_log.h"
+#include "ability_errors.h"
 #include "ability_list.h"
 #include "ability_lock_guard.h"
-#include "abilityms_log.h"
+#include "ability_record.h"
+#include "ability_record_observer_manager.h"
 
 namespace OHOS {
 namespace AbilitySlite {
@@ -174,7 +176,7 @@ MissionInfoList *AbilityList::GetMissionInfos(uint32_t maxNum) const
         delete missionInfoList;
         return nullptr;
     }
-    int32_t i = 0;
+    uint32_t i = 0;
     for (auto it = abilityList_.Begin(); i < missionInfoList->length; it = it->next_) {
         missionInfoList->missionInfos[i++].SetAppName(it->value_->appName);
     }
@@ -189,7 +191,7 @@ void AbilityList::PopBottomAbility()
         abilityList_.PopBack();
         return;
     }
-    if (lastRecord->appName == nullptr || strcmp(lastRecord->appName, MAIN_BUNDLE_NAME) != 0) {
+    if (!IsPermanentAbility(*lastRecord)) {
         abilityList_.PopBack();
         delete lastRecord;
         return;
@@ -200,6 +202,59 @@ void AbilityList::PopBottomAbility()
     abilityList_.PopBack(); // pop secondLastRecord
     delete secondLastRecord;
     abilityList_.PushBack(lastRecord); // push back home
+}
+
+int32_t AbilityList::PopAllAbility(const char *excludedBundleName)
+{
+    AbilityLockGuard locker(abilityListMutex_);
+    OHOS::List<AbilityRecord *> reservedRecordList {};
+    AbilityRecord *topRecord = abilityList_.Front();
+    if (topRecord == nullptr) {
+        return PARAM_NULL_ERROR;
+    }
+    abilityList_.PopFront();
+    reservedRecordList.PushFront(topRecord);
+
+    while (abilityList_.Size() > 0) {
+        AbilityRecord *record = abilityList_.Front();
+        abilityList_.PopFront();
+        if (record == nullptr) {
+            continue;
+        }
+        if (AbilityList::IsPermanentAbility(*record)) {
+            reservedRecordList.PushFront(record);
+            continue;
+        }
+        if (excludedBundleName != nullptr && strcmp(record->appName, excludedBundleName) == 0) {
+            reservedRecordList.PushFront(record);
+            continue;
+        }
+        AbilityRecordObserverManager::GetInstance().NotifyAbilityRecordCleanup(record->appName);
+        delete record;
+    }
+    while (reservedRecordList.Size() > 0) {
+        AbilityRecord *record = reservedRecordList.Front();
+        reservedRecordList.PopFront();
+        if (record == nullptr) {
+            continue;
+        }
+        abilityList_.PushFront(record);
+    }
+    return ERR_OK;
+}
+
+bool AbilityList::IsPermanentAbility(const AbilityRecord &abilityRecord)
+{
+    if (abilityRecord.appName == nullptr) {
+        return false;
+    }
+    if (abilityRecord.token == LAUNCHER_TOKEN) {
+        return true;
+    }
+    if (strcmp(abilityRecord.appName, MAIN_BUNDLE_NAME) == 0) {
+        return true;
+    }
+    return false;
 }
 } // namespace AbilitySlite
 } // namespace OHOS
