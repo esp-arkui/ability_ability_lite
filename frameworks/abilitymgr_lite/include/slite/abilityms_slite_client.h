@@ -69,6 +69,8 @@ private:
 
     ~AbilityMsClient() = default;
 
+    int32_t SendRequestToAms(Request &request) const;
+
     AmsSliteInterface *amsProxy_ { nullptr };
     const Identity *identity_ { nullptr };
 

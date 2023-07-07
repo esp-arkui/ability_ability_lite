@@ -48,7 +48,7 @@ struct MissionInfoList {
     MissionInfoList &operator=(const MissionInfoList &) = delete;
 
     MissionInfo *missionInfos = nullptr;
-    int32_t length = 0;
+    uint32_t length = 0;
 };
 } // namespace AbilitySlite
 } // namespace OHOS

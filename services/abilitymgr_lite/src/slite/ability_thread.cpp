@@ -18,6 +18,7 @@
 #include "abilityms_log.h"
 #include "ability_errors.h"
 #include "ability_inner_message.h"
+#include "adapter.h"
 
 namespace OHOS {
 namespace AbilitySlite {
@@ -102,11 +103,21 @@ int32_t AbilityThread::HandleDestroy()
 
 int32_t AbilityThread::SendScheduleMsgToAbilityThread(SliteAbilityInnerMsg &innerMsg)
 {
-    osStatus_t ret = osMessageQueuePut(GetMessageQueueId(), static_cast<void *>(&innerMsg), 0, 0);
-    if (ret != osOK) {
-        return IPC_REQUEST_ERROR;
+    constexpr uint32_t maxRetryTimes = 5;
+
+    uint32_t retryTimes = 0;
+    while (retryTimes < maxRetryTimes) {
+        osStatus_t ret = osMessageQueuePut(GetMessageQueueId(), static_cast<void *>(&innerMsg), 0, 0);
+        if (ret == osOK) {
+            return ERR_OK;
+        }
+        HILOG_WARN(HILOG_MODULE_AAFWK, "AbilityThread osMessageQueuePut failed with %{public}d", ret);
+        osDelay(200); // sleep 200ms
+        retryTimes++;
     }
-    return ERR_OK;
+
+    HILOG_ERROR(HILOG_MODULE_AAFWK, "AbilityThread SendScheduleMsgToAbilityThread failed.");
+    return IPC_REQUEST_ERROR;
 }
 } // namespace AbilitySlite
 } // namespace OHOS
