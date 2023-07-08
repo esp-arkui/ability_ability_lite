@@ -136,6 +136,7 @@ uint8_t BMSHelper::QueryAbilitySvcInfo(const Want *want, AbilitySvcInfo *svcInfo
     }
 
     AbilityInfo abilityInfo = { nullptr, nullptr };
+    memset_s(&abilityInfo, sizeof(AbilityInfo), 0, sizeof(AbilityInfo));
     QueryAbilityInfo(want, &abilityInfo);
     if (!IsValidAbility(&abilityInfo)) {
         APP_ERRCODE_EXTRA(EXCE_ACE_APP_START, EXCE_ACE_APP_START_UNKNOWN_BUNDLE_INFO);

@@ -79,6 +79,8 @@ typedef struct {
     const char *appPath;
 
     uint32_t mission;
+    char *actions;
+    char *entities;
 } Want;
 
 #ifdef __cplusplus

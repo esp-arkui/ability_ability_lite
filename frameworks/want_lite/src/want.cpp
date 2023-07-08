@@ -71,6 +71,8 @@ void ClearWant(Want *want)
 #endif
     AdapterFree(want->appPath);
     AdapterFree(want->data);
+    AdapterFree(want->actions);
+    AdapterFree(want->entities);
 }
 
 bool SetWantElement(Want *want, ElementName element)
