@@ -52,6 +52,21 @@ bool AbilityMsClient::Initialize() const
     return false;
 }
 
+int32_t AbilityMsClient::SendRequestToAms(Request &request) const
+{
+    int32_t retry = RETRY_TIMES;
+    while (retry--) {
+        int32_t ret = SAMGR_SendRequest(identity_, &request, nullptr);
+        if (ret == EC_SUCCESS) {
+            return ERR_OK;
+        }
+        HILOG_WARN(HILOG_MODULE_APP, "SendRequestToAms SAMGR_SendRequest failed with %{public}d", ret);
+        osDelay(ERROR_SLEEP_TIMES); // sleep 300ms
+    }
+    HILOG_ERROR(HILOG_MODULE_APP, "SendRequestToAms failed.");
+    return IPC_REQUEST_ERROR;
+}
+
 int32_t AbilityMsClient::StartAbility(const Want *want) const
 {
     if (want == nullptr || want->element == nullptr || !Initialize()) {
@@ -92,7 +107,7 @@ int32_t AbilityMsClient::StartAbility(const Want *want) const
         .data = data,
         .msgValue = 0,
     };
-    return SAMGR_SendRequest(identity_, &request, nullptr);
+    return SendRequestToAms(request);
 }
 
 int32_t AbilityMsClient::TerminateAbility(uint64_t token) const
@@ -106,7 +121,7 @@ int32_t AbilityMsClient::TerminateAbility(uint64_t token) const
         .data = nullptr,
         .msgValue = static_cast<uint32_t>(token & TRANSACTION_MSG_TOKEN_MASK),
     };
-    return SAMGR_SendRequest(identity_, &request, nullptr);
+    return SendRequestToAms(request);
 }
 
 int32_t AbilityMsClient::TerminateMission(uint32_t mission) const
@@ -117,7 +132,7 @@ int32_t AbilityMsClient::TerminateMission(uint32_t mission) const
         .data = nullptr,
         .msgValue = mission,
     };
-    return SAMGR_SendRequest(identity_, &request, nullptr);
+    return SendRequestToAms(request);
 }
 
 int32_t AbilityMsClient::TerminateAll(const char* excludedBundleName) const
@@ -135,7 +150,7 @@ int32_t AbilityMsClient::TerminateAll(const char* excludedBundleName) const
         .data = data,
         .msgValue = 0,
     };
-    return SAMGR_SendRequest(identity_, &request, nullptr);
+    return SendRequestToAms(request);
 }
 
 int32_t AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int32_t state) const
@@ -150,7 +165,7 @@ int32_t AbilityMsClient::SchedulerLifecycleDone(uint64_t token, int32_t state) c
         .msgValue = static_cast<uint32_t>((token & TRANSACTION_MSG_TOKEN_MASK) |
                                           (state << TRANSACTION_MSG_STATE_OFFSET)),
     };
-    return SAMGR_SendRequest(identity_, &request, nullptr);
+    return SendRequestToAms(request);
 }
 
 int32_t AbilityMsClient::ForceStopBundle(uint64_t token) const
@@ -164,7 +179,7 @@ int32_t AbilityMsClient::ForceStopBundle(uint64_t token) const
         .data = nullptr,
         .msgValue = static_cast<uint32_t>(token & TRANSACTION_MSG_TOKEN_MASK),
     };
-    return SAMGR_SendRequest(identity_, &request, nullptr);
+    return SendRequestToAms(request);
 }
 
 ElementName *AbilityMsClient::GetTopAbility() const
@@ -201,7 +216,7 @@ int32_t AbilityMsClient::ForceStop(const char *bundleName) const
         .len = sizeof(Want),
         .data = want,
     };
-    return SAMGR_SendRequest(identity_, &request, nullptr);
+    return SendRequestToAms(request);
 }
 
 int32_t AbilityMsClient::ForceStop(const Want *want) const
@@ -232,7 +247,7 @@ int32_t AbilityMsClient::ForceStop(const Want *want) const
         .len = sizeof(Want),
         .data = info,
     };
-    return SAMGR_SendRequest(identity_, &request, nullptr);
+    return SendRequestToAms(request);
 }
 
 int32_t AbilityMsClient::AddAbilityRecordObserver(AbilityRecordObserver *observer)
@@ -247,7 +262,7 @@ int32_t AbilityMsClient::AddAbilityRecordObserver(AbilityRecordObserver *observe
         .msgValue = reinterpret_cast<uint32>(observer),
     };
 
-    return SAMGR_SendRequest(identity_, &request, nullptr);
+    return SendRequestToAms(request);
 }
 
 int32_t AbilityMsClient::RemoveAbilityRecordObserver(AbilityRecordObserver *observer)
@@ -262,7 +277,7 @@ int32_t AbilityMsClient::RemoveAbilityRecordObserver(AbilityRecordObserver *obse
         .msgValue = reinterpret_cast<uint32>(observer),
     };
 
-    return SAMGR_SendRequest(identity_, &request, nullptr);
+    return SendRequestToAms(request);
 }
 
 MissionInfoList *AbilityMsClient::GetMissionInfos(uint32_t maxNum) const
