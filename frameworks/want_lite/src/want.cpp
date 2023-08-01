@@ -71,8 +71,10 @@ void ClearWant(Want *want)
 #endif
     AdapterFree(want->appPath);
     AdapterFree(want->data);
+#ifndef OHOS_APPEXECFWK_BMS_BUNDLEMANAGER
     AdapterFree(want->actions);
     AdapterFree(want->entities);
+#endif
 }
 
 bool SetWantElement(Want *want, ElementName element)
