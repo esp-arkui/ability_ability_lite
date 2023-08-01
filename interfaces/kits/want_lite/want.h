@@ -79,8 +79,10 @@ typedef struct {
     const char *appPath;
 
     uint32_t mission;
+#ifndef OHOS_APPEXECFWK_BMS_BUNDLEMANAGER    
     char *actions;
     char *entities;
+#endif
 } Want;
 
 #ifdef __cplusplus
