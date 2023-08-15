@@ -22,6 +22,7 @@
 #include "js_ability.h"
 #include "js_async_work.h"
 #include "los_task.h"
+#include "pms.h"
 #include "slite_ability_loader.h"
 
 namespace OHOS {
@@ -87,6 +88,7 @@ int32_t JsAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecord)
     ability_->SetToken(abilityRecord->token);
     ACELite::JsAsyncWork::SetAppQueueHandler(messageQueueId_);
     LOS_TaskUnlock();
+    LoadPermissions(abilityRecord->appName, appTaskId_);
     HILOG_INFO(HILOG_MODULE_AAFWK, "JsAbilityThread init done");
     return ERR_OK;
 }
@@ -100,6 +102,7 @@ int32_t JsAbilityThread::ReleaseAbilityThread()
     }
     state_ = AbilityThreadState::ABILITY_THREAD_RELEASED;
     LOS_TaskDelete(appTaskId_);
+    UnLoadPermissions(appTaskId_);
     appTaskId_ = 0;
     osMessageQueueDelete(messageQueueId_);
     messageQueueId_ = nullptr;
