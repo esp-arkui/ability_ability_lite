@@ -23,10 +23,10 @@
         "deps": {
             "components": [
                 "bundle_framework_lite",
+                "hilog_lite",
                 "kv_store",
                 "ui_lite",
                 "surface_lite",
-                "hilog",
                 "samgr_lite",
                 "window_manager_lite"
             ],
