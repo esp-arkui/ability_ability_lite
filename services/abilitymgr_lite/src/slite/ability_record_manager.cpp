@@ -79,6 +79,8 @@ void AbilityRecordManager::StartLauncher()
     want->dataLength = 0;
     want->element = nullptr;
     want->appPath = nullptr;
+    want->actions = nullptr;
+    want->entities = nullptr;
     ElementName elementName = {};
     SetElementBundleName(&elementName, BMSHelper::GetInstance().GetStartupBundleName());
     SetWantElement(want, elementName);
@@ -1097,6 +1099,8 @@ Want *AbilityRecordManager::CreateWant(const AbilityRecord *record)
     want->dataLength = 0;
     want->appPath = OHOS::Utils::Strdup(record->appPath);
     want->mission = record->mission;
+    want->actions = nullptr;
+    want->entities = nullptr;
     ElementName elementName = {};
     SetElementBundleName(&elementName, record->appName);
     SetWantElement(want, elementName);
@@ -1164,6 +1168,8 @@ Want *AbilityRecordManager::CopyWant(const Want *want)
     copiedWant->data = OHOS::Utils::Memdup(want->data, want->dataLength);
     copiedWant->dataLength = want->dataLength;
     copiedWant->appPath = OHOS::Utils::Strdup(want->appPath);
+    copiedWant->actions = nullptr;
+    copiedWant->entities = nullptr;
     if (want->element != nullptr) {
         ElementName elementName = {};
         SetElementBundleName(&elementName, want->element->bundleName);
