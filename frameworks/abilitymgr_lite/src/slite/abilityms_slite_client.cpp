@@ -91,6 +91,8 @@ int32_t AbilityMsClient::StartAbility(const Want *want) const
     info->dataLength = 0;
     info->appPath = nullptr;
     info->mission = want->mission;
+    info->actions = OHOS::Utils::Strdup(want->actions);
+    info->entities = OHOS::Utils::Strdup(want->entities);
     SetWantElement(info, *(want->element));
     if (want->data != nullptr) {
         HILOG_INFO(HILOG_MODULE_APP, "start ability with input data");
