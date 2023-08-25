@@ -91,8 +91,8 @@ int32_t AbilityMsClient::StartAbility(const Want *want) const
     info->dataLength = 0;
     info->appPath = nullptr;
     info->mission = want->mission;
-    info->actions = OHOS::Utils::Strdup(want->actions);
-    info->entities = OHOS::Utils::Strdup(want->entities);
+    info->actions = nullptr;
+    info->entities = nullptr;
     SetWantElement(info, *(want->element));
     if (want->data != nullptr) {
         HILOG_INFO(HILOG_MODULE_APP, "start ability with input data");
@@ -212,6 +212,8 @@ int32_t AbilityMsClient::ForceStop(const char *bundleName) const
     want->data = nullptr;
     want->dataLength = 0;
     want->appPath = nullptr;
+    want->actions = nullptr;
+    want->entities = nullptr;
     SetWantData(want, nullptr, 0);
     Request request = {
         .msgId = TERMINATE_APP_BY_BUNDLENAME,
