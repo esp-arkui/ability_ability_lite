@@ -104,6 +104,8 @@ int32_t AbilityRecordManager::StartAbility(const AbilityRecord *record)
     want->dataLength = 0;
     want->element = nullptr;
     want->appPath = nullptr;
+    want->actions = nullptr;
+    want->entities = nullptr;
     ElementName elementName = {};
     if (record != nullptr) {
         want->data = Utils::Memdup(record->abilityData->wantData, record->abilityData->wantDataSize);
@@ -989,6 +991,8 @@ int32_t AbilityRecordManager::ScheduleLifecycleInner(const AbilityRecord *record
     info->data = nullptr;
     info->dataLength = 0;
     info->appPath = nullptr;
+    info->actions = nullptr;
+    info->entities = nullptr;
 
     ElementName elementName = {};
     SetElementBundleName(&elementName, LAUNCHER_BUNDLE_NAME);
