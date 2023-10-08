@@ -75,7 +75,7 @@ The ability management framework is provided by OpenHarmony for you to develop O
 ## Usage<a name="section1954314201620"></a>
 
 -   The Ability Manager Service is running in the foundation process.
--   The Ability Manager Service is registered with  **sa\_manager**.  **sa\_manager**  runs in the foundation process and sets up a thread runtime environment for the service. For details about how to create and use the Ability Manager Service, see  [SA Framework](en-us_topic_0000001051589563.md).
+-   The Ability Manager Service is registered with  **sa\_manager**.  **sa\_manager**  runs in the foundation process and sets up a thread runtime environment for the service. For details about how to create and use the Ability Manager Service, see  SA Framework.
 -   The Ability Manager Service starts upon OS startup.
 
 -   After the HAP installation is complete, you can use the aa tool to run the demo for starting the specified ability through the following command. \(Taking  **hispark\_taurus**  as an example, you can obtain the aa tool from the  **out/hispark\_taurus/ipcamera\_hispark\_taurus/dev\_tools/bin**  directory after the version building.\)
