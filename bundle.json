@@ -23,12 +23,8 @@
         "deps": {
             "components": [
                 "bundle_framework_lite",
-                "kv_store",
-                "ui_lite",
-                "surface_lite",
-                "hilog",
-                "samgr_lite",
-                "window_manager_lite"
+                "hilog_lite",
+                "samgr_lite"
             ],
             "third_party": [
                 "bounds_checking_function",
