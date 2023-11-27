@@ -37,15 +37,19 @@ bool AbilityMsClient::Initialize() const
         return true;
     }
     int retry = RETRY_TIMES;
+    IUnknown *iUnknown = nullptr;
     while (retry--) {
-        IUnknown *iUnknown = SAMGR_GetInstance()->GetFeatureApi(AMS_SERVICE, AMS_FEATURE);
+        iUnknown = SAMGR_GetInstance()->GetFeatureApi(AMS_SERVICE, AMS_FEATURE);
+        if (iUnknown == nullptr) {
+            usleep(ERROR_SLEEP_TIMES); // sleep 300ms
+            continue;
+        }
         (void)iUnknown->QueryInterface(iUnknown, CLIENT_PROXY_VER, (void **)&amsProxy_);
         if (amsProxy_ == nullptr) {
             HILOG_ERROR(HILOG_MODULE_APP, "ams proxy is null");
             usleep(ERROR_SLEEP_TIMES); // sleep 300ms
             continue;
         }
-
         return true;
     }
     if (iUnknown == nullptr) {
