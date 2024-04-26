@@ -87,8 +87,7 @@ namespace OHOS {
 
     int32_t AbilityTestHelper::AbilityCallback(uint32_t code, IpcIo *data, IpcIo *reply, MessageOption option)
     {
-        switch (code)
-        {
+        switch (code) {
             case SCHEDULER_APP_INIT: {
                 ElementName element = {};
                 DeserializeElement(&element, data);
@@ -157,7 +156,7 @@ namespace OHOS {
         IpcIoInit(&req, data, MAX_IO_SIZE, 0);
         WriteString(&req, bundleName.c_str());
         int32_t ret = proxy_->Invoke(proxy_, TERMINATE_APP, &req, nullptr, nullptr);
-        sleep(2);
+        sleep(2); // 2:出让CPU
         return ret == EC_SUCCESS;
     }
 
@@ -215,7 +214,7 @@ namespace OHOS {
     {
         IpcIo req;
         char data[MAX_IO_SIZE];
-        IpcIoInit(&req, data, MAX_IO_SIZE, 2);
+        IpcIoInit(&req, data, MAX_IO_SIZE, 2); // 2：IPC初始化
         Want want = {};
         SetWantElement(&want, elementName);
         SetWantSvcIdentity(&want, identity_);
