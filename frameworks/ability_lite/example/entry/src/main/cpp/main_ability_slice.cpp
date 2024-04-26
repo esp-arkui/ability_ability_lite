@@ -49,7 +49,7 @@ int32_t IpcMsgHandler(int funcId, ElementName *elementName, SvcIdentity *service
     char data[MAX_IO_SIZE];
     IpcIoInit(&request, data, MAX_IO_SIZE, 0);
     WriteInt32(&request, 10);
-    WriteInt32(&request, 6);
+    WriteInt32(&request, 6); // 6:测试数据
 
     // send and getReply
     IpcIo reply;
