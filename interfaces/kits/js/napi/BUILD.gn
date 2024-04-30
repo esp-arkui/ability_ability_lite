@@ -33,7 +33,6 @@ ohos_shared_library("aafwk") {
 
   external_deps = [
     "c_utils:utils",
-    "hilog:libhilog",
     "ipc:ipc_core",
   ]
 
