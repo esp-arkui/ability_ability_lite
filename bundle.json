@@ -13,7 +13,12 @@
         "name": "ability_lite",
         "subsystem": "ability",
         "syscap": [],
-        "features": [],
+        "features": [
+            "enable_ohos_appexecfwk_feature_ability",
+            "enable_ohos_aafwk_multi_tasks_feature",
+            "config_ohos_aafwk_ams_task_size",
+            "config_ohos_aafwk_aafwk_lite_task_stack_size"
+        ],
         "adapted_system_type": [
             "mini",
             "small"
