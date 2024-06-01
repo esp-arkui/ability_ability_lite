@@ -34,9 +34,9 @@ lite_library("abilityms") {
       "src/slite/slite_ability_loader.cpp",
     ]
 
-    if (defined(config_ohos_aafwk_ams_task_size) &&
-        config_ohos_aafwk_ams_task_size > 0) {
-      defines = [ "AMS_TASK_STACK_SIZE=$config_ohos_aafwk_ams_task_size" ]
+    if (defined(ability_lite_config_ohos_aafwk_ams_task_size) &&
+        ability_lite_config_ohos_aafwk_ams_task_size > 0) {
+      defines = [ "AMS_TASK_STACK_SIZE=$ability_lite_config_ohos_aafwk_ams_task_size" ]
     }
 
     if (defined(config_ohos_aafwk_ability_list_capacity) &&
@@ -45,15 +45,15 @@ lite_library("abilityms") {
           [ "ABILITY_LIST_CAPACITY=$config_ohos_aafwk_ability_list_capacity" ]
     }
 
-    if (defined(config_ohos_aafwk_aafwk_lite_task_stack_size) &&
-        config_ohos_aafwk_aafwk_lite_task_stack_size > 0) {
+    if (defined(ability_lite_config_ohos_aafwk_aafwk_lite_task_stack_size) &&
+        ability_lite_config_ohos_aafwk_aafwk_lite_task_stack_size > 0) {
       defines += [
-        "TASK_STACK_SIZE=$config_ohos_aafwk_aafwk_lite_task_stack_size",
-        "NATIVE_TASK_STACK_SIZE=$config_ohos_aafwk_ams_task_size",
+        "TASK_STACK_SIZE=$ability_lite_config_ohos_aafwk_aafwk_lite_task_stack_size",
+        "NATIVE_TASK_STACK_SIZE=$ability_lite_config_ohos_aafwk_ams_task_size",
       ]
     }
 
-    if (enable_ohos_aafwk_multi_tasks_feature == true) {
+    if (ability_lite_enable_ohos_aafwk_multi_tasks_feature == true) {
       defines += [ "_MINI_MULTI_TASKS_" ]
     }
 
@@ -136,12 +136,12 @@ lite_library("abilityms") {
 
     defines = [ "OHOS_APPEXECFWK_BMS_BUNDLEMANAGER" ]
 
-    if (defined(config_ohos_aafwk_ams_task_size) &&
-        config_ohos_aafwk_ams_task_size > 0) {
-      defines += [ "AMS_TASK_STACK_SIZE=$config_ohos_aafwk_ams_task_size" ]
+    if (defined(ability_lite_config_ohos_aafwk_ams_task_size) &&
+        ability_lite_config_ohos_aafwk_ams_task_size > 0) {
+      defines += [ "AMS_TASK_STACK_SIZE=$ability_lite_config_ohos_aafwk_ams_task_size" ]
     }
 
-    if (enable_ohos_appexecfwk_feature_ability == true) {
+    if (ability_lite_enable_ohos_appexecfwk_feature_ability == true) {
       deps += [ "${graphic_path}/surface_lite" ]
       defines += [ "ABILITY_WINDOW_SUPPORT" ]
     }

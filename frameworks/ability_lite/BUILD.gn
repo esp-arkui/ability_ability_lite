@@ -77,7 +77,7 @@ lite_library("ability") {
       "src/ability_thread.cpp",
     ]
 
-    if (enable_ohos_appexecfwk_feature_ability == true) {
+    if (ability_lite_enable_ohos_appexecfwk_feature_ability == true) {
       sources += [
         "src/ability_slice.cpp",
         "src/ability_slice_manager.cpp",
@@ -131,7 +131,7 @@ lite_library("ability") {
   }
   cflags_cc = cflags
 
-  if (enable_ohos_appexecfwk_feature_ability == true) {
+  if (ability_lite_enable_ohos_appexecfwk_feature_ability == true) {
     public_deps += [ "${graphic_path}/../arkui/ui_lite:ui_lite" ]
   }
 
@@ -141,13 +141,13 @@ lite_library("ability") {
 
   defines += [ "OPENHARMONY_FONT_PATH" ]
 
-  if (enable_ohos_appexecfwk_feature_ability == true) {
+  if (ability_lite_enable_ohos_appexecfwk_feature_ability == true) {
     defines += [ "ABILITY_WINDOW_SUPPORT" ]
   }
 }
 
 lite_component("aafwk_abilitykit_lite") {
-  if (enable_ohos_appexecfwk_feature_ability == true) {
+  if (ability_lite_enable_ohos_appexecfwk_feature_ability == true) {
     public_configs = [ ":abilitykit_config" ]
   }
 
