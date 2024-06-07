@@ -39,10 +39,10 @@ lite_library("abilityms") {
       defines = [ "AMS_TASK_STACK_SIZE=$ability_lite_config_ohos_aafwk_ams_task_size" ]
     }
 
-    if (defined(config_ohos_aafwk_ability_list_capacity) &&
-        config_ohos_aafwk_ability_list_capacity > 0) {
+    if (defined(ability_lite_ability_lite_config_ohos_aafwk_ability_list_capacity) &&
+        ability_lite_ability_lite_config_ohos_aafwk_ability_list_capacity > 0) {
       defines +=
-          [ "ABILITY_LIST_CAPACITY=$config_ohos_aafwk_ability_list_capacity" ]
+          [ "ABILITY_LIST_CAPACITY=$ability_lite_ability_lite_config_ohos_aafwk_ability_list_capacity" ]
     }
 
     if (defined(ability_lite_config_ohos_aafwk_aafwk_lite_task_stack_size) &&

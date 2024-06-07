@@ -17,7 +17,8 @@
             "ability_lite_enable_ohos_appexecfwk_feature_ability",
             "ability_lite_enable_ohos_aafwk_multi_tasks_feature",
             "ability_lite_config_ohos_aafwk_ams_task_size",
-            "ability_lite_config_ohos_aafwk_aafwk_lite_task_stack_size"
+            "ability_lite_config_ohos_aafwk_aafwk_lite_task_stack_size",
+            "ability_lite_config_ohos_aafwk_ability_list_capacity"
         ],
         "adapted_system_type": [
             "mini",
