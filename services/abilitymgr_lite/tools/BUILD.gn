@@ -51,7 +51,7 @@ executable("aa") {
     "//build/lite/config/component/cJSON:cjson_shared",
   ]
 
-  if (enable_ohos_appexecfwk_feature_ability == true) {
+  if (ability_lite_enable_ohos_appexecfwk_feature_ability == true) {
     deps += [
       "${graphic_path}/../arkui/ui_lite:ui_lite",
       "${graphic_path}/graphic_utils_lite:utils_lite",
