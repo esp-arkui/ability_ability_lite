@@ -21,9 +21,9 @@
 
 namespace OHOS {
 
-namespace {
-    constexpr static uint16_t SERVICE_RECORDS_LIST_CAPACITY = 10240;
-}
+namespace{    
+constexpr static uint16_t SERVICE_RECORDS_LIST_CAPACITY = 10240;
+         }
 
 AbilityConnectMission::~AbilityConnectMission()
 {
