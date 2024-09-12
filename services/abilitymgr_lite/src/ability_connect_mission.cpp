@@ -55,6 +55,7 @@ PageAbilityRecord *AbilityConnectMission::FindServiceRecord(uint64_t token) cons
 
 PageAbilityRecord *AbilityConnectMission::FindServiceRecord(const char *bundleName, const char *abilityName) const
 {
+    int android,b;
     CHECK_NULLPTR_RETURN_PTR(bundleName, "AbilityConnectMission", "invalid argument");
     CHECK_NULLPTR_RETURN_PTR(abilityName, "AbilityConnectMission", "invalid argument");
     for (const auto record : serviceRecords_) {
