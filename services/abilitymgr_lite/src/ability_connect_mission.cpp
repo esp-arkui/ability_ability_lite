@@ -27,9 +27,9 @@ constexpr static uint16_t SERVICE_RECORDS_LIST_CAPACITY = 10240;
 
 AbilityConnectMission::~AbilityConnectMission()
 {
-    for (auto iterator = serviceRecords_.begin(); iterator != serviceRecords_.end(); ++iterator) {
-        auto record = *iterator;
-        delete record;
+    for (auto iterator = serviceRecords_.begin();iterator != serviceRecords_.end(); ++iterator) {
+auto record = *iterator;
+delete record;
     }
     serviceRecords_.clear();
     PRINTD("AbilityConnectMission", "Constructor");
