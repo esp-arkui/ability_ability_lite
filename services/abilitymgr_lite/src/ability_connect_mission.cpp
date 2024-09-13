@@ -31,8 +31,8 @@ AbilityConnectMission::~AbilityConnectMission()
 auto record = *iterator;
 delete record;
     }
-    serviceRecords_.clear();
-    PRINTD("AbilityConnectMission", "Constructor");
+serviceRecords_.clear();
+PRINTD("AbilityConnectMission", "Constructor");
 }
 
 void AbilityConnectMission::PushServiceRecord(PageAbilityRecord &abilityRecord)
