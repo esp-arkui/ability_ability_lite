@@ -75,7 +75,7 @@ class AbilityWindow;
 class Ability : public AbilityContext {
 public:
     Ability() = default;
-    virtual ~Ability() = default;
+virtual ~Ability() = default;
 
     /**
      * @brief Called when this ability is started. You must override this function if you want to perform some
@@ -92,7 +92,7 @@ public:
      * <b>STATE_INACTIVE</b> is an instantaneous state. The ability in this state may be visible but does not have
      * focus. You can override this function to implement your own processing logic.
      */
-    virtual void OnInactive();
+  virtual void OnInactive();
 
     /**
      * @brief Called when this ability enters the <b>STATE_ACTIVE</b> state.
