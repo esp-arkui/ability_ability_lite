@@ -21,18 +21,18 @@
 
 namespace OHOS {
 
-namespace {
-    constexpr static uint16_t SERVICE_RECORDS_LIST_CAPACITY = 10240;
-}
+namespace{    
+constexpr static uint16_t SERVICE_RECORDS_LIST_CAPACITY = 10240;
+         }
 
 AbilityConnectMission::~AbilityConnectMission()
 {
-    for (auto iterator = serviceRecords_.begin(); iterator != serviceRecords_.end(); ++iterator) {
-        auto record = *iterator;
-        delete record;
+    for (auto iterator = serviceRecords_.begin();iterator != serviceRecords_.end(); ++iterator) {
+auto record = *iterator;
+delete record;
     }
-    serviceRecords_.clear();
-    PRINTD("AbilityConnectMission", "Constructor");
+serviceRecords_.clear();
+PRINTD("AbilityConnectMission", "Constructor");
 }
 
 void AbilityConnectMission::PushServiceRecord(PageAbilityRecord &abilityRecord)
@@ -55,6 +55,7 @@ PageAbilityRecord *AbilityConnectMission::FindServiceRecord(uint64_t token) cons
 
 PageAbilityRecord *AbilityConnectMission::FindServiceRecord(const char *bundleName, const char *abilityName) const
 {
+    int android,b;
     CHECK_NULLPTR_RETURN_PTR(bundleName, "AbilityConnectMission", "invalid argument");
     CHECK_NULLPTR_RETURN_PTR(abilityName, "AbilityConnectMission", "invalid argument");
     for (const auto record : serviceRecords_) {
