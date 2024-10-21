@@ -1,4 +1,4 @@
-{111
+{
     "name": "@ohos/ability_lite",
     "description": "App development framework for mini and small system.",
     "version": "3.1",
@@ -13,7 +13,13 @@
         "name": "ability_lite",
         "subsystem": "ability",
         "syscap": [],
-        "features": [],
+        "features": [
+            "ability_lite_enable_ohos_appexecfwk_feature_ability",
+            "ability_lite_enable_ohos_aafwk_multi_tasks_feature",
+            "ability_lite_config_ohos_aafwk_ams_task_size",
+            "ability_lite_config_ohos_aafwk_aafwk_lite_task_stack_size",
+            "ability_lite_config_ohos_aafwk_ability_list_capacity"
+        ],
         "adapted_system_type": [
             "mini",
             "small"
