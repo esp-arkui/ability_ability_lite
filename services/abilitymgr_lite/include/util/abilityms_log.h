@@ -24,7 +24,13 @@ namespace OHOS {
 #undef LOG_DOMAIN
 #define LOG_DOMAIN 0xD001300
 
-#ifdef __LITEOS_M__
+#if defined (ESP_PLATFORM)
+#define PRINTD HILOG_DEBUG
+#define PRINTI HILOG_INFO
+#define PRINTW HILOG_WARN
+#define PRINTE HILOG_ERROR
+
+#elif defined (__LITEOS_M__)
 #ifndef HILOG_DEBUG
 #define HILOG_DEBUG(mod, format, ...)
 #endif

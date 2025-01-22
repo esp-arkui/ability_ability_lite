@@ -60,7 +60,7 @@ int32_t AbilityMsClient::SendRequestToAms(Request &request) const
         if (ret == EC_SUCCESS) {
             return ERR_OK;
         }
-        HILOG_WARN(HILOG_MODULE_APP, "SendRequestToAms SAMGR_SendRequest failed with %{public}d", ret);
+        HILOG_WARN(HILOG_MODULE_APP, "SendRequestToAms SAMGR_SendRequest failed with %d", ret);
         osDelay(ERROR_SLEEP_TIMES); // sleep 300ms
     }
     HILOG_ERROR(HILOG_MODULE_APP, "SendRequestToAms failed.");

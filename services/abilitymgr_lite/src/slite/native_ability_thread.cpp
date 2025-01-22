@@ -56,6 +56,7 @@ NativeAbilityThread::~NativeAbilityThread()
 
 int32_t NativeAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecord)
 {
+    printf("STUB %s:%d\n", __FILE__, __LINE__);
     if (abilityRecord == nullptr) {
         HILOG_ERROR(HILOG_MODULE_AAFWK, "NativeAbilityThread init fail, abilityRecord is null");
         return PARAM_NULL_ERROR;
@@ -86,7 +87,7 @@ int32_t NativeAbilityThread::InitAbilityThread(const AbilityRecord *abilityRecor
         stTskInitParam.usTaskPrio = OS_TASK_PRIORITY_LOWEST - APP_TASK_PRI;
         stTskInitParam.pcName = g_NativeAppTask;
         stTskInitParam.uwResved = 0;
-        stTskInitParam.uwArg = reinterpret_cast<UINT32>((uintptr_t) nativeQueueId_);
+        stTskInitParam.uwArg = reinterpret_cast<uintptr_t>( nativeQueueId_);
         uint32_t ret = LOS_TaskCreate(&nativeTaskId_, &stTskInitParam);
         if (ret != LOS_OK) {
             HILOG_ERROR(HILOG_MODULE_AAFWK, "NativeAbilityThread init fail: LOS_TaskCreate ret %{public}d", ret);

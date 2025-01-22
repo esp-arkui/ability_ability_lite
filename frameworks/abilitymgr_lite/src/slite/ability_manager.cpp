@@ -15,10 +15,12 @@
 
 #include "slite/ability_manager.h"
 #include "abilityms_slite_client.h"
-
+#include <stdio.h>
 extern "C" {
 int StartAbility(const Want *want)
 {
+    printf("STUB %s:%d\n", __FILE__, __LINE__);
+    
     return OHOS::AbilitySlite::AbilityMsClient::GetInstance().StartAbility(want);
 }
 

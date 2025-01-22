@@ -743,7 +743,8 @@ void AbilityRecordManager::DeleteRecordInfo(uint16_t token)
     }
     DeleteAbilityThread(record);
     // record app info event when stop app
-    RecordAbiityInfoEvt(record->GetAppName());
+    HILOG_ERROR("HILOG_MODULE_AAFWK", "DeleteRecordInfo [%u]", token);
+    // RecordAbiityInfoEvt(record->GetAppName());
     abilityList_.Erase(token);
     AbilityRecordObserverManager::GetInstance().NotifyAbilityRecordCleanup(record->appName);
     delete record;

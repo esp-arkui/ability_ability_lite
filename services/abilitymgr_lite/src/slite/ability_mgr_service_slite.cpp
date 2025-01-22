@@ -78,6 +78,13 @@ static void InitFeature()
 
 SYSEX_FEATURE_INIT(InitFeature);
 
+void __abilityFeatureInitialize(void)
+{
+    HILOG_INFO(HILOG_MODULE_AAFWK, "AbilityMgrServiceSlite::OnFeatureInitialize");
+    InitService();
+    InitFeature();
+}
+
 AbilityMgrServiceSlite::AbilityMgrServiceSlite() : Service(), Feature()
 {
     this->Feature::GetName = AbilityMgrServiceSlite::GetFeatureName;
